@@ -1,0 +1,106 @@
+version: 2
+
+models:
+  - name: int_spotify_streams_deduped
+    description:  deduped version of staging model + removed podcast colums
+    columns:
+      - name: stream_id
+        description: Surrogate key from track_uri + timestamp + ms_played
+        tests:
+          - unique
+          - not_null
+
+      - name: streamed_at
+        description: Timestamp of when the stream occurred
+        tests:
+          - not_null
+
+      - name: track_name
+        description: Name of the track played
+
+      - name: artist_name
+        description: Name of the artist
+
+      - name: album_name
+        description: Name of the album
+
+      - name: spotify_track_uri
+        description: Spotify URI for the track
+
+      - name: ms_played
+        description: Milliseconds played
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments: 
+                min_value: 0
+
+      - name: minutes_played
+        description: Minutes played (ms_played / 60000)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: platform
+        description: Device/OS platform used for playback
+
+      - name: conn_country
+        description: Two-letter country code of connection
+        tests:
+          - not_null
+
+      - name: reason_start
+        description: Why playback started (e.g. trackdone, clickrow, fwdbtn)
+        tests:
+          - accepted_values:
+              arguments: 
+                values: ['trackdone', 'clickrow', 'fwdbtn', 'backbtn', 'playbtn', 'appload', 'remote', 'trackerror', 'unknown']
+              config:
+                severity: warn
+
+      - name: reason_end
+        description: Why playback ended
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['trackdone', 'fwdbtn', 'backbtn', 'endplay', 'remote', 'logout', 'unexpected-exit', 'unexpected-exit-while-paused', 'trackerror', 'clickrow', 'unknown']
+              config:
+                severity: warn
+
+      - name: shuffle
+        description: Whether shuffle mode was on
+
+      - name: skipped
+        description: Whether the track was skipped
+
+      - name: offline
+        description: Whether played in offline mode
+
+      - name: offline_timestamp
+        description: Timestamp of offline playback cache
+
+      - name: incognito_mode
+        description: Whether played in private/incognito mode
+
+      - name: ip_addr
+        description: IP address of the listener
+
+      - name: source_file_name
+        description: Original file name from raw data load
+        tests:
+          - not_null
+
+      - name: is_podcast
+        description: True if the record is a podcast stream
+
+      - name: is_audiobook
+        description: True if the record is an audiobook stream
+
+      - name: loaded_at
+        description: Timestamp when data was loaded into raw table
+        tests:
+          - not_null
+      
+      - name: rank
+        description: has to be equal 1 to be unique 
