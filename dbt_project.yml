@@ -40,3 +40,5 @@ models:
     # Applies to all files under models/staging/
     staging:
       +materialized: view
+data_tests:
+  +store_failures: true
