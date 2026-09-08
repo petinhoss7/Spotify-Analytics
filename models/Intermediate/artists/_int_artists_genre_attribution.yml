@@ -1,0 +1,130 @@
+version: 2
+
+models:
+  - name: int_artists_genre_attribution
+    description: >
+      Final genre / sous-genre attribution per artist, one row per artist
+      with at least one genre-classified tag. Picks at most 2 genres and
+      2 styles per artist from the closed Discogs list using an
+      explainable weighted sum:
+
+      row_weight = method_weight x ln(1 + tag_count), with method_weight
+      exact/alias 1.0, fuzzy 0.9, llm 0.8; genre_score = sum(row_weight)
+      x (1 + 0.5 x (distinct_sources - 1)). Cross-source agreement
+      outranks tag volume; scores are deterministic (ties broken by
+      source count then name).
+
+      The secondary genre is only kept when it has >= 2 supporting
+      sources and >= 50% of the primary score (tunable via vars
+      attribution_min_secondary_*); the raw candidate, ratio and source
+      count are always stored for threshold analysis. Styles are ranked
+      only among rows whose genre is one of the final genres, so a
+      sous-genre is always coherent with its final genre.
+
+      Confidence: primary_share (score share of the artist) and
+      combined_confidence = 0.6 x primary_share + 0.4 x (sources / 3).
+      is_ambiguous flags near-ties (runner-up ratio >= 0.75).
+
+    columns:
+
+      - name: artist_id
+        description: Unique identifier of the artist.
+        tests:
+          - not_null
+          - unique
+
+      - name: spotify_artist_name
+        description: Artist name as provided by Spotify.
+
+      - name: primary_genre
+        description: >
+          The artist's final Discogs genre - highest scoring genre.
+        tests:
+          - not_null
+
+      - name: primary_genre_score
+        description: Weighted score of the primary genre (source-bonus applied).
+
+      - name: primary_share
+        description: >
+          Primary genre score as a share of the artist's total genre
+          score (0 to 1).
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: nb_supporting_sources
+        description: Number of distinct sources tagging the primary genre (1 to 3).
+
+      - name: nb_genre_tags
+        description: Distinct raw tags supporting the primary genre.
+
+      - name: nb_distinct_genres
+        description: Number of distinct genres classified for this artist.
+
+      - name: secondary_genre
+        description: >
+          Second final genre when the inclusion rule passes (>= 2 sources
+          and ratio >= threshold), else null.
+
+      - name: secondary_genre_candidate
+        description: >
+          Runner-up genre by score, stored even when the inclusion rule
+          rejects it - enables threshold sensitivity analysis.
+
+      - name: secondary_score_ratio
+        description: >
+          Runner-up genre score / primary genre score (0 to 1), null when
+          the artist has a single genre.
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: secondary_sources_count
+        description: Number of distinct sources tagging the runner-up genre.
+
+      - name: primary_style
+        description: >
+          Final sous-genre: highest scoring style among rows whose genre
+          is one of the final genres. Null when the artist has no styled
+          tags within the final genres.
+
+      - name: primary_style_score
+        description: Weighted score of the primary style.
+
+      - name: secondary_style
+        description: >
+          Second sous-genre when its score is >= the style ratio threshold
+          of the primary style, else null.
+
+      - name: secondary_style_score_ratio
+        description: Secondary style score / primary style score (0 to 1).
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: combined_confidence
+        description: >
+          0.6 x primary_share + 0.4 x (nb_supporting_sources / 3), 0 to 1.
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: is_ambiguous
+        description: >
+          True when the runner-up genre ratio >= 0.75 - the top-2 genres
+          are nearly tied and the primary pick is a judgment call.
+        tests:
+          - not_null

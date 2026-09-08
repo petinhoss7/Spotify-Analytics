@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: rapidapi
+    schema: raw
+
+    tables:
+      - name: RAW_SPOTIFY_AUDIO_FEATURES
+
+      - name: RAW_SPOTIFY_ARTISTS
+
+      - name: RAW_SPOTIFY_TRACK_ARTISTS
+

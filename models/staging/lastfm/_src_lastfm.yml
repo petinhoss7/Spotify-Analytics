@@ -1,0 +1,6 @@
+sources:
+  - name: lastfm
+    schema: raw
+      
+    tables:
+      - name: RAW_LASTFM_ARTIST_GENRES

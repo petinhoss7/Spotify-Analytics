@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_lastfm_artists_tags
+    description: "Flattened Last.fm artist tags extracted from JSON responses. Each row represents one tag associated with an artist."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - artist_id
+              - tag_name
+    columns:
+
+      - name: artist_id
+        description: "Spotify artist ID used to identify the artist."
+        tests:
+          - not_null
+
+      - name: spotify_artist_name
+        description: "Artist name coming from Spotify artist metadata."
+
+      - name: tag_name
+        description: "Last.fm community tag describing the artist (e.g. rock, electronic, indie)."
+        tests:
+          - not_null
+
+      - name: tag_count
+        description: "Number of times the tag was associated with the artist by Last.fm users."

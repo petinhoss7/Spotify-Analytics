@@ -1,0 +1,342 @@
+version: 2
+
+models:
+
+  - name: int_source_tag_classification
+    description: >
+      Line-by-line source tag classification. Faithful union of the three
+      staging tag views (lastfm, musicbrainz, rapidapi) at the staging grain
+      (1 row = 1 artist x 1 source x 1 raw tag), left-joined to the
+      tag_genre_map seed so every staging line is visible with its outcome.
+      Nothing is deduplicated or filtered: the row count equals the sum of
+      the three staging row counts (guarded by
+      test_source_tag_classification_reconciles).
+
+    columns:
+
+      - name: artist_id
+        description: Unique identifier of the artist.
+        tests:
+          - not_null
+
+      - name: spotify_artist_name
+        description: >
+          Artist name as provided by the source (artist_name for rapidapi,
+          spotify_artist_name for lastfm and musicbrainz).
+
+      - name: source
+        description: Source of the raw tag.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [lastfm, musicbrainz, rapidapi]
+
+      - name: tag_name
+        description: Raw tag exactly as written by the source.
+        tests:
+          - not_null
+
+      - name: tag_count
+        description: >
+          Source tag weight when provided (lastfm, musicbrainz); null for
+          rapidapi, which does not provide counts.
+
+      - name: raw_tag
+        description: Normalized join key (lowercased, trimmed tag_name).
+
+      - name: is_genre_tag
+        description: >
+          From the map: true when the raw tag is a musical genre/style,
+          false when it is metadata noise (nationality, decade, artist
+          name, ...), null when unmapped.
+
+      - name: discogs_genre
+        description: >
+          Discogs genre assigned by the classification system (one of the
+          15 closed-list values) when the tag is a genre, else null.
+
+      - name: discogs_style
+        description: >
+          Discogs style (sous-genre, one of the 372 closed-list values)
+          when a specific style fits, else null.
+
+      - name: match_method
+        description: >
+          Classification layer that resolved the tag: exact, alias, fuzzy
+          (token containment), llm or noise.
+
+      - name: match_score
+        description: Deterministic confidence (100 exact/alias, 90 containment); null for llm.
+
+      - name: classification_status
+        description: >
+          Outcome of the classification for this line.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [genre, non_genre, empty_tag, unmapped]
+
+  - name: int_source_tag_cross_comparison
+    description: >
+      Cross-source genre agreement at artist level. Grain: 1 row = 1 artist
+      genre-classified by at least 2 sources. Each source's independent
+      Discogs genre set is pivoted side by side, and agreement is measured
+      with a simple Jaccard score (shared genres / union genres, 0 to 1).
+
+    columns:
+
+      - name: artist_id
+        description: Unique identifier of the artist.
+        tests:
+          - not_null
+          - unique
+
+      - name: spotify_artist_name
+        description: Artist name as provided by Spotify.
+
+      - name: nb_sources
+        description: Number of sources that genre-classified this artist (>= 2).
+
+      - name: sources
+        description: List of genre-classifying sources for this artist.
+
+      - name: genres_lastfm
+        description: Discogs genre set derived from lastfm tags only.
+
+      - name: genres_musicbrainz
+        description: Discogs genre set derived from musicbrainz tags only.
+
+      - name: genres_rapidapi
+        description: Discogs genre set derived from rapidapi (Spotify) tags only.
+
+      - name: shared_genres
+        description: Genres identified by at least 2 sources.
+
+      - name: union_genres
+        description: All genres identified across sources.
+
+      - name: nb_shared_genres
+        description: Number of genres identified by at least 2 sources.
+
+      - name: nb_union_genres
+        description: Total number of distinct genres across sources.
+
+      - name: agreement_score
+        description: >
+          Simple Jaccard between source genre sets: nb_shared_genres /
+          nb_union_genres, from 0 (no genre in common) to 1 (full agreement).
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: styles_lastfm
+        description: Discogs style set derived from lastfm tags only.
+
+      - name: styles_musicbrainz
+        description: Discogs style set derived from musicbrainz tags only.
+
+      - name: styles_rapidapi
+        description: Discogs style set derived from rapidapi (Spotify) tags only.
+
+      - name: shared_styles
+        description: Styles identified by at least 2 sources (style-name-only matching).
+
+      - name: union_styles
+        description: All styles identified across sources.
+
+      - name: nb_shared_styles
+        description: Number of styles identified by at least 2 sources.
+
+      - name: nb_union_styles
+        description: Total number of distinct styles across sources.
+
+      - name: subgenre_agreement_score
+        description: >
+          Simple Jaccard between source style sets: nb_shared_styles /
+          nb_union_styles, 0 to 1. Style-name-only matching: two sources
+          agree on a style even when they place it under different genres.
+          Null when the artist has styles from fewer than 2 sources.
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+  - name: int_source_tag_comparison_summary
+    description: >
+      Per-source classification summary: coverage (rows, distinct tags and
+      artists), outcome mix (genre / non_genre / empty_tag / unmapped),
+      classification method mix, and the number of artists excluded from
+      the cross-source comparison because only one source genre-classified
+      them.
+
+    columns:
+
+      - name: source
+        description: Source of the raw tags.
+        tests:
+          - not_null
+          - unique
+          - accepted_values:
+              arguments:
+                values: [lastfm, musicbrainz, rapidapi]
+
+      - name: tag_rows
+        description: Total staging lines for this source.
+
+      - name: distinct_tags
+        description: Distinct normalized tags for this source.
+
+      - name: distinct_artists
+        description: Distinct artists carrying at least one tag in this source.
+
+      - name: genre_rows
+        description: Lines classified to a Discogs genre.
+
+      - name: non_genre_rows
+        description: Lines explicitly classified as non-genre.
+
+      - name: empty_tag_rows
+        description: Blank tag lines from the source.
+
+      - name: unmapped_rows
+        description: Lines with no map entry. Must always be 0 (guarded by test).
+
+      - name: genre_rate
+        description: Share of lines classified to a genre (0 to 1).
+
+      - name: style_rows
+        description: Genre lines carrying a specific style (sous-genre).
+
+      - name: style_rate
+        description: Share of genre lines carrying a style (style_rows / genre_rows).
+
+      - name: method_exact
+        description: Lines resolved by exact match.
+
+      - name: method_alias
+        description: Lines resolved by alias rewrite.
+
+      - name: method_fuzzy
+        description: Lines resolved by token-boundary containment.
+
+      - name: method_llm
+        description: Lines resolved by the LLM layer.
+
+      - name: method_noise
+        description: Lines flagged as deterministic noise (numbers, hex, decades).
+
+      - name: excluded_single_source_artists
+        description: >
+          Artists genre-classified by this source only, excluded from
+          int_source_tag_cross_comparison.
+
+      - name: excluded_single_style_source_artists
+        description: >
+          Artists with styles from fewer than 2 sources, excluded from
+          style-level scoring (subgenre_agreement_score null), counted on
+          the sources that provided their styles.
+
+  - name: int_source_genre_pair_comparison
+    description: >
+      Genre-level agreement between source pairs. Grain: 1 row = 1
+      source_pair x genre_a x genre_b. Diagonal rows (genre_a = genre_b)
+      count agreeing artists; off-diagonal rows expose systematic
+      disagreements between the two sources. Pair-level attributes
+      (nb_artists_compared, mean_pair_jaccard) repeat on each row of the
+      same pair.
+
+    columns:
+
+      - name: source_a
+        description: First source of the pair (alphabetically smaller).
+        tests:
+          - not_null
+
+      - name: source_b
+        description: Second source of the pair (alphabetically larger).
+        tests:
+          - not_null
+
+      - name: genre_a
+        description: Discogs genre asserted by source_a.
+
+      - name: genre_b
+        description: Discogs genre asserted by source_b.
+
+      - name: nb_artists
+        description: Artists for which this genre co-occurrence was observed.
+
+      - name: is_agreement
+        description: True when genre_a equals genre_b (diagonal).
+
+      - name: nb_artists_compared
+        description: Total artists compared for this source pair.
+
+      - name: mean_pair_jaccard
+        description: >
+          Mean per-artist Jaccard for this source pair, 0 to 1.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+  - name: int_source_style_pair_comparison
+    description: >
+      Style (sous-genre) agreement between source pairs - sibling of
+      int_source_genre_pair_comparison at the style level. Grain: 1 row =
+      1 source_pair x style_a x style_b. Matching is style-name-only: a
+      co-occurrence is counted even when the sources place the style under
+      different genres. The diagonal (style_a = style_b) counts agreeing
+      artists; off-diagonal cells expose systematic style confusions
+      (e.g. Synth-pop vs New Wave). Pair-level attributes
+      (nb_artists_compared, mean_pair_style_jaccard) repeat on each row of
+      the same pair.
+
+    columns:
+
+      - name: source_a
+        description: First source of the pair (alphabetically smaller).
+        tests:
+          - not_null
+
+      - name: source_b
+        description: Second source of the pair (alphabetically larger).
+        tests:
+          - not_null
+
+      - name: style_a
+        description: Discogs style asserted by source_a.
+
+      - name: style_b
+        description: Discogs style asserted by source_b.
+
+      - name: nb_artists
+        description: Artists for which this style co-occurrence was observed.
+
+      - name: is_agreement
+        description: True when style_a equals style_b (diagonal).
+
+      - name: nb_artists_compared
+        description: Total artists compared for this source pair (style level).
+
+      - name: mean_pair_style_jaccard
+        description: >
+          Mean per-artist style Jaccard for this source pair, 0 to 1.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true

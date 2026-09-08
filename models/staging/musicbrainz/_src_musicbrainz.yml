@@ -1,0 +1,6 @@
+sources:
+  - name: musicbrainz
+    schema: raw
+      
+    tables:
+      - name: RAW_MUSICBRAINZ_ARTISTS

@@ -2,7 +2,11 @@ version: 2
 
 models:
   - name: int_spotify_streams_deduped
-    description:  deduped version of staging model + removed podcast colums
+    description: >
+      Deduplicated music streams, one row per stream_id.
+      When the same stream appears in multiple export files,
+      the most recently loaded record is kept.
+      Podcast and audiobook columns are retained for filtering downstream.
     columns:
       - name: stream_id
         description: Surrogate key from track_uri + timestamp + ms_played
@@ -55,7 +59,7 @@ models:
         tests:
           - accepted_values:
               arguments: 
-                values: ['trackdone', 'clickrow', 'fwdbtn', 'backbtn', 'playbtn', 'appload', 'remote', 'trackerror', 'unknown']
+                values: ['trackdone', 'clickrow', 'fwdbtn', 'backbtn', 'playbtn', 'appload', 'remote', 'trackerror', 'switched-to-audio', 'unknown']
               config:
                 severity: warn
 
@@ -64,7 +68,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['trackdone', 'fwdbtn', 'backbtn', 'endplay', 'remote', 'logout', 'unexpected-exit', 'unexpected-exit-while-paused', 'trackerror', 'clickrow', 'unknown']
+                values: ['trackdone', 'fwdbtn', 'backbtn', 'endplay', 'remote', 'logout', 'unexpected-exit', 'unexpected-exit-while-paused', 'trackerror', 'clickrow', 'switched-to-video', 'unknown']
               config:
                 severity: warn
 
@@ -83,8 +87,8 @@ models:
       - name: incognito_mode
         description: Whether played in private/incognito mode
 
-      - name: ip_addr
-        description: IP address of the listener
+      - name: ip_addr_hash
+        description: MD5 hash of the listener IP address (PII minimized at staging)
 
       - name: source_file_name
         description: Original file name from raw data load
@@ -101,6 +105,3 @@ models:
         description: Timestamp when data was loaded into raw table
         tests:
           - not_null
-      
-      - name: rank
-        description: has to be equal 1 to be unique 

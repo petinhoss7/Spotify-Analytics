@@ -7,7 +7,7 @@ version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'default'
+profile: 'spotify_analytics'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -40,5 +40,40 @@ models:
     # Applies to all files under models/staging/
     staging:
       +materialized: view
+    # Heavy aggregations: materialize as tables instead of recomputing on every query
+    intermediate:
+      +materialized: table
+
 data_tests:
   +store_failures: true
+  +schema: test_failures
+
+# Attribution tunables (int_artists_genre_attribution)
+vars:
+  attribution_min_secondary_score_ratio: 0.5
+  attribution_min_secondary_sources: 2
+  attribution_min_secondary_style_ratio: 0.5
+  attribution_ambiguity_ratio: 0.75
+
+# Seeds: closed-list reference data and the tag classification map
+# produced offline by scripts/classifier/classify_tags.py
+seeds:
+  spotify_analytics:
+    discogs_genre_styles:
+      +column_types:
+        discogs_genre: varchar
+        discogs_style: varchar
+    tag_genre_map:
+      # fast: false -> agate-based batched inserts; DuckDB COPY chokes on
+      # RFC-4180 escaped quotes inside tag values
+      +fast: false
+      +column_types:
+        raw_tag: varchar
+        is_genre_tag: boolean
+        discogs_genre: varchar
+        discogs_style: varchar
+        match_method: varchar
+        match_score: integer
+    tag_aliases:
+      # consumed by the classifier script only, not materialized in the warehouse
+      +enabled: false

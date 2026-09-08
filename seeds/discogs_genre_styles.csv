@@ -1,0 +1,388 @@
+discogs_genre,discogs_style
+Blues,
+Blues,Chicago Blues
+Blues,Country Blues
+Blues,Delta Blues
+Blues,Electric Blues
+Blues,Harmonica Blues
+Blues,Jump Blues
+Blues,Louisiana Blues
+Blues,Modern Electric Blues
+Blues,Piano Blues
+Blues,Rhythm & Blues
+Blues,Texas Blues
+Brass & Military,
+Brass & Military,Brass Band
+Brass & Military,Marches
+Brass & Military,Military
+Children's,
+Children's,Educational
+Children's,Nursery Rhymes
+Children's,Story
+Classical,
+Classical,Baroque
+Classical,Choral
+Classical,Classical
+Classical,Contemporary
+Classical,Impressionist
+Classical,Medieval
+Classical,Modern
+Classical,Neo-Classical
+Classical,Neo-Romantic
+Classical,Opera
+Classical,Post-Modern
+Classical,Renaissance
+Classical,Romantic
+Electronic,
+Electronic,Abstract
+Electronic,Acid
+Electronic,Acid House
+Electronic,Acid Jazz
+Electronic,Ambient
+Electronic,Bassline
+Electronic,Beatdown
+Electronic,Berlin-School
+Electronic,Big Beat
+Electronic,Bleep
+Electronic,Body Music
+Electronic,Boom Bap
+Electronic,Bounce
+Electronic,Breakbeat
+Electronic,Breakcore
+Electronic,Breaks
+Electronic,Broken Beat
+Electronic,Chillwave
+Electronic,Chiptune
+Electronic,Dance-pop
+Electronic,Dark Ambient
+Electronic,Darkwave
+Electronic,Deep House
+Electronic,Deep Techno
+Electronic,Detroit Techno
+Electronic,Disco
+Electronic,Downtempo
+Electronic,Drone
+Electronic,Drum n Bass
+Electronic,Dub
+Electronic,Dub Techno
+Electronic,Dubstep
+Electronic,EBM
+Electronic,Electro
+Electronic,Electro House
+Electronic,Electroclash
+Electronic,Euro House
+Electronic,Eurobeat
+Electronic,Eurodance
+Electronic,Footwork
+Electronic,Freestyle
+Electronic,Future Jazz
+Electronic,Gabber
+Electronic,Garage House
+Electronic,Ghetto House
+Electronic,Goa Trance
+Electronic,Grime
+Electronic,Halftime
+Electronic,Hands Up
+Electronic,Happy Hardcore
+Electronic,Hardcore
+Electronic,Hardstyle
+Electronic,Hi NRG
+Electronic,House
+Electronic,IDM
+Electronic,Indie Dance
+Electronic,Industrial
+Electronic,Italo House
+Electronic,Italo-Disco
+Electronic,Jazzdance
+Electronic,Jungle
+Electronic,Leftfield
+Electronic,Makina
+Electronic,Minimal
+Electronic,Minimal Techno
+Electronic,Musique Concrete
+Electronic,New Age
+Electronic,New Beat
+Electronic,New Wave
+Electronic,Noise
+Electronic,Nu-Disco
+Electronic,Power Electronics
+Electronic,Progressive House
+Electronic,Progressive Trance
+Electronic,Psy-Trance
+Electronic,Rhythmic Noise
+Electronic,Schranz
+Electronic,Sound Collage
+Electronic,Synth-pop
+Electronic,Synthwave
+Electronic,Tech House
+Electronic,Tech Trance
+Electronic,Techno
+Electronic,Trance
+Electronic,Tribal
+Electronic,Tribal House
+Electronic,Trip Hop
+Electronic,UK Garage
+Electronic,Vaporwave
+"Folk, World, & Country",
+"Folk, World, & Country",African
+"Folk, World, & Country",Bluegrass
+"Folk, World, & Country",Cajun
+"Folk, World, & Country",Canzone Napoletana
+"Folk, World, & Country",Catalan Music
+"Folk, World, & Country",Celtic
+"Folk, World, & Country",Country
+"Folk, World, & Country",Fado
+"Folk, World, & Country",Flamenco
+"Folk, World, & Country",Folk
+"Folk, World, & Country",Gospel
+"Folk, World, & Country",Highlife
+"Folk, World, & Country",Hillbilly
+"Folk, World, & Country",Honky Tonk
+"Folk, World, & Country",Laiko
+"Folk, World, & Country",Nordic
+"Folk, World, & Country",Pacific
+"Folk, World, & Country",Polka
+"Folk, World, & Country",Rai
+"Folk, World, & Country",Regional Mexico
+"Folk, World, & Country",Sea Shanties
+"Folk, World, & Country",Sega
+"Folk, World, & Country",Soukous
+"Folk, World, & Country",Traditional
+"Folk, World, & Country",Waiata
+"Folk, World, & Country",World
+"Folk, World, & Country",Zouk
+Funk / Soul,
+Funk / Soul,Afrobeat
+Funk / Soul,Boogie
+Funk / Soul,Contemporary R&B
+Funk / Soul,Deep Funk
+Funk / Soul,Disco
+Funk / Soul,Free Funk
+Funk / Soul,Funk
+Funk / Soul,Gospel
+Funk / Soul,Neo Soul
+Funk / Soul,New Jack Swing
+Funk / Soul,P.Funk
+Funk / Soul,Psychedelic
+Funk / Soul,Rhythm & Blues
+Funk / Soul,Soul
+Funk / Soul,Swingbeat
+Funk / Soul,UK Street Soul
+Hip Hop,
+Hip Hop,Bass Music
+Hip Hop,Boom Bap
+Hip Hop,Britcore
+Hip Hop,Conscious
+Hip Hop,Cut-up/DJ
+Hip Hop,Dirty Rap
+Hip Hop,DJ Battle Tool
+Hip Hop,G-Funk
+Hip Hop,Gangsta
+Hip Hop,Golden Age Hip Hop
+Hip Hop,Hardcore Hip-Hop
+Hip Hop,Horrorcore
+Hip Hop,Instrumental
+Hip Hop,Jazzy Hip-Hop
+Hip Hop,Miami Bass
+Hip Hop,Pop Rap
+Hip Hop,RnB/Swing
+Hip Hop,Screw
+Hip Hop,Thug Rap
+Hip Hop,Trap
+Hip Hop,Trip Hop
+Hip Hop,Turntablism
+Jazz,
+Jazz,Afro-Cuban Jazz
+Jazz,Afrobeat
+Jazz,Avant-garde Jazz
+Jazz,Big Band
+Jazz,Bop
+Jazz,Bossa Nova
+Jazz,Contemporary Jazz
+Jazz,Cool Jazz
+Jazz,Dixieland
+Jazz,Easy Listening
+Jazz,Free Improvisation
+Jazz,Free Jazz
+Jazz,Fusion
+Jazz,Gypsy Jazz
+Jazz,Hard Bop
+Jazz,Jazz-Funk
+Jazz,Jazz-Rock
+Jazz,Latin Jazz
+Jazz,Modal
+Jazz,Post Bop
+Jazz,Ragtime
+Jazz,Smooth Jazz
+Jazz,Soul-Jazz
+Jazz,Space-Age
+Jazz,Swing
+Latin,
+Latin,Afro-Cuban
+Latin,Bachata
+Latin,Batucada
+Latin,Bolero
+Latin,Boogaloo
+Latin,Bossanova
+Latin,Cha-Cha
+Latin,Charanga
+Latin,Cumbia
+Latin,Descarga
+Latin,Forro
+Latin,Guaguanco
+Latin,Guaracha
+Latin,Mambo
+Latin,Mariachi
+Latin,Merengue
+Latin,MPB
+Latin,Norteno
+Latin,Nueva Cancion
+Latin,Pachanga
+Latin,Ranchera
+Latin,Reggaeton
+Latin,Rumba
+Latin,Salsa
+Latin,Samba
+Latin,Son
+Latin,Son Montuno
+Latin,Tango
+Latin,Tejano
+Latin,Vallenato
+Non-Music,
+Non-Music,Audiobook
+Non-Music,Comedy
+Non-Music,Dialogue
+Non-Music,Education
+Non-Music,Field Recording
+Non-Music,Interview
+Non-Music,Monolog
+Non-Music,Poetry
+Non-Music,Public Broadcast
+Non-Music,Radioplay
+Non-Music,Read-along
+Non-Music,Religious
+Non-Music,Spoken Word
+Pop,
+Pop,Ballad
+Pop,Bollywood
+Pop,Bubblegum
+Pop,Chanson
+Pop,City Pop
+Pop,Europop
+Pop,Indie Pop
+Pop,J-pop
+Pop,K-pop
+Pop,Kayokyoku
+Pop,Levenslied
+Pop,Light Music
+Pop,Music Hall
+Pop,Novelty
+Pop,Parody
+Pop,Schlager
+Pop,Vocal
+Reggae,
+Reggae,Calypso
+Reggae,Champeta
+Reggae,Dancehall
+Reggae,Dub
+Reggae,Dub Poetry
+Reggae,Lovers Rock
+Reggae,Ragga
+Reggae,Reggae
+Reggae,Reggae Gospel
+Reggae,Reggae-Pop
+Reggae,Rocksteady
+Reggae,Roots Reggae
+Reggae,Ska
+Reggae,Soca
+Rock,
+Rock,Acid Rock
+Rock,Acoustic
+Rock,Alternative Rock
+Rock,AOR
+Rock,Arena Rock
+Rock,Art Rock
+Rock,Atmospheric Black Metal
+Rock,Avantgarde
+Rock,Beat
+Rock,Black Metal
+Rock,Blues Rock
+Rock,Brit Pop
+Rock,Classic Rock
+Rock,Coldwave
+Rock,Country Rock
+Rock,Crust
+Rock,Death Metal
+Rock,Deathcore
+Rock,Deathrock
+Rock,Depressive Black Metal
+Rock,Doo Wop
+Rock,Doom Metal
+Rock,Dream Pop
+Rock,Emo
+Rock,Ethereal
+Rock,Experimental
+Rock,Feminist Rock
+Rock,Folk Metal
+Rock,Folk Rock
+Rock,Funeral Doom Metal
+Rock,Funk Metal
+Rock,Garage Rock
+Rock,Glam
+Rock,Goregrind
+Rock,Goth Rock
+Rock,Gothic Metal
+Rock,Grindcore
+Rock,Grunge
+Rock,Hard Rock
+Rock,Hardcore
+Rock,Heavy Metal
+Rock,Indie Rock
+Rock,Industrial
+Rock,Krautrock
+Rock,Math Rock
+Rock,Melodic Death Metal
+Rock,Melodic Hardcore
+Rock,Metalcore
+Rock,Mod
+Rock,No Wave
+Rock,Noise
+Rock,Noise Rock
+Rock,Nu Metal
+Rock,Oi
+Rock,Parody
+Rock,Pop Punk
+Rock,Pop Rock
+Rock,Post Metal
+Rock,Post Punk
+Rock,Post Rock
+Rock,Post-Hardcore
+Rock,Power Metal
+Rock,Power Pop
+Rock,Prog Rock
+Rock,Proto-Punk
+Rock,Psychedelic Rock
+Rock,Pub Rock
+Rock,Punk
+Rock,Rock & Roll
+Rock,Rockabilly
+Rock,Shoegaze
+Rock,Ska
+Rock,Sludge Metal
+Rock,Soft Rock
+Rock,Southern Rock
+Rock,Space Rock
+Rock,Speed Metal
+Rock,Stoner Rock
+Rock,Surf
+Rock,Symphonic Rock
+Rock,Technical Death Metal
+Rock,Thrash
+Rock,Twist
+Rock,Viking Metal
+Rock,Ye-Ye
+Stage & Screen,
+Stage & Screen,Musical
+Stage & Screen,Score
+Stage & Screen,Soundtrack
+Stage & Screen,Theme
