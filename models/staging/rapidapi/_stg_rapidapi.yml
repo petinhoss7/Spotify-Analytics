@@ -1,0 +1,197 @@
+version: 2
+
+models:
+
+  - name: stg_audio_features
+    description: Flattened and typed Spotify audio features data from raw VARIANT records (SPOTIFY EXTENDED AUDIO FEATURES API)
+
+    columns:
+
+      - name: track_uri
+        description: Spotify URI of the track
+        tests:
+          - not_null
+          - unique
+
+      - name: acousticness
+        description: Confidence the track is acoustic (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: analysis_url
+        description: URL of the full audio analysis resource for the track
+
+      - name: danceability
+        description: How suitable the track is for dancing (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: duration_ms
+        description: Track length in milliseconds
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: energy
+        description: Perceptual measure of intensity and activity (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: track_id
+        description: The 22-character Spotify ID of the track
+        tests:
+          - not_null
+          - unique
+
+      - name: instrumentalness
+        description: Likelihood the track contains no vocals (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: musical_key
+        description: Estimated overall key (0-11, -1 if none detected)
+        tests:
+          - accepted_values:
+              arguments:
+                values: [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+      - name: liveness
+        description: Probability the track was performed live (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: loudness
+        description: Overall loudness in decibels (typically -60 to 0)
+       
+
+      - name: mode
+        description: Modality of the track (0 = minor, 1 = major)
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      - name: speechiness
+        description: Presence of spoken words (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: tempo
+        description: Estimated tempo in beats per minute
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: time_signature
+        description: Estimated time signature (beats per bar)
+      
+        
+      - name: track_href
+        description: Link to the full Spotify track object
+
+      - name: object_type
+        description: Spotify object type
+       
+
+      - name: spotify_uri
+        description: Spotify URI of the track
+
+      - name: valence
+        description: Musical positiveness conveyed by the track (0.0-1.0)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+      
+      - name: loaded_at
+        description: Timestamp when data was loaded into raw table
+        tests:
+          - not_null
+
+  - name: stg_spotify_artists
+    description: Typed Spotify artists data from the RapidAPI extract
+
+    columns:
+
+      - name: artist_id
+        description: The 22-character Spotify ID of the artist
+        tests:
+          - not_null
+          - unique
+
+      - name: artist_name
+        description: Name of the artist
+        tests:
+          - not_null
+      
+      - name: popularity
+        description: Popularity of the artist (0-100)
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+      
+      - name: followers
+        description: Number of followers of the artist
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: genres
+        description: List of genres associated with the artist
+
+      - name: artist_uri
+        description: Spotify URI of the artist
+
+      - name: loaded_at
+        description: Timestamp when data was loaded into raw table
+        tests:
+          - not_null
+
+  - name: stg_spotify_track_artists
+    description: Typed Spotify track-to-artist associations from the RapidAPI extract
+    columns:
+
+      - name: track_id
+        description: Spotify URI of the track
+        tests:
+          - not_null
+
+      - name: artist_id
+        description: The 22-character Spotify ID of the artist
+        tests:
+          - not_null
+
+      - name: artist_name
+        description: Name of the artist
+        tests:
+          - not_null
+
+      - name: loaded_at
+        description: Timestamp when data was loaded into raw table
+        tests:
+          - not_null

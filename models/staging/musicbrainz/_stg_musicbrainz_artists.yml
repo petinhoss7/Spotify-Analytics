@@ -1,0 +1,79 @@
+version: 2
+
+models:
+  - name: stg_musicbrainz_artists
+    description: "Cleaned and standardized artist metadata extracted from the MusicBrainz API."
+
+    columns:
+      - name: artist_id
+        description: "Spotify artist ID used to link MusicBrainz metadata with Spotify data."
+        tests:
+          - not_null
+          - unique
+
+      - name: spotify_artist_name
+        description: "Artist name from Spotify."
+
+      - name: search_name
+        description: "Normalized artist name used to query the MusicBrainz API."
+
+      - name: found
+        description: "Indicates whether a matching artist was found in MusicBrainz."
+        tests:
+          - not_null
+
+      - name: score
+        description: "MusicBrainz search relevance score (0–100)."
+
+      - name: mbid
+        description: "Unique MusicBrainz Identifier (MBID) for the matched artist."
+
+      - name: musicbrainz_name
+        description: "Official artist name returned by MusicBrainz."
+
+      - name: sort_name
+        description: "Canonical name used for sorting."
+
+      - name: disambiguation
+        description: "Additional text used by MusicBrainz to distinguish artists with similar names."
+
+      - name: artist_type
+        description: "Type of artist (e.g. Person, Group, Orchestra, Choir)."
+
+      - name: artist_type_id
+        description: "MusicBrainz identifier for the artist type."
+
+      - name: gender
+        description: "Gender of the artist when applicable."
+
+      - name: country
+        description: "ISO country code associated with the artist."
+
+      - name: area
+        description: "Primary geographic area associated with the artist."
+
+      - name: begin_date
+        description: "Formation or birth date."
+
+      - name: end_date
+        description: "Dissolution or death date."
+
+      - name: ended
+        description: "Indicates whether the artist is no longer active."
+
+      - name: genres
+        description: "JSON array of genres returned by MusicBrainz."
+
+      - name: tags
+        description: "JSON array of community tags returned by MusicBrainz."
+
+      - name: aliases
+        description: "JSON array of alternative artist names."
+
+      - name: error_message
+        description: "Error returned during extraction, if any."
+
+      - name: extracted_at
+        description: "Timestamp when the artist metadata was extracted."
+        tests:
+          - not_null

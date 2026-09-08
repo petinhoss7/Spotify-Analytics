@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "source": "Discogs Database Guidelines - Genres & Styles",
+    "note": "Liste fermee de reference pour classification automatique. Ne pas ajouter de valeurs hors de cette liste.",
+    "structure": "genre -> liste de styles (sous-genres) autorises",
+    "usage": "Fournir ce JSON en contexte a l'IA et lui demander de classifier UNIQUEMENT parmi ces valeurs."
+  },
+  "genres": {
+    "Blues": [
+      "Chicago Blues", "Country Blues", "Delta Blues", "Electric Blues",
+      "Harmonica Blues", "Jump Blues", "Louisiana Blues", "Modern Electric Blues",
+      "Piano Blues", "Rhythm & Blues", "Texas Blues"
+    ],
+    "Brass & Military": [
+      "Brass Band", "Marches", "Military"
+    ],
+    "Children's": [
+      "Educational", "Nursery Rhymes", "Story"
+    ],
+    "Classical": [
+      "Baroque", "Choral", "Classical", "Contemporary", "Impressionist",
+      "Medieval", "Modern", "Neo-Classical", "Neo-Romantic", "Opera",
+      "Post-Modern", "Renaissance", "Romantic"
+    ],
+    "Electronic": [
+      "Abstract", "Acid", "Acid House", "Acid Jazz", "Ambient", "Bassline",
+      "Beatdown", "Berlin-School", "Big Beat", "Bleep", "Body Music", "Boom Bap",
+      "Bounce", "Breakbeat", "Breakcore", "Breaks", "Broken Beat", "Chillwave",
+      "Chiptune", "Dance-pop", "Dark Ambient", "Darkwave", "Deep House",
+      "Deep Techno", "Detroit Techno", "Disco", "Downtempo", "Drone",
+      "Drum n Bass", "Dub", "Dub Techno", "Dubstep", "EBM", "Electro",
+      "Electro House", "Electroclash", "Euro House", "Eurobeat", "Eurodance",
+      "Footwork", "Freestyle", "Future Jazz", "Gabber", "Garage House",
+      "Ghetto House", "Goa Trance", "Grime", "Halftime", "Hands Up",
+      "Happy Hardcore", "Hardcore", "Hardstyle", "Hi NRG", "House", "IDM",
+      "Indie Dance", "Industrial", "Italo House", "Italo-Disco", "Jazzdance",
+      "Jungle", "Leftfield", "Makina", "Minimal", "Minimal Techno",
+      "Musique Concrete", "New Age", "New Beat", "New Wave", "Noise",
+      "Nu-Disco", "Power Electronics", "Progressive House", "Progressive Trance",
+      "Psy-Trance", "Rhythmic Noise", "Schranz", "Sound Collage", "Synth-pop",
+      "Synthwave", "Tech House", "Tech Trance", "Techno", "Trance", "Tribal",
+      "Tribal House", "Trip Hop", "UK Garage", "Vaporwave"
+    ],
+    "Folk, World, & Country": [
+      "African", "Bluegrass", "Cajun", "Canzone Napoletana", "Catalan Music",
+      "Celtic", "Country", "Fado", "Flamenco", "Folk", "Gospel", "Highlife",
+      "Hillbilly", "Honky Tonk", "Laiko", "Nordic", "Pacific", "Polka",
+      "Rai", "Regional Mexico", "Sea Shanties", "Sega", "Soukous",
+      "Traditional", "Waiata", "World", "Zouk"
+    ],
+    "Funk / Soul": [
+      "Afrobeat", "Boogie", "Contemporary R&B", "Deep Funk", "Disco",
+      "Free Funk", "Funk", "Gospel", "Neo Soul", "New Jack Swing", "P.Funk",
+      "Psychedelic", "Rhythm & Blues", "Soul", "Swingbeat", "UK Street Soul"
+    ],
+    "Hip Hop": [
+      "Bass Music", "Boom Bap", "Britcore", "Conscious", "Cut-up/DJ",
+      "DJ Battle Tool", "Dirty Rap", "G-Funk", "Gangsta", "Golden Age Hip Hop",
+      "Hardcore Hip-Hop", "Horrorcore", "Instrumental", "Jazzy Hip-Hop",
+      "Miami Bass", "Pop Rap", "RnB/Swing", "Screw", "Thug Rap", "Trap",
+      "Trip Hop", "Turntablism"
+    ],
+    "Jazz": [
+      "Afro-Cuban Jazz", "Afrobeat", "Avant-garde Jazz", "Big Band", "Bop",
+      "Bossa Nova", "Contemporary Jazz", "Cool Jazz", "Dixieland",
+      "Easy Listening", "Free Improvisation", "Free Jazz", "Fusion",
+      "Gypsy Jazz", "Hard Bop", "Jazz-Funk", "Jazz-Rock", "Latin Jazz",
+      "Modal", "Post Bop", "Ragtime", "Smooth Jazz", "Soul-Jazz",
+      "Space-Age", "Swing"
+    ],
+    "Latin": [
+      "Afro-Cuban", "Bachata", "Batucada", "Bolero", "Boogaloo", "Bossanova",
+      "Cha-Cha", "Charanga", "Cumbia", "Descarga", "Forro", "Guaguanco",
+      "Guaracha", "MPB", "Mambo", "Mariachi", "Merengue", "Norteno",
+      "Nueva Cancion", "Pachanga", "Ranchera", "Reggaeton", "Rumba", "Salsa",
+      "Samba", "Son", "Son Montuno", "Tango", "Tejano", "Vallenato"
+    ],
+    "Non-Music": [
+      "Audiobook", "Comedy", "Dialogue", "Education", "Field Recording",
+      "Interview", "Monolog", "Poetry", "Public Broadcast", "Radioplay",
+      "Read-along", "Religious", "Spoken Word"
+    ],
+    "Pop": [
+      "Ballad", "Bollywood", "Bubblegum", "Chanson", "City Pop", "Europop",
+      "Indie Pop", "J-pop", "K-pop", "Kayokyoku", "Levenslied", "Light Music",
+      "Music Hall", "Novelty", "Parody", "Schlager", "Vocal"
+    ],
+    "Reggae": [
+      "Calypso", "Champeta", "Dancehall", "Dub", "Dub Poetry", "Lovers Rock",
+      "Ragga", "Reggae", "Reggae Gospel", "Reggae-Pop", "Rocksteady",
+      "Roots Reggae", "Ska", "Soca"
+    ],
+    "Rock": [
+      "AOR", "Acid Rock", "Acoustic", "Alternative Rock", "Arena Rock",
+      "Art Rock", "Atmospheric Black Metal", "Avantgarde", "Beat",
+      "Black Metal", "Blues Rock", "Brit Pop", "Classic Rock", "Coldwave",
+      "Country Rock", "Crust", "Death Metal", "Deathcore", "Deathrock",
+      "Depressive Black Metal", "Doo Wop", "Doom Metal", "Dream Pop", "Emo",
+      "Ethereal", "Experimental", "Feminist Rock", "Folk Metal", "Folk Rock",
+      "Funeral Doom Metal", "Funk Metal", "Garage Rock", "Glam", "Goregrind",
+      "Goth Rock", "Gothic Metal", "Grindcore", "Grunge", "Hard Rock",
+      "Hardcore", "Heavy Metal", "Indie Rock", "Industrial", "Krautrock",
+      "Math Rock", "Melodic Death Metal", "Melodic Hardcore", "Metalcore",
+      "Mod", "No Wave", "Noise", "Noise Rock", "Nu Metal", "Oi", "Parody",
+      "Pop Punk", "Pop Rock", "Post Punk", "Post Rock", "Post-Hardcore",
+      "Post Metal", "Power Metal", "Power Pop", "Prog Rock", "Proto-Punk",
+      "Psychedelic Rock", "Pub Rock", "Punk", "Rock & Roll", "Rockabilly",
+      "Shoegaze", "Ska", "Sludge Metal", "Soft Rock", "Southern Rock",
+      "Space Rock", "Speed Metal", "Stoner Rock", "Surf", "Symphonic Rock",
+      "Technical Death Metal", "Thrash", "Twist", "Viking Metal", "Ye-Ye"
+    ],
+    "Stage & Screen": [
+      "Musical", "Score", "Soundtrack", "Theme"
+    ]
+  }
+}

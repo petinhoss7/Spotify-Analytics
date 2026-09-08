@@ -1,0 +1,206 @@
+version: 2
+
+models:
+  - name: int_artists_tags
+    description: >
+      All artist tags from RapidAPI (Spotify genres), Last.fm, and MusicBrainz,
+      classified against the closed Discogs genre/style taxonomy
+      (seeds/discogs_genres_styles.json, 15 genres / 372 styles).
+
+      Classification is built offline by scripts/classifier/classify_tags.py
+      (exact, alias, containment and LLM layers) and materialized as the
+      tag_genre_map seed. This model applies it: 1 row = 1 artist x 1 tag
+      mapped to a Discogs genre. Non-genre tags (nationalities, decades,
+      artist names, "seen live", ...) are excluded here.
+
+    columns:
+
+      - name: artist_id
+        description: >
+          Unique identifier of the artist used to associate tags with
+          the corresponding artist.
+
+        tests:
+          - not_null
+
+      - name: source
+        description: >
+          Source from which the original tag was retrieved.
+          Possible values are rapidapi, lastfm, and musicbrainz.
+
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - rapidapi
+                  - lastfm
+                  - musicbrainz
+
+      - name: original_tag
+        description: >
+          Original raw tag as provided by the source, before classification.
+
+        tests:
+          - not_null
+
+      - name: discogs_genre
+        description: >
+          Discogs genre assigned to the raw tag by the classification system.
+          One of the 15 closed-list genres; also acts as the genre family.
+
+        tests:
+          - not_null
+
+      - name: discogs_style
+        description: >
+          Discogs style (sous-genre) assigned to the raw tag. One of the
+          372 closed-list styles, or null when no specific style fits.
+
+  - name: int_artists
+    description: >
+      Consolidated artist-level model combining Spotify, Last.fm, and MusicBrainz
+      data. Each row represents one artist. The model preserves source-specific
+      artist information and embeds the final Discogs attribution from
+      int_artists_genre_attribution: at most 2 genres and 2 styles per artist
+      with confidence metadata (primary_share, combined_confidence,
+      is_ambiguous, nb_supporting_sources).
+
+      Artists without any genre-classified tag keep their row with null
+      final columns and one_genre_found = false.
+
+    columns:
+
+      - name: artist_id
+        description: >
+          Unique identifier of the artist, used to join artist information
+          across Spotify, Last.fm, and MusicBrainz.
+
+        tests:
+          - not_null
+          - unique
+
+      - name: spotify_artist_name
+        description: >
+          Artist name as provided by Spotify.
+
+      - name: followers
+        description: >
+          Number of Spotify followers for the artist.
+
+      - name: popularity
+        description: >
+          Spotify artist popularity score.
+
+      - name: spotify_genres
+        description: >
+          Original genres associated with the artist by Spotify before
+          classification.
+
+      - name: lastfm_found
+        description: >
+          Indicates whether the artist was successfully found in Last.fm.
+
+      - name: lastfm_artist_name
+        description: >
+          Artist name returned by Last.fm.
+
+      - name: lastfm_genres
+        description: >
+          Original tags associated with the artist by Last.fm before
+          classification.
+
+      - name: musicbrainz_found
+        description: >
+          Indicates whether the artist was successfully found in MusicBrainz.
+
+      - name: musicbrainz_artist_name
+        description: >
+          Artist name returned by MusicBrainz.
+
+      - name: musicbrainz_genres
+        description: >
+          Original tags associated with the artist by MusicBrainz before
+          classification.
+
+      - name: gender
+        description: >
+          Gender information associated with the artist in MusicBrainz,
+          when available.
+
+      - name: country
+        description: >
+          Country associated with the artist in MusicBrainz.
+
+      - name: begin_date
+        description: >
+          Artist or group start date as provided by MusicBrainz.
+
+      - name: end_date
+        description: >
+          Artist or group end date as provided by MusicBrainz.
+
+      - name: primary_genre
+        description: >
+          Final Discogs genre of the artist - the highest scoring genre
+          from int_artists_genre_attribution (weighted sum of tag rows,
+          cross-source agreement bonus). Null when the artist has no
+          genre-classified tag.
+
+      - name: primary_style
+        description: >
+          Final sous-genre: highest scoring style among rows whose genre
+          is one of the artist's final genres. Null when no styled tag
+          exists within the final genres.
+
+      - name: secondary_genre
+        description: >
+          Second final genre, present only when the runner-up has at
+          least 2 supporting sources and at least 50% of the primary
+          score (tunable via attribution_min_secondary_* vars), else null.
+
+      - name: secondary_style
+        description: >
+          Second sous-genre, present when its score reaches the style
+          ratio threshold of the primary style, else null.
+
+      - name: primary_share
+        description: >
+          Primary genre score as a share of the artist's total genre
+          score (0 to 1).
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: combined_confidence
+        description: >
+          0.6 x primary_share + 0.4 x (nb_supporting_sources / 3), 0 to 1.
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: is_ambiguous
+        description: >
+          True when the runner-up genre scored at least 75% of the
+          primary: the top-2 genres are nearly tied and the primary pick
+          is a judgment call. Treat primary/secondary as an unordered
+          pair for these artists. Null for artists without any
+          genre-classified tag.
+
+      - name: nb_supporting_sources
+        description: >
+          Number of distinct sources (1 to 3) tagging the primary genre.
+
+      - name: one_genre_found
+        description: >
+          True exactly when a primary genre exists, i.e. the artist has
+          at least one genre-classified tag.
+
+        tests:
+          - not_null

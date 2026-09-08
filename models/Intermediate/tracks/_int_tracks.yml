@@ -1,0 +1,108 @@
+version: 2
+
+models:
+  - name: int_tracks_base
+    description: >
+      One row per Spotify track extracted from the streaming history.
+      Metadata values are taken from the most recent stream of the track.
+
+    columns:
+      - name: track_id
+        description: The 22-character Spotify track ID.
+        tests:
+          - not_null
+          - unique
+
+      - name: track_name
+        description: Name of the track.
+        tests:
+          - not_null
+
+      - name: album_name
+        description: Name of the album.
+
+      - name: artist_name
+        description: Name of the artist.
+
+      - name: nb_streams
+        description: Number of times the track was streamed.
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: first_streamed_at
+        description: Timestamp of the first time the track was streamed.
+
+      - name: last_streamed_at
+        description: Timestamp of the last time the track was streamed.
+
+  - name: int_tracks
+    description: >
+      Enriched Spotify track dimension combining track metadata
+      with Spotify audio features. One row per Spotify track.
+
+    columns:
+      - name: track_id
+        description: Unique Spotify track identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: track_name
+        description: Name of the track.
+
+      - name: album_name
+        description: Name of the album.
+
+      - name: artist_name
+        description: Name of the album artist.
+
+      - name: duration_ms
+        description: Track duration in milliseconds.
+
+      - name: nb_streams
+        description: Number of streams for the track.
+      
+      - name: first_streamed_at
+        description: Timestamp of the first stream for the track.
+
+      - name: last_streamed_at
+        description: Timestamp of the last stream for the track.
+
+      - name: danceability
+        description: Danceability score (0.0–1.0).
+
+      - name: energy
+        description: Energy score (0.0–1.0).
+
+      - name: musical_key
+        description: Estimated key of the track.
+
+      - name: loudness
+        description: Average loudness in decibels (dB).
+
+      - name: mode
+        description: Major (1) or minor (0) modality.
+
+      - name: speechiness
+        description: Speechiness score (0.0–1.0).
+
+      - name: acousticness
+        description: Acousticness score (0.0–1.0).
+
+      - name: instrumentalness
+        description: Instrumentalness score (0.0–1.0).
+
+      - name: liveness
+        description: Liveness score (0.0–1.0).
+
+      - name: valence
+        description: Musical positivity score (0.0–1.0).
+
+      - name: tempo
+        description: Estimated tempo in BPM.
+
+      - name: time_signature
+        description: Estimated time signature.
+

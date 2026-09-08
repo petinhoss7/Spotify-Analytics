@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_lastfm_artists
+    description: >
+      Staging model for Last.fm artist genre enrichment.
+      Contains the raw tags returned by the Last.fm API for Spotify artists.
+
+    columns:
+      - name: artist_id
+        description: Unique Spotify artist identifier.
+        tests:
+          - not_null
+          - unique
+
+      - name: spotify_artist_name
+        description: Artist name from Spotify.
+
+      - name: lastfm_artist_name
+        description: Artist name matched by the Last.fm API.
+
+      - name: lastfm_tags
+        description: >
+          Array of tags returned by Last.fm for the matched artist.
+
+      - name: found
+        description: >
+          Indicates whether a matching artist was successfully found on Last.fm.
+        tests:
+          - not_null
+
+      - name: extracted_at
+        description: Timestamp when the Last.fm enrichment was performed.
+        tests:
+          - not_null

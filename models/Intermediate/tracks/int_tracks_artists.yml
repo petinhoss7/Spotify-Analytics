@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: int_tracks_artists
+    description: >
+      Intermediate model representing the relationships between tracks and
+      artists. Each row represents one unique artist-track relationship.
+      A track can therefore appear multiple times when it is associated with
+      multiple artists.
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - track_id
+              - artist_id
+
+    columns:
+
+      - name: track_id
+        description: >
+          Unique identifier of the track.
+
+        tests:
+          - not_null
+
+      - name: track_name
+        description: >
+          Track name as played in the streaming history (latest name per
+          track, from int_tracks_base). Null for tracks never streamed
+          (present in the artist metadata only).
+
+      - name: artist_id
+        description: >
+          Unique identifier of the artist associated with the track.
+
+        tests:
+          - not_null
+
+      - name: artist_name
+        description: >
+          Spotify artist name associated with the track.
+
+      - name: primary_genre
+        description: >
+          Final Discogs genre of the track's artist, from the
+          int_artists_genre_attribution embedded in int_artists.
+          Null when the artist has no genre-classified tag.
+
+      - name: secondary_genre
+        description: >
+          Second final genre of the artist when the inclusion rule
+          (>= 2 sources, >= 50% of primary score) passes, else null.
+
+      - name: primary_style
+        description: >
+          Final Discogs style (sous-genre) of the artist, coherent with
+          the artist's final genre(s). Null when no styled tag exists.
+
+      - name: secondary_style
+        description: >
+          Second sous-genre of the artist when its score reaches the
+          style ratio threshold, else null.
+
+      - name: artist_count
+        description: >
+          Number of distinct artists associated with the track.
+
+        tests:
+          - not_null
+
+      - name: is_collaboration
+        description: >
+          Indicates whether the track is associated with more than one artist.
+
+        tests:
+          - not_null
