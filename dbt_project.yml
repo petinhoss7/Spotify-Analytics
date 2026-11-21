@@ -43,6 +43,9 @@ models:
     # Heavy aggregations: materialize as tables instead of recomputing on every query
     intermediate:
       +materialized: table
+    # Serving layer: analysis-ready facts
+    marts:
+      +materialized: table
 
 data_tests:
   +store_failures: true

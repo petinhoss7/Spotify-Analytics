@@ -36,8 +36,7 @@ select
     af.liveness,
     af.valence,
     af.tempo,
-    af.time_signature,
-
+    af.time_signature
 
 from tracks t
 

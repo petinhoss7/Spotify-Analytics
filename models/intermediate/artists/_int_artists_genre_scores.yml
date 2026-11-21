@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: int_artists_genre_scores
+    description: >
+      Genre-level evidence scores per artist. One row per artist x
+      Discogs genre - every scored genre, not only the sanctioned
+      primary/secondary pair. genre_score = sum(row_weight) x
+      (1 + 0.5 x (distinct_sources - 1)); genre_share = genre_score /
+      artist total (shares sum to 1 per artist). Full float precision is
+      kept on purpose: the attribution model reuses these values, and
+      rounding here would drift its outputs.
+
+    columns:
+
+      - name: artist_id
+        description: Unique identifier of the artist.
+        data_tests:
+          - not_null
+
+      - name: discogs_genre
+        description: Discogs genre being scored.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('discogs_genre_styles')
+                field: discogs_genre
+
+      - name: raw_weight
+        description: Sum of row weights of the artist's tags for this genre (before source bonus).
+
+      - name: nb_sources
+        description: Number of distinct tagging sources backing this genre.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 3
+                inclusive: true
+
+      - name: nb_tags
+        description: Number of distinct raw tags backing this genre.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: genre_score
+        description: >
+          Weighted genre score with the cross-source bonus applied - the
+          same value the attribution model ranks on.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: total_score
+        description: Sum of genre_score over all the artist's scored genres.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: genre_share
+        description: >
+          genre_score / total_score - evidence-proportional share of the
+          artist's listening time attributed to this genre by
+          fct_genre_listening (0 to 1).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - artist_id
+              - discogs_genre

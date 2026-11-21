@@ -37,6 +37,16 @@
 {% set min_secondary_style_ratio = var('attribution_min_secondary_style_ratio', 0.5) %}
 {% set ambiguity_ratio = var('attribution_ambiguity_ratio', 0.75) %}
 
+/*
+
+    Row-level weights and per-genre scores are defined once in
+    int_artists_tag_scores / int_artists_genre_scores and reused here -
+    same values as the former in-line CTEs (guarded by
+    test_attribution_scores_match_genre_scores), so the listening marts
+    and this model always score identically.
+
+*/
+
 with tag_rows as (
 
     select
@@ -46,14 +56,9 @@ with tag_rows as (
         discogs_genre,
         discogs_style,
         tag_count,
-        case
-            when match_method in ('exact', 'alias') then 1.0
-            when match_method = 'fuzzy' then 0.9
-            else 0.8
-        end as method_weight
+        method_weight
 
-    from {{ ref('int_source_tag_classification') }}
-    where classification_status = 'genre'
+    from {{ ref('int_artists_tag_scores') }}
 
 ),
 
@@ -62,16 +67,11 @@ genre_scores as (
     select
         artist_id,
         discogs_genre,
-        sum(method_weight * ln(1 + coalesce(tag_count, 1))) as raw_weight,
-        count(distinct source) as nb_sources,
-        count(distinct raw_tag) as nb_tags,
-        sum(method_weight * ln(1 + coalesce(tag_count, 1)))
-            * (1 + 0.5 * (count(distinct source) - 1)) as genre_score
+        genre_score,
+        nb_sources,
+        nb_tags
 
-    from tag_rows
-    group by
-        artist_id,
-        discogs_genre
+    from {{ ref('int_artists_genre_scores') }}
 
 ),
 
