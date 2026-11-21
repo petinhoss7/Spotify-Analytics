@@ -1,0 +1,140 @@
+version: 2
+
+models:
+  - name: fct_streams
+    description: >
+      Event fact: one row per music stream (podcasts / audiobooks
+      excluded upstream). The analysis-ready base for all listening
+      analytics: row count and listening minutes reconcile with
+      int_spotify_streams_enriched (singular test). Lead-artist
+      convenience columns are denormalized for drill-down; the
+      evidence-proportional genre attribution lives in
+      fct_genre_listening.
+
+    columns:
+
+      - name: stream_id
+        description: Surrogate key of the stream (staging-level).
+        data_tests:
+          - not_null
+          - unique
+
+      - name: stream_date
+        description: Calendar date of the stream (UTC).
+        data_tests:
+          - not_null
+
+      - name: streamed_at
+        description: Timestamp of the stream (UTC).
+        data_tests:
+          - not_null
+
+      - name: listening_hour
+        description: Hour of the stream (0-23, UTC).
+
+      - name: listening_day_of_week
+        description: Day name of the stream (UTC).
+
+      - name: track_id
+        description: The 22-character Spotify track id, derived from the track uri.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_tracks')
+                field: track_id
+
+      - name: track_name
+        description: Name of the track as recorded in the stream.
+
+      - name: album_name
+        description: Name of the album.
+
+      - name: artist_name
+        description: Artist name as recorded in the stream.
+
+      - name: lead_artist_id
+        description: >
+          Artist id of the lead artist (bridge artist matching the
+          stream artist_name, deterministic fallback on lowest id), null
+          when the track is absent from the track-artist bridge.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('int_artists')
+                field: artist_id
+
+      - name: lead_artist_name
+        description: Artist name of the lead artist (from the bridge).
+
+      - name: is_lead_name_match
+        description: >
+          True when the lead artist was picked by matching the stream
+          artist_name; false when a fallback was used or the track is
+          unmapped.
+
+      - name: artist_count
+        description: >
+          Number of artists on the track (from the bridge), null when
+          the track is unmapped.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: is_collaboration
+        description: True when the track has more than one artist, null when unmapped.
+
+      - name: lead_primary_genre
+        description: >
+          Sanctioned primary Discogs genre of the lead artist
+          (int_artists), null when the artist has no genre attribution.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('discogs_genre_styles')
+                field: discogs_genre
+
+      - name: ms_played
+        description: Milliseconds played.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: minutes_played
+        description: Minutes played (ms_played / 60000).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: is_meaningful_listen
+        description: True when ms_played >= 30 000 (>= 30 s).
+        data_tests:
+          - not_null
+
+      - name: platform
+        description: Device/OS platform used for playback.
+
+      - name: conn_country
+        description: Two-letter country code of connection.
+        data_tests:
+          - not_null
+
+      - name: reason_start
+        description: Why playback started.
+
+      - name: reason_end
+        description: Why playback ended.
+
+      - name: shuffle
+        description: Whether shuffle mode was on.
+
+      - name: skipped
+        description: Whether the track was skipped.
+
+      - name: offline
+        description: Whether played in offline mode.

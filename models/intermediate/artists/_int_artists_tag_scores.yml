@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: int_artists_tag_scores
+    description: >
+      Row-level scored genre tags. One row per artist x source x raw tag
+      classified to a Discogs genre - the single definition of the
+      tag-level evidence weight (row_weight = method_weight x
+      ln(1 + tag_count)) consumed by the attribution model and the
+      listening marts. Non-genre tags are excluded upstream
+      (classification_status = 'genre' in int_source_tag_classification).
+
+    columns:
+
+      - name: artist_id
+        description: Unique identifier of the artist.
+        data_tests:
+          - not_null
+
+      - name: spotify_artist_name
+        description: Artist name as provided by the tagging source.
+
+      - name: source
+        description: Tagging source (lastfm, musicbrainz, rapidapi).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['lastfm', 'musicbrainz', 'rapidapi']
+
+      - name: raw_tag
+        description: Raw tag as written by the source (lowercased, trimmed).
+        data_tests:
+          - not_null
+
+      - name: discogs_genre
+        description: Discogs genre the tag was mapped to.
+        data_tests:
+          - not_null
+
+      - name: discogs_style
+        description: >
+          Discogs style (sous-genre) the tag was mapped to, null when the
+          tag maps to a genre without a style.
+
+      - name: tag_count
+        description: >
+          Source popularity weight of the tag (Last.fm listener count or
+          MusicBrainz vote count), null for sources without counts
+          (rapidapi).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: method_weight
+        description: >
+          Classification-method weight: exact/alias 1.0, fuzzy 0.9,
+          llm 0.8.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: row_weight
+        description: >
+          Evidence weight of the row: method_weight x
+          ln(1 + tag_count), null tag_count treated as 1.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0

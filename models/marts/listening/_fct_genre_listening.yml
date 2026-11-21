@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: fct_genre_listening
+    description: >
+      Listening time attributed to Discogs genres per calendar month -
+      the flagship "what do I actually listen to, and when" mart. Grain:
+      1 row = listening month x genre (15 closed genres + 2
+      reconciliation buckets). Attribution is evidence-proportional over
+      ALL scored genres (int_artists_genre_scores.genre_share): streams
+      are split fractionally across a track's artists, then each
+      artist's minutes across all their scored genres. Per month,
+      total_minutes reconcile with fct_streams (singular test) and the
+      genre shares sum to 1.
+
+    columns:
+
+      - name: listening_month
+        description: First day of the listening month.
+        data_tests:
+          - not_null
+
+      - name: discogs_genre
+        description: >
+          Discogs genre, or one of the reconciliation buckets
+          ('unclassified': artist without genre evidence;
+          'no_artist_data': track absent from the track-artist bridge).
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                column_name: discogs_genre
+                expression: >
+                  in (
+                    select distinct discogs_genre
+                    from {{ ref('discogs_genre_styles') }}
+                  ) or discogs_genre in ('unclassified', 'no_artist_data')
+
+      - name: total_minutes
+        description: >
+          Listening minutes attributed to the genre this month
+          (evidence-proportional split of fractional artist minutes).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: fractional_stream_count
+        description: >
+          Stream count with the same split rules as the minutes (sum of
+          1/artist_count per stream, distributed by genre_share). Plain
+          stream count in the 'no_artist_data' bucket.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: nb_artists
+        description: >
+          Distinct artists contributing to the genre this month, null in
+          the 'no_artist_data' bucket.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: share_of_month_minutes
+        description: >
+          total_minutes / total minutes of the month (all genres +
+          buckets), 0 to 1; shares sum to 1 within rounding.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - listening_month
+              - discogs_genre

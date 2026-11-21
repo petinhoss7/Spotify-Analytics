@@ -1,0 +1,8 @@
+# Runtime dependencies (dbt + ingestion scripts + offline tag classifier)
+dbt-duckdb>=1.9,<2
+duckdb>=1.0
+
+# scripts/ ingestion and classifier
+aiohttp>=3.9
+python-dotenv>=1.0
+requests>=2.31

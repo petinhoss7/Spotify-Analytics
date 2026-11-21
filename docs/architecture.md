@@ -62,6 +62,13 @@ flowchart LR
         I11["int_source_genre_pair_comparison<br>genre confusion matrix per source pair"]
         I12["int_source_style_pair_comparison<br>style confusion matrix per source pair"]
         I13["int_artists_genre_attribution<br>final 1-2 genres + 1-2 styles + confidence"]
+        I14["int_artists_tag_scores<br>row-level evidence weights"]
+        I15["int_artists_genre_scores<br>score + share per artist × genre"]
+    end
+
+    subgraph MARTS["Marts — serving layer, tables"]
+        F1["fct_streams<br>1 row = 1 music stream + lead artist"]
+        F2["fct_genre_listening<br>minutes per month × genre<br>(evidence-proportional)"]
     end
 
     S1 --> I1 --> I2
@@ -81,7 +88,10 @@ flowchart LR
     I8 --> I10
     I8 --> I11
     I8 --> I12
-    I8 --> I13
+    I8 --> I14
+    I14 --> I15
+    I14 --> I13
+    I15 --> I13
     I13 --> I6
     DGS -.-> I13
     S3 --> I6
@@ -89,6 +99,12 @@ flowchart LR
     S7 -.-> I6
     S5 --> I7
     I6 --> I7
+    I2 --> F1
+    I7 --> F1
+    I6 --> F1
+    F1 --> F2
+    I7 --> F2
+    I15 --> F2
 ```
 
 Solid arrows = model dependencies, dashed = secondary metadata joins.
@@ -155,6 +171,8 @@ never match deterministically; they are always decided by the LLM layer.
 | `int_artists_genre_attribution` | Final attribution: 1 row per artist — primary + secondary genre (rule-gated) and styles, weighted-score based, with `primary_share`, `combined_confidence`, `is_ambiguous` |
 | `int_artists` | Consolidated artist profile: Spotify + Last.fm + MusicBrainz data + the final Discogs attribution embedded from `int_artists_genre_attribution` (primary/secondary genre & style, confidence, ambiguity flag) |
 | `int_tracks_artists` | Track × artist bridge with artist count and `is_collaboration` flag |
+| `int_artists_tag_scores` | Row-level evidence weights: 1 row = artist × source × genre-classified tag, `row_weight = method_weight × ln(1 + tag_count)` — the single definition consumed by attribution and marts |
+| `int_artists_genre_scores` | Genre evidence scores: 1 row = artist × genre (ALL scored genres), `genre_score` with cross-source bonus + `genre_share` (0-1, shares sum to 1 per artist) |
 
 #### Source tag comparison & final attribution
 
@@ -179,3 +197,24 @@ views and zero `unmapped` lines). On top of it:
   final genre. `combined_confidence = 0.6 × primary_share +
   0.4 × (sources / 3)`; `is_ambiguous` flags near-ties (runner-up ratio
   ≥ 0.75).
+
+#### Score models (shared by attribution and marts)
+
+`int_artists_tag_scores` / `int_artists_genre_scores` define the
+scoring math once (row weights, genre scores, `genre_share`). The
+attribution model and the listening marts both consume them, so
+sanctioned attribution and evidence-proportional listening attribution
+can never drift apart (guards:
+`test_attribution_scores_match_genre_scores`,
+`test_genre_scores_shares_sum`).
+
+### Marts (serving layer)
+
+| Model | Role |
+|---|---|
+| `fct_streams` | Event fact: 1 row = 1 music stream, reconciled to `int_spotify_streams_enriched` (rows + minutes); denormalized lead artist (name-matched, deterministic fallback), `artist_count`, `is_collaboration`, `lead_primary_genre` |
+| `fct_genre_listening` | Listening minutes per month × genre. Evidence-proportional attribution: stream minutes split across track artists (`minutes / artist_count`), then across ALL the artist's scored genres by `genre_share`. Two explicit buckets (`unclassified` = artist without genre evidence, `no_artist_data` = track absent from the bridge) keep every month's total equal to `fct_streams`; per-artist genre ranking follows the tag evidence (no gate-induced rank flips) |
+
+Per-artist distributions on real data: Childish Gambino → Hip Hop
+73.0 / Funk / Soul 19.9 / Rock 7.1; Lana Del Rey → Pop 49.0 / Rock
+36.9 / Electronic 9.5 / FW&C 4.6.
