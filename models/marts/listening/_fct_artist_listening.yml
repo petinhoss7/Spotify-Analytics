@@ -1,0 +1,107 @@
+version: 2
+
+models:
+  - name: fct_artist_listening
+    description: >
+      Listening time per artist per calendar month - the "who do I actually
+      listen to" mart. Grain: 1 row = listening month x artist.
+
+      A stream's minutes are divided by the number of artists on the track,
+      so a collaboration credits each of its artists a share. Every artist of
+      the bridge is present, including those without a genre attribution
+      (null genre columns). The genre columns are the artist's combination
+      (primary + secondary pair), denormalized for filtering, with a
+      hand-made override reflected as is.
+
+      Per month, sum(total_minutes) equals the month's minutes minus the
+      streams whose track is absent from the bridge: those have no artist to
+      credit and live in the 'no_artist_data' bucket of fct_genre_listening.
+
+    columns:
+
+      - name: listening_month
+        description: First day of the listening month.
+        data_tests:
+          - not_null
+
+      - name: artist_id
+        description: Artist identifier.
+        data_tests:
+          - not_null
+
+      - name: artist_name
+        description: Artist name as provided by Spotify.
+
+      - name: primary_genre
+        description: >
+          Primary genre of the artist's combination, null when the artist has
+          no genre attribution.
+
+      - name: primary_style
+        description: Best style of the primary genre for that artist.
+
+      - name: secondary_genre
+        description: >
+          Second genre of the combination, filled when the runner-up passes
+          the evidence rule; never equal to primary_genre.
+
+      - name: secondary_style
+        description: Best style of the secondary genre.
+
+      - name: nb_supporting_sources
+        description: Distinct sources tagging the primary genre (1 to 3).
+
+      - name: attribution_source
+        description: >
+          'evidence' when the combination comes from the tags, 'manual' when a
+          hand-made override in seeds/artist_overrides.csv set it. Null for an
+          artist with no attribution at all.
+
+      - name: override_reason
+        description: Why the override was made, from the seed.
+
+      - name: total_minutes
+        description: >
+          Listening minutes credited to the artist this month
+          (sum of minutes_played / artist_count over their streams).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: fractional_stream_count
+        description: Stream count with the same split (sum of 1 / artist_count).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: nb_tracks
+        description: Distinct tracks listened to for this artist this month.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: nb_streams
+        description: >
+          Distinct streams the artist appears on this month (a collaboration
+          counts for each of its artists, unlike fractional_stream_count).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: share_of_artist_minutes_in_month
+        description: >
+          total_minutes / total minutes credited to artists in the month
+          (0 to 1). A share among the bcredited artists, not of the month's
+          total listening.
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - listening_month
+              - artist_id

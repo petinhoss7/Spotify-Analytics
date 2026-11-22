@@ -1,0 +1,155 @@
+version: 2
+
+models:
+  - name: fct_track_listening
+    description: >
+      Listening time per track per calendar month. Grain: 1 row = listening
+      month x track. No split here - a stream belongs to exactly one track, so
+      the minutes are whole and the monthly reconciliation is exact
+      (guarded by test_fct_track_listening_reconciles).
+
+      The behaviour columns describe how the track was listened to that month,
+      which is where a skip rate per track is read from.
+
+    columns:
+
+      - name: listening_month
+        description: First day of the listening month.
+        data_tests:
+          - not_null
+
+      - name: track_id
+        description: The 22-character Spotify track id.
+        data_tests:
+          - not_null
+
+      - name: track_name
+        description: Track name, from the latest stream of the track.
+
+      - name: album_name
+        description: Album name.
+
+      - name: artist_name
+        description: Album artist name as recorded in the stream.
+
+      - name: total_minutes
+        description: Listening minutes for the track this month.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: nb_streams
+        description: Number of plays this month.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: meaningful_streams
+        description: Plays of at least 30 seconds.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: skipped_streams
+        description: Plays ended by a skip.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: skip_rate
+        description: skipped_streams / nb_streams (0 to 1).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+      - name: first_streamed_at
+        description: First play of the track that month.
+
+      - name: last_streamed_at
+        description: Last play of the track that month.
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - listening_month
+              - track_id
+
+  - name: fct_album_listening
+    description: >
+      Listening time per album per calendar month. Grain: 1 row = listening
+      month x album artist x album name. A stream belongs to exactly one
+      album, so the monthly reconciliation is exact (guarded by
+      test_fct_album_listening_reconciles). Two albums sharing a name under
+      the same artist collapse; per-track detail is in fct_track_listening.
+
+    columns:
+
+      - name: listening_month
+        description: First day of the listening month.
+        data_tests:
+          - not_null
+
+      - name: album_artist_name
+        description: Album artist as recorded in the stream ('(unknown)' when absent).
+        data_tests:
+          - not_null
+
+      - name: album_name
+        description: Album name ('(unknown)' when absent).
+        data_tests:
+          - not_null
+
+      - name: total_minutes
+        description: Listening minutes for the album this month.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: nb_streams
+        description: Number of plays this month.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: nb_tracks
+        description: Distinct tracks of the album played this month.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: skipped_streams
+        description: Plays ended by a skip.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: skip_rate
+        description: skipped_streams / nb_streams (0 to 1).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - listening_month
+              - album_artist_name
+              - album_name

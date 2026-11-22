@@ -23,7 +23,7 @@ flowchart LR
     A[Python extracts<br/>Spotify / Last.fm / MusicBrainz] --> R[(RAW<br/>DuckDB)]
     R --> S[Staging<br/>typed views]
     S --> I[Intermediate<br/>business logic, tables]
-    I --> M[Marts<br/>fct_streams, fct_genre_listening]
+    I --> M[Marts<br/>fct_streams, fct_genre_listening,<br/>fct_style_listening, fct_artist_listening,<br/>fct_track_listening, fct_album_listening]
     C[Offline tag classifier<br/>rules + LLM] --> T[[tag_genre_map seed]]
     T --> I
 ```
@@ -33,7 +33,7 @@ flowchart LR
 | `scripts/` | Loads the Spotify export, enriches artists/tracks via APIs, classifies raw tags offline |
 | `models/staging/` | Flattens JSON, types columns, normalizes timestamps to UTC, hashes IPs (PII) |
 | `models/intermediate/` | Deduplication, listening features, artist profiles, cross-source comparison, genre scoring & attribution |
-| `models/marts/` | `fct_streams` (one row per music stream) and `fct_genre_listening` (minutes per month x genre) |
+| `models/marts/` | The serving layer: `fct_streams` (one row per music stream), `fct_genre_listening` and `fct_style_listening` (minutes per month × genre / style), and `fct_artist_listening`, `fct_track_listening`, `fct_album_listening` (minutes per month for each artist, track and album) |
 | `seeds/` | Closed Discogs taxonomy (15 genres / 611 styles), the 12,697-tag classification map, and the hand-verified verdicts |
 | `tests/` | Singular reconciliation and business-rule tests |
 
@@ -239,7 +239,9 @@ in the job and git-ignored.
   1,783 containment, 10,110 LLM, 132 noise / workflow artifacts.
 - Closed taxonomy: 15 genres, **612 styles**, built from merged Discogs
   exports by `scripts/build_taxonomy.py`.
-- Listening: **7 570 h**, split as `Electronic 36.2% / Rock 18.5% /
-  Pop 16.8% / Hip Hop 8.9%` at genre level and **11 942** month × genre ×
-  style rows, with `(no_style)` carrying 10.4% of the minutes.
-- Last full build: **225/225 nodes green** plus 45 classifier unit tests.
+- Listening: **7 570 h** across 6 marts — `fct_genre_listening` (1 287 rows,
+  `Electronic 36.2% / Rock 18.5% / Pop 16.8% / Hip Hop 8.9%`),
+  `fct_style_listening` (11 942 rows, `(no_style)` carries 10.4%),
+  `fct_artist_listening` (64 487), `fct_track_listening` (83 267) and
+  `fct_album_listening` (66 043).
+- Last full build: **269/269 nodes green** plus 45 classifier unit tests.

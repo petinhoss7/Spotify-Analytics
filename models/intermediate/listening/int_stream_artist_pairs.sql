@@ -34,27 +34,18 @@
 
 */
 
-with streams as (
+with artists as (
 
-    -- the stream fact, so the track_id derivation is defined in one place
     select
         stream_id,
         stream_date,
         track_id,
-        minutes_played
-
-    from {{ ref('fct_streams') }}
-
-),
-
-track_artists as (
-
-    select
-        track_id,
         artist_id,
-        artist_count
+        artist_count,
+        artist_minutes,
+        artist_stream_fraction
 
-    from {{ ref('int_tracks_artists') }}
+    from {{ ref('int_stream_artists') }}
 
 ),
 
@@ -88,24 +79,21 @@ pairs as (
 
 select
 
-    s.stream_id,
-    s.stream_date,
-    s.track_id,
+    a.stream_id,
+    a.stream_date,
+    a.track_id,
 
-    ta.artist_id,
-    ta.artist_count,
+    a.artist_id,
+    a.artist_count,
 
     p.pair_rank,
     p.discogs_genre,
     p.discogs_style,
 
-    (1.0 / ta.artist_count) * p.pair_weight as pair_weight,
-    (s.minutes_played / ta.artist_count) * p.pair_weight as allocated_minutes
+    a.artist_stream_fraction * p.pair_weight as pair_weight,
+    a.artist_minutes * p.pair_weight as allocated_minutes
 
-from streams s
-
-inner join track_artists ta
-    on s.track_id = ta.track_id
+from artists a
 
 inner join pairs p
-    on p.artist_id = ta.artist_id
+    on p.artist_id = a.artist_id

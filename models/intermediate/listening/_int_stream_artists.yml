@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: int_stream_artists
+    description: >
+      Artist-level split of each stream's listening time. Grain: 1 row = 1
+      stream x 1 artist of the track. A stream's minutes are divided by the
+      number of artists on the track, so the sum over a stream's artists
+      equals the stream's minutes.
+
+      Every artist of the bridge is kept here, including those without a genre
+      attribution, because the artist-level marts must not lose them.
+      int_stream_artist_pairs builds on this model and adds the genre/style
+      allocation.
+
+    columns:
+
+      - name: stream_id
+        description: Identifier of the stream (staging level).
+        data_tests:
+          - not_null
+
+      - name: stream_date
+        description: Calendar date of the stream (UTC).
+        data_tests:
+          - not_null
+
+      - name: track_id
+        description: The 22-character Spotify track id.
+        data_tests:
+          - not_null
+
+      - name: artist_id
+        description: Artist the share belongs to.
+        data_tests:
+          - not_null
+
+      - name: artist_count
+        description: Number of artists on the track, the divisor of the split.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: artist_minutes
+        description: minutes_played / artist_count.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: artist_stream_fraction
+        description: 1 / artist_count, the stream count with the same split.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - stream_id
+              - artist_id
