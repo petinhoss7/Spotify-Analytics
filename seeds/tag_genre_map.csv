@@ -4604,38 +4604,38 @@ funk rock,true,Rock,Funk Metal,llm,
 funk soul,true,Funk / Soul,,exact,100
 funk-hop,true,Funk / Soul,Funk,fuzzy,90
 funk-rock,true,Rock,Funk Metal,llm,
-funk_add_to_lidarr,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_1,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_1,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_10,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_11,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_12,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_13,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_14,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_15,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_16,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_17,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_18,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_19,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_2,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_20,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_21,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_22,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_23,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_24,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_25,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_26,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_27,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_28,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_29,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_3,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_30,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_4,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_5,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_6,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_7,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_8,true,Funk / Soul,Funk,fuzzy,90
-funk_add_to_lidarr_batch_9,true,Funk / Soul,Funk,fuzzy,90
+funk_add_to_lidarr,false,,,noise,
+funk_add_to_lidarr_1,false,,,noise,
+funk_add_to_lidarr_batch_1,false,,,noise,
+funk_add_to_lidarr_batch_10,false,,,noise,
+funk_add_to_lidarr_batch_11,false,,,noise,
+funk_add_to_lidarr_batch_12,false,,,noise,
+funk_add_to_lidarr_batch_13,false,,,noise,
+funk_add_to_lidarr_batch_14,false,,,noise,
+funk_add_to_lidarr_batch_15,false,,,noise,
+funk_add_to_lidarr_batch_16,false,,,noise,
+funk_add_to_lidarr_batch_17,false,,,noise,
+funk_add_to_lidarr_batch_18,false,,,noise,
+funk_add_to_lidarr_batch_19,false,,,noise,
+funk_add_to_lidarr_batch_2,false,,,noise,
+funk_add_to_lidarr_batch_20,false,,,noise,
+funk_add_to_lidarr_batch_21,false,,,noise,
+funk_add_to_lidarr_batch_22,false,,,noise,
+funk_add_to_lidarr_batch_23,false,,,noise,
+funk_add_to_lidarr_batch_24,false,,,noise,
+funk_add_to_lidarr_batch_25,false,,,noise,
+funk_add_to_lidarr_batch_26,false,,,noise,
+funk_add_to_lidarr_batch_27,false,,,noise,
+funk_add_to_lidarr_batch_28,false,,,noise,
+funk_add_to_lidarr_batch_29,false,,,noise,
+funk_add_to_lidarr_batch_3,false,,,noise,
+funk_add_to_lidarr_batch_30,false,,,noise,
+funk_add_to_lidarr_batch_4,false,,,noise,
+funk_add_to_lidarr_batch_5,false,,,noise,
+funk_add_to_lidarr_batch_6,false,,,noise,
+funk_add_to_lidarr_batch_7,false,,,noise,
+funk_add_to_lidarr_batch_8,false,,,noise,
+funk_add_to_lidarr_batch_9,false,,,noise,
 funkeiro,true,Hip Hop,Miami Bass,llm,
 funknejo,true,Hip Hop,Miami Bass,llm,
 funktronica,true,Electronic,Electro,llm,
@@ -9755,8 +9755,8 @@ rheinland-pfalz,false,,,llm,
 rhymesayers,false,,,llm,
 rhyming slang,false,,,llm,
 rhys fulber,false,,,llm,
-rhythm & blues,true,Blues,,fuzzy,90
-rhythm and blues,true,Blues,,fuzzy,90
+rhythm & blues,true,Funk / Soul,Rhythm & Blues,alias,100
+rhythm and blues,true,Funk / Soul,Rhythm & Blues,alias,100
 rhythm and blues music,true,Blues,,fuzzy,90
 rhythm and flow,false,,,llm,
 rhythm n blues,true,Blues,,fuzzy,90

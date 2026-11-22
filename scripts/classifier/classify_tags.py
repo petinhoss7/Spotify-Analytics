@@ -245,6 +245,17 @@ def load_db_vocab() -> set:
         con.close()
 
 
+# Tags that are workflow instructions rather than musical descriptors. In this
+# library a Lidarr tagging batch leaked "funk_add_to_lidarr_batch_<n>" 32 times;
+# containment then resolved them to Funk / Soul on the single token "funk",
+# although none of their artists are Funk / Soul.
+WORKFLOW_ARTIFACT_PATTERNS = (
+    re.compile(r"\badd to lidarr\b"),
+    re.compile(r"\blidarr batch\b"),
+    re.compile(r"\badd to beets\b"),
+)
+
+
 def is_noise(tag_norm: str) -> bool:
     t = tag_norm.replace(" ", "")
     return bool(
@@ -252,6 +263,7 @@ def is_noise(tag_norm: str) -> bool:
         or re.fullmatch(r"[0-9a-f]{8,}", t)
         or re.fullmatch(r"\d{1,4}s", t)
         or len(tag_norm) > 80
+        or any(p.search(tag_norm) for p in WORKFLOW_ARTIFACT_PATTERNS)
     )
 
 

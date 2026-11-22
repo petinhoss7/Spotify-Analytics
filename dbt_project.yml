@@ -80,3 +80,7 @@ seeds:
     tag_aliases:
       # consumed by the classifier script only, not materialized in the warehouse
       +enabled: false
+    tags_to_verify:
+      # hand-verification list produced by scripts/classifier/tags_to_verify.py
+      # (a working document, not warehouse reference data)
+      +enabled: false
