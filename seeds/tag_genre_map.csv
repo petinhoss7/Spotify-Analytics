@@ -268,7 +268,7 @@ abc not dead yet,false,,,llm,
 aberdeen,false,,,llm,
 abiodun,false,,,llm,
 ableton,false,,,llm,
-aboriginal,true,"Folk, World, & Country",World,llm,
+aboriginal,true,"Folk, World, & Country",Aboriginal,exact,100
 above & beyond,false,,,llm,
 absofacto,false,,,llm,
 absolute,false,,,llm,
@@ -319,7 +319,7 @@ acoustic folk harmony,true,"Folk, World, & Country",Folk,llm,
 acoustic guitar,false,,,llm,
 acoustic guitar instrumental,false,,,llm,
 acoustic guitarist,false,,,llm,
-acoustic lo-fi,false,,,llm,
+acoustic lo-fi,true,Rock,Lo-Fi,fuzzy,90
 acoustic music,true,Rock,Acoustic,llm,
 acoustic pop,true,Pop,,fuzzy,90
 acoustic porridge,false,,,llm,
@@ -661,7 +661,7 @@ ambient folk,true,Electronic,Ambient,fuzzy,90
 ambient guitar,true,Electronic,Ambient,fuzzy,90
 ambient house,true,Electronic,House,llm,
 ambient idm,true,Electronic,IDM,llm,
-ambient lo-fi,true,Electronic,Ambient,fuzzy,90
+ambient lo-fi,true,Rock,Lo-Fi,fuzzy,90
 ambient metal,true,Electronic,Ambient,fuzzy,90
 ambient music,true,Electronic,Ambient,fuzzy,90
 ambient piano,true,Electronic,Ambient,fuzzy,90
@@ -1080,11 +1080,11 @@ avril lavigne,false,,,llm,
 away,false,,,llm,
 awesome voice,false,,,llm,
 awesomename,false,,,llm,
-axe,true,Latin,,llm,
+axe,true,Latin,Axé,exact,100
 axe music,true,Latin,,llm,
 axel fischer,false,,,llm,
 axyetb,false,,,llm,
-axé,true,Latin,,llm,
+axé,true,Latin,Axé,exact,100
 ayiti,false,,,llm,
 ayo,false,,,llm,
 az,false,,,llm,
@@ -1093,7 +1093,7 @@ azerbaijan,false,,,llm,
 azerbaijani,false,,,llm,
 azeri,false,,,llm,
 azet,false,,,llm,
-azonto,true,"Folk, World, & Country",African,llm,
+azonto,true,Reggae,Azonto,exact,100
 azzlack,false,,,llm,
 b wordsworth,false,,,llm,
 b-boy,false,,,llm,
@@ -1165,12 +1165,12 @@ ballades,true,Pop,Ballad,llm,
 ballads,true,Pop,Ballad,llm,
 ballermann,true,Pop,Schlager,llm,
 ballet,true,Classical,,llm,
-ballroom,true,Electronic,House,llm,
+ballroom,true,Electronic,Ballroom,exact,100
 ballroom vogue,true,Electronic,House,llm,
 baltic,false,,,llm,
 baltic sea hardcore,true,Rock,Hardcore,llm,
 baltimore,false,,,llm,
-baltimore club,true,Electronic,House,llm,
+baltimore club,true,Electronic,Baltimore Club,exact,100
 bananarama,false,,,llm,
 band,false,,,llm,
 band aid,false,,,llm,
@@ -1288,7 +1288,7 @@ beat music,true,Rock,Beat,llm,
 beat poetry,true,Non-Music,Poetry,llm,
 beat scene,true,Hip Hop,,llm,
 beat tape,false,,,llm,
-beatbox,false,,,llm,
+beatbox,true,Hip Hop,Beatbox,exact,100
 beatdown,true,Electronic,Beatdown,exact,100
 beatdown hardcore,true,Electronic,Beatdown,fuzzy,90
 beatgen,false,,,llm,
@@ -1429,7 +1429,7 @@ bfr,false,,,llm,
 bg,false,,,llm,
 bgm,false,,,llm,
 bhajan,true,"Folk, World, & Country",,llm,
-bhangra,true,"Folk, World, & Country",,llm,
+bhangra,true,"Folk, World, & Country",Bhangra,exact,100
 bhz,false,,,llm,
 biagio antonacci,false,,,llm,
 bidlo house,true,Electronic,House,fuzzy,90
@@ -1606,7 +1606,7 @@ bone thugs-n-harmony,false,,,llm,
 boner time,false,,,llm,
 boneriffic,false,,,llm,
 boney m,false,,,llm,
-bongo flava,true,"Folk, World, & Country",African,llm,
+bongo flava,true,Hip Hop,Bongo Flava,exact,100
 bongo house,true,Electronic,House,fuzzy,90
 bonne humeur,false,,,llm,
 bonnie tyler,false,,,llm,
@@ -1618,7 +1618,7 @@ boogaloo,true,Latin,Boogaloo,exact,100
 boogie,true,Funk / Soul,Boogie,exact,100
 boogie funk,true,Funk / Soul,Boogie,llm,
 boogie rock,true,Rock,Rock & Roll,llm,
-boogie-woogie,true,Funk / Soul,Boogie,fuzzy,90
+boogie-woogie,true,Blues,Boogie Woogie,exact,100
 book,false,,,llm,
 booka shade,false,,,llm,
 bookmark,false,,,llm,
@@ -1676,7 +1676,7 @@ boston,false,,,llm,
 boston hardcore,true,Rock,Hardcore,llm,
 boston pops,false,,,llm,
 boston rap,true,Hip Hop,,llm,
-bounce,true,Electronic,Bounce,exact,100
+bounce,true,Hip Hop,Bounce,llm,
 bounce beat,true,Electronic,Bounce,llm,
 bounty killer,false,,,llm,
 bourgeois,false,,,llm,
@@ -1932,7 +1932,7 @@ c64 remix,true,Electronic,Chiptune,llm,
 c86,true,Pop,Indie Pop,llm,
 ca,false,,,llm,
 cab calloway,false,,,llm,
-cabaret,true,Pop,Music Hall,llm,
+cabaret,true,Stage & Screen,Cabaret,exact,100
 cabaret parisien,true,Pop,Music Hall,llm,
 cabo verde,false,,,llm,
 cac-jazz,true,Jazz,,fuzzy,90
@@ -2015,7 +2015,7 @@ cante flamenco,true,"Folk, World, & Country",Flamenco,fuzzy,90
 canterbury,true,Rock,Prog Rock,llm,
 canterbury scene,true,Rock,Prog Rock,llm,
 canto,false,,,llm,
-cantopop,true,Pop,,llm,
+cantopop,true,Pop,Cantopop,exact,100
 cantor,false,,,llm,
 cantora,false,,,llm,
 cantora de forro,false,,,llm,
@@ -2037,7 +2037,7 @@ caribbean queen,false,,,llm,
 caribbean soul,true,Funk / Soul,Soul,fuzzy,90
 caribbean traditions,false,,,llm,
 caribe,false,,,llm,
-carimbó,true,Latin,,llm,
+carimbó,true,Latin,Carimbó,exact,100
 carin leon,false,,,llm,
 carl cox,false,,,llm,
 carla bruni,false,,,llm,
@@ -2120,7 +2120,7 @@ cesko,false,,,llm,
 cha cha,true,Latin,Cha-Cha,exact,100
 cha cha cha,true,Latin,Cha-Cha,fuzzy,90
 cha-cha,true,Latin,Cha-Cha,exact,100
-chacarera,true,"Folk, World, & Country",Folk,llm,
+chacarera,true,"Folk, World, & Country",Chacarera,exact,100
 chadia rodriguez,false,,,llm,
 chaka demus and pliers,false,,,llm,
 chaka khan,false,,,llm,
@@ -2132,7 +2132,7 @@ chamber music,true,Classical,,llm,
 chamber orchestra,true,Classical,,llm,
 chamber pop,true,Pop,,fuzzy,90
 chamillionaire,false,,,llm,
-champeta,true,Reggae,Champeta,exact,100
+champeta,true,Latin,Champeta,llm,
 chanber music,true,Classical,,llm,
 channel islands indie,true,Rock,Indie Rock,llm,
 chanson,true,Pop,Chanson,exact,100
@@ -2286,7 +2286,7 @@ choral,true,Classical,Choral,exact,100
 chorale,true,Classical,Choral,llm,
 chord overstreet,false,,,llm,
 chorinho,true,Latin,,llm,
-choro,true,Latin,,llm,
+choro,true,Latin,Choro,exact,100
 chorus,true,Classical,Choral,llm,
 chorus master,false,,,llm,
 chris bell,false,,,llm,
@@ -2306,7 +2306,7 @@ christian german,false,,,llm,
 christian hip hop,true,Hip Hop,,fuzzy,90
 christian hip-hop,true,Hip Hop,,fuzzy,90
 christian indie,true,Rock,Indie Rock,llm,
-christian lo-fi,true,Hip Hop,,llm,
+christian lo-fi,true,Rock,Lo-Fi,fuzzy,90
 christian metal,true,Rock,Heavy Metal,llm,
 christian music,true,"Folk, World, & Country",Gospel,llm,
 christian nu metal,true,Rock,Nu Metal,fuzzy,90
@@ -2430,10 +2430,10 @@ close harmony,false,,,llm,
 closed on sunday,false,,,llm,
 cloud,false,,,llm,
 cloud music,false,,,llm,
-cloud rap,true,Hip Hop,Trap,llm,
-cloud rap hip-hop trap,true,Hip Hop,,fuzzy,90
+cloud rap,true,Hip Hop,Cloud Rap,exact,100
+cloud rap hip-hop trap,true,Hip Hop,Cloud Rap,llm,
 cloud rnb,true,Funk / Soul,Contemporary R&B,llm,
-cloud-rap,true,Hip Hop,Trap,llm,
+cloud-rap,true,Hip Hop,Cloud Rap,exact,100
 cloudrap,true,Hip Hop,Trap,llm,
 cloudwave,true,Electronic,,llm,
 clownstep,true,Electronic,Drum n Bass,llm,
@@ -2610,7 +2610,7 @@ corinthians,false,,,llm,
 corna,false,,,llm,
 corny,false,,,llm,
 correct tag,false,,,llm,
-corrido,true,"Folk, World, & Country",Regional Mexico,llm,
+corrido,true,Latin,Corrido,exact,100
 corrido tumbado,true,"Folk, World, & Country",Regional Mexico,llm,
 corridos,true,"Folk, World, & Country",Regional Mexico,llm,
 corridos belicos,true,"Folk, World, & Country",Regional Mexico,llm,
@@ -2724,7 +2724,7 @@ crossover thrash,true,Rock,Thrash,fuzzy,90
 crou,false,,,llm,
 crud rap,true,Hip Hop,,llm,
 crumb,false,,,llm,
-crunk,true,Hip Hop,,llm,
+crunk,true,Hip Hop,Crunk,exact,100
 crunkcore,true,Hip Hop,,llm,
 crush,false,,,llm,
 crust,true,Rock,Crust,exact,100
@@ -2742,7 +2742,7 @@ cuban,false,,,llm,
 cuban  reggaeton,true,Latin,Reggaeton,fuzzy,90
 cuban jazz,true,Jazz,,fuzzy,90
 cubanflow,true,Hip Hop,,llm,
-cubano,false,,,llm,
+cubano,true,Latin,Cubano,exact,100
 cubaton,true,Latin,Reggaeton,llm,
 cube entertainment,false,,,llm,
 cuck,false,,,llm,
@@ -2841,7 +2841,7 @@ dancing,false,,,llm,
 dando lidia,false,,,llm,
 danemark,false,,,llm,
 dang,false,,,llm,
-dangdut,true,"Folk, World, & Country",,llm,
+dangdut,true,"Folk, World, & Country",Dangdut,exact,100
 danger mouse,false,,,llm,
 dangerours,false,,,llm,
 dangerous,false,,,llm,
@@ -2890,7 +2890,7 @@ dark hardcore,true,Electronic,Hardcore,llm,
 dark house,true,Electronic,House,fuzzy,90
 dark indie,true,Rock,Indie Rock,llm,
 dark industrial techno,true,Electronic,Techno,fuzzy,90
-dark jazz,true,Jazz,,fuzzy,90
+dark jazz,true,Jazz,Dark Jazz,exact,100
 dark metal,true,Rock,,llm,
 dark minimal,true,Electronic,Minimal,llm,
 dark pop,true,Pop,,fuzzy,90
@@ -3196,7 +3196,7 @@ disco edits,true,Electronic,Disco,llm,
 disco funk,true,Funk / Soul,Funk,fuzzy,90
 disco house,true,Electronic,House,fuzzy,90
 disco music,true,Electronic,Disco,llm,
-disco polo,true,Pop,Europop,llm,
+disco polo,true,Electronic,Disco Polo,exact,100
 disco punk,true,Rock,Punk,fuzzy,90
 disco rap,true,Hip Hop,,llm,
 disco soul africa ghana keyboard,true,Funk / Soul,Soul,fuzzy,90
@@ -3281,7 +3281,7 @@ don tetto,false,,,llm,
 don williams,false,,,llm,
 donavon frankenreiter,false,,,llm,
 dong-yo,false,,,llm,
-donk,true,Electronic,Bounce,llm,
+donk,true,Electronic,Donk,exact,100
 donna lewis,false,,,llm,
 donna summer,false,,,llm,
 donnie darko,false,,,llm,
@@ -3293,7 +3293,7 @@ doom,true,Rock,Doom Metal,alias,100
 doom death metal,true,Rock,Death Metal,fuzzy,90
 doom folk,true,Rock,Doom Metal,llm,
 doom metal,true,Rock,Doom Metal,exact,100
-doomcore,true,Electronic,Hardcore,llm,
+doomcore,true,Electronic,Doomcore,exact,100
 doomstep,true,Electronic,Dubstep,llm,
 doomtree,false,,,llm,
 doordoorwa1069,false,,,llm,
@@ -3431,7 +3431,7 @@ duke ellington,false,,,llm,
 dumb,false,,,llm,
 dunedin sound,true,Rock,Indie Rock,llm,
 dungeon family,false,,,llm,
-dungeon synth,true,Electronic,Dark Ambient,llm,
+dungeon synth,true,Electronic,Dungeon Synth,exact,100
 duo,false,,,llm,
 duos,false,,,llm,
 duplicate recordings,false,,,llm,
@@ -3614,7 +3614,7 @@ electro rap hip hop reggae,true,Hip Hop,,fuzzy,90
 electro rap hiphop reggae,true,Reggae,Reggae,fuzzy,90
 electro rock,true,Rock,,fuzzy,90
 electro soul,true,Funk / Soul,Soul,fuzzy,90
-electro swing,true,Jazz,Swing,fuzzy,90
+electro swing,true,Electronic,Electro Swing,exact,100
 electro synth rock,true,Rock,,fuzzy,90
 electro tech,true,Electronic,Electro,llm,
 electro tech house,true,Electronic,Tech House,fuzzy,90
@@ -3639,9 +3639,9 @@ electro-jazz,true,Jazz,,fuzzy,90
 electro-pop,true,Pop,,fuzzy,90
 electro-rock,true,Rock,,fuzzy,90
 electro-soul,true,Funk / Soul,Soul,fuzzy,90
-electro-swing,true,Jazz,Swing,fuzzy,90
+electro-swing,true,Electronic,Electro Swing,exact,100
 electro-trance,true,Electronic,Trance,fuzzy,90
-electroacoustic,true,Electronic,Abstract,llm,
+electroacoustic,true,Electronic,Electroacoustic,exact,100
 electroacoustic improvisation,true,Electronic,Abstract,llm,
 electroclash,true,Electronic,Electroclash,exact,100
 electroclash punk,true,Rock,Punk,fuzzy,90
@@ -3800,7 +3800,7 @@ english lyrics,false,,,llm,
 english orchestra,false,,,llm,
 english organist,false,,,llm,
 enhanced recordings,false,,,llm,
-enka,true,Pop,Kayokyoku,llm,
+enka,true,Pop,Enka,exact,100
 ennio morricone,false,,,llm,
 enno bunger,false,,,llm,
 enoque gomes,false,,,llm,
@@ -3910,12 +3910,12 @@ eupen musik marathon,false,,,llm,
 euphoric,false,,,llm,
 euphoric house,true,Electronic,House,fuzzy,90
 euphoric trance,true,Electronic,Trance,fuzzy,90
-euro disco,true,Electronic,Disco,llm,
+euro disco,true,Electronic,Euro-Disco,exact,100
 euro house,true,Electronic,Euro House,exact,100
 euro pop,true,Pop,,fuzzy,90
 euro trance,true,Electronic,Trance,fuzzy,90
 euro-dance,true,Electronic,Eurodance,llm,
-euro-disco,true,Electronic,Disco,llm,
+euro-disco,true,Electronic,Euro-Disco,exact,100
 euro-house,true,Electronic,Euro House,exact,100
 euro-pop,true,Pop,,fuzzy,90
 euro-trance,true,Electronic,Trance,fuzzy,90
@@ -4004,7 +4004,7 @@ exotic,false,,,llm,
 exotic metal,true,Rock,Heavy Metal,llm,
 exotica,true,Jazz,Space-Age,llm,
 expectations,false,,,llm,
-experimental,true,Rock,Experimental,exact,100
+experimental,true,Electronic,Experimental,llm,
 experimental big band,true,Jazz,Big Band,fuzzy,90
 experimental breakcore,true,Electronic,Breakcore,fuzzy,90
 experimental classical,true,Classical,Classical,fuzzy,90
@@ -4215,7 +4215,7 @@ filipina,false,,,llm,
 filipino,false,,,llm,
 filipino pop rock,true,Rock,Pop Rock,fuzzy,90
 filipino rock,true,Rock,,fuzzy,90
-filk,true,"Folk, World, & Country",Folk,llm,
+filk,true,"Folk, World, & Country",Filk,exact,100
 film,true,Stage & Screen,Soundtrack,llm,
 film composer,false,,,llm,
 film composers,false,,,llm,
@@ -4495,7 +4495,7 @@ french psychedelic,true,Rock,Psychedelic Rock,llm,
 french punk,true,Rock,Punk,fuzzy,90
 french r&b,true,Funk / Soul,Contemporary R&B,llm,
 french rap,true,Hip Hop,,llm,
-french rap new wave,true,Electronic,New Wave,fuzzy,90
+french rap new wave,true,Hip Hop,,llm,
 french rapper,false,,,llm,
 french reggae,true,Reggae,Reggae,fuzzy,90
 french rnb,true,Funk / Soul,Contemporary R&B,llm,
@@ -4569,7 +4569,7 @@ full-on psytrance,true,Electronic,Psy-Trance,llm,
 fun,false,,,llm,
 fun punk,true,Rock,Punk,fuzzy,90
 fun-punk,true,Rock,Punk,fuzzy,90
-funana,true,"Folk, World, & Country",African,llm,
+funana,true,"Folk, World, & Country",Funaná,exact,100
 funeral doom,true,Rock,Funeral Doom Metal,llm,
 funeral doom metal,true,Rock,Funeral Doom Metal,exact,100
 funk,true,Funk / Soul,Funk,exact,100
@@ -4851,11 +4851,11 @@ get weird,false,,,llm,
 ghana,false,,,llm,
 ghanaian,false,,,llm,
 ghanan,false,,,llm,
-ghazal,true,"Folk, World, & Country",World,llm,
+ghazal,true,"Folk, World, & Country",Ghazal,exact,100
 ghetto house,true,Electronic,Ghetto House,exact,100
 ghetto sage,false,,,llm,
 ghetto techno,true,Electronic,Techno,fuzzy,90
-ghettotech,true,Electronic,Ghetto House,llm,
+ghettotech,true,Electronic,Ghettotech,exact,100
 ghettotek,true,Electronic,Ghetto House,llm,
 ghost artist,false,,,llm,
 ghost-rock,true,Rock,,fuzzy,90
@@ -4922,12 +4922,12 @@ glenn frey,false,,,llm,
 glenn gould,false,,,llm,
 glenn miller,false,,,llm,
 glimmer rock,true,Rock,,fuzzy,90
-glitch,true,Electronic,IDM,llm,
+glitch,true,Electronic,Glitch,exact,100
 glitch city,false,,,llm,
-glitch hop,true,Electronic,IDM,llm,
-glitch hop edm,true,Electronic,IDM,llm,
+glitch hop,true,Electronic,Glitch Hop,exact,100
+glitch hop edm,true,Electronic,Glitch Hop,fuzzy,90
 glitch pop,true,Pop,,fuzzy,90
-glitch-hop,true,Electronic,IDM,llm,
+glitch-hop,true,Electronic,Glitch Hop,exact,100
 glitchstep,true,Electronic,Dubstep,llm,
 glitterwave,true,Electronic,Synthwave,llm,
 glo gang,false,,,llm,
@@ -4952,7 +4952,7 @@ gnawa,true,"Folk, World, & Country",African,llm,
 gnocca,false,,,llm,
 gnossiennes,true,Classical,,llm,
 go,false,,,llm,
-go-go,true,Funk / Soul,Funk,llm,
+go-go,true,Hip Hop,Go-Go,exact,100
 goa,true,Electronic,Goa Trance,alias,100
 goa trance,true,Electronic,Goa Trance,exact,100
 goat,false,,,llm,
@@ -5016,7 +5016,7 @@ gothic metal,true,Rock,Gothic Metal,exact,100
 gothic my ass,true,Rock,Goth Rock,llm,
 gothic pop,true,Pop,,fuzzy,90
 gothic rock,true,Rock,Goth Rock,alias,100
-gothic-industrial metal,true,Rock,Gothic Metal,llm,
+gothic-industrial metal,true,Rock,Industrial Metal,fuzzy,90
 gotthard,false,,,llm,
 gouryella,false,,,llm,
 gouyad,true,"Folk, World, & Country",,llm,
@@ -5099,7 +5099,7 @@ groningen,false,,,llm,
 groove,false,,,llm,
 groove bass,false,,,llm,
 groove jazz,true,Jazz,,fuzzy,90
-groove metal,true,Rock,Heavy Metal,llm,
+groove metal,true,Rock,Groove Metal,exact,100
 groovecaffe,false,,,llm,
 groovy,false,,,llm,
 groovy techno,true,Electronic,Techno,fuzzy,90
@@ -5222,20 +5222,20 @@ hard beatz,true,Electronic,Hardcore,llm,
 hard bop,true,Jazz,Hard Bop,exact,100
 hard dance,true,Electronic,Hardstyle,llm,
 hard drum,true,Electronic,Breakbeat,llm,
-hard house,true,Electronic,House,fuzzy,90
+hard house,true,Electronic,Hard House,exact,100
 hard industrial techno,true,Electronic,Techno,fuzzy,90
 hard rock,true,Rock,Hard Rock,exact,100
 hard rock and roll,true,Rock,Rock & Roll,fuzzy,90
 hard rock brasil,true,Rock,Hard Rock,fuzzy,90
 hard rock nacional,true,Rock,Hard Rock,fuzzy,90
-hard techno,true,Electronic,Techno,fuzzy,90
+hard techno,true,Electronic,Hard Techno,exact,100
 hard tekno,true,Electronic,Schranz,llm,
-hard trance,true,Electronic,Trance,fuzzy,90
+hard trance,true,Electronic,Hard Trance,exact,100
 hard trap,true,Hip Hop,Trap,fuzzy,90
 hard-bop,true,Jazz,Hard Bop,exact,100
 hard-pop,true,Pop,,fuzzy,90
 hard-rock,true,Rock,Hard Rock,exact,100
-hard-techno,true,Electronic,Techno,fuzzy,90
+hard-techno,true,Electronic,Hard Techno,exact,100
 hardbass,true,Electronic,Hardstyle,llm,
 hardcore,true,Electronic,Hardcore,llm,
 hardcore brasil,true,Electronic,Hardcore,llm,
@@ -5298,7 +5298,7 @@ havana,false,,,llm,
 have seen live,false,,,llm,
 having under 100 listeners makes you quite obscure but does not mean you are not talented,false,,,noise,
 hawaii,false,,,llm,
-hawaiian,true,"Folk, World, & Country",Pacific,llm,
+hawaiian,true,"Folk, World, & Country",Hawaiian,exact,100
 hawaiian glam metal,true,Rock,Glam,llm,
 hawaiian music,true,"Folk, World, & Country",Pacific,llm,
 hawaiian reggae,true,Reggae,Reggae,fuzzy,90
@@ -5407,7 +5407,7 @@ hip hop rnb and dance hall,true,Hip Hop,,fuzzy,90
 hip hop soul,true,Hip Hop,,fuzzy,90
 hip hop tuga,true,Hip Hop,,fuzzy,90
 hip hop/rap,true,Hip Hop,,fuzzy,90
-hip house,true,Electronic,House,fuzzy,90
+hip house,true,Electronic,Hip-House,exact,100
 hip pop,true,Pop,,fuzzy,90
 hip- hop,true,Hip Hop,,exact,100
 hip-hhop,true,Hip Hop,,llm,
@@ -5422,13 +5422,13 @@ hip-hop instrumental,true,Hip Hop,,fuzzy,90
 hip-hop soul,true,Hip Hop,,fuzzy,90
 hip-hop tuga,true,Hip Hop,,fuzzy,90
 hip-hop/rap,true,Hip Hop,,fuzzy,90
-hip-house,true,Electronic,House,fuzzy,90
+hip-house,true,Electronic,Hip-House,exact,100
 hiphop,true,Hip Hop,,alias,100
 hiphop dominicano,true,Hip Hop,,llm,
 hiphop mexicano,true,Hip Hop,,llm,
 hiphop-lv,true,Hip Hop,,llm,
 hiphop-lv exclusive,true,Hip Hop,,llm,
-hiplife,true,Hip Hop,,llm,
+hiplife,true,Hip Hop,Hiplife,exact,100
 hippie,false,,,llm,
 hippy hop,true,Hip Hop,,llm,
 hipster,false,,,llm,
@@ -5532,7 +5532,7 @@ howlin wolf,false,,,llm,
 hrvatska,false,,,llm,
 hsalvador,false,,,llm,
 huapango,true,"Folk, World, & Country",Regional Mexico,llm,
-huayno,true,"Folk, World, & Country",World,llm,
+huayno,true,"Folk, World, & Country",Huayno,exact,100
 hudba z dola,false,,,llm,
 huddersfield,false,,,llm,
 huey lewis and the news,false,,,llm,
@@ -5573,7 +5573,7 @@ hyperdub,true,Electronic,Dubstep,llm,
 hyperflip,true,Electronic,,llm,
 hyperpop,true,Electronic,,llm,
 hypertechno,true,Electronic,Techno,llm,
-hyphy,true,Hip Hop,,llm,
+hyphy,true,Hip Hop,Hyphy,exact,100
 hypnagogic dark ritual electronica,true,Electronic,Dark Ambient,llm,
 hypnagogic pop,true,Pop,,fuzzy,90
 hypnotic,false,,,llm,
@@ -5731,7 +5731,7 @@ industrial dance,true,Electronic,Industrial,llm,
 industrial death metal,true,Rock,Death Metal,fuzzy,90
 industrial hardcore,true,Electronic,Hardcore,llm,
 industrial hip hop,true,Hip Hop,,fuzzy,90
-industrial metal,true,Rock,Industrial,llm,
+industrial metal,true,Rock,Industrial Metal,exact,100
 industrial pop,true,Pop,,fuzzy,90
 industrial rock,true,Rock,,fuzzy,90
 industrial techno,true,Electronic,Techno,fuzzy,90
@@ -5916,7 +5916,7 @@ italo house,true,Electronic,Italo House,exact,100
 italo pop,true,Pop,,fuzzy,90
 italo rap,true,Hip Hop,,llm,
 italo-disco,true,Electronic,Italo-Disco,exact,100
-italodance,true,Electronic,Italo-Disco,llm,
+italodance,true,Electronic,Italodance,exact,100
 italodisco,true,Electronic,Italo-Disco,llm,
 italy,false,,,llm,
 itpop,true,Pop,,llm,
@@ -5933,7 +5933,7 @@ j a choir,false,,,llm,
 j cole,false,,,llm,
 j jazz,true,Jazz,,fuzzy,90
 j judd,false,,,llm,
-j-core,true,Electronic,Hardcore,llm,
+j-core,true,Electronic,J-Core,exact,100
 j-dance,true,Electronic,,llm,
 j-gaze,true,Rock,Shoegaze,llm,
 j-hip-hop,true,Hip Hop,,fuzzy,90
@@ -5944,7 +5944,7 @@ j-pop,true,Pop,J-pop,exact,100
 j-punk,true,Rock,Punk,fuzzy,90
 j-r&b,true,Funk / Soul,Contemporary R&B,llm,
 j-rap,true,Hip Hop,,llm,
-j-rock,true,Rock,,fuzzy,90
+j-rock,true,Rock,J-Rock,exact,100
 j-urban,true,Funk / Soul,Contemporary R&B,llm,
 j. cole,false,,,llm,
 ja rule,false,,,llm,
@@ -6002,7 +6002,7 @@ jan smit,false,,,llm,
 jane austen,false,,,llm,
 jane the virgin,false,,,llm,
 janet jackson,false,,,llm,
-jangle pop,true,Pop,,fuzzy,90
+jangle pop,true,Rock,Jangle Pop,exact,100
 janie,false,,,llm,
 jap,false,,,llm,
 japan,false,,,llm,
@@ -6143,9 +6143,9 @@ jeon jungkook,false,,,llm,
 jeremih,false,,,llm,
 jerk rap,true,Hip Hop,,llm,
 jerry orbach,false,,,llm,
-jersey club,true,Electronic,Bounce,llm,
-jersey club music,true,Electronic,Bounce,llm,
-jersey club rap,true,Electronic,Bounce,llm,
+jersey club,true,Electronic,Jersey Club,exact,100
+jersey club music,true,Electronic,Jersey Club,fuzzy,90
+jersey club rap,true,Electronic,Jersey Club,fuzzy,90
 jersey drill,true,Hip Hop,Trap,llm,
 jerseyclub,true,Electronic,Bounce,llm,
 jesc,false,,,llm,
@@ -6254,7 +6254,7 @@ josh pyke,false,,,llm,
 josh ritter,false,,,llm,
 joshua radin,false,,,llm,
 joss stone,false,,,llm,
-jota,true,"Folk, World, & Country",,llm,
+jota,true,"Folk, World, & Country",Jota,exact,100
 journalism,false,,,llm,
 journey,false,,,llm,
 jovanotti,false,,,llm,
@@ -6269,7 +6269,7 @@ juan gabriel,false,,,llm,
 juanes,false,,,llm,
 juicy sound waves,false,,,llm,
 juilliard school,false,,,llm,
-juke,true,Electronic,Footwork,llm,
+juke,true,Electronic,Juke,exact,100
 jul,false,,,llm,
 julia sheer,false,,,llm,
 julian perretta,false,,,llm,
@@ -6289,7 +6289,7 @@ jump up,true,Electronic,Drum n Bass,llm,
 jump-blues,true,Blues,Jump Blues,exact,100
 jump-up,true,Electronic,Drum n Bass,llm,
 jump5,false,,,llm,
-jumpstyle,true,Electronic,Hardstyle,llm,
+jumpstyle,true,Electronic,Jumpstyle,exact,100
 juna,false,,,llm,
 june,false,,,llm,
 jung kook,false,,,llm,
@@ -6301,7 +6301,7 @@ jungle terror,true,Electronic,Jungle,fuzzy,90
 junior eurovision,false,,,llm,
 junior eurovision song contest,false,,,llm,
 junior songfestival,false,,,llm,
-junkanoo,true,"Folk, World, & Country",World,llm,
+junkanoo,true,Reggae,Junkanoo,exact,100
 junkie,false,,,llm,
 juno,false,,,llm,
 junodream,false,,,llm,
@@ -6326,7 +6326,7 @@ k-on,false,,,llm,
 k-pop,true,Pop,K-pop,exact,100
 k-rap,true,Hip Hop,,llm,
 k-rnb,true,Funk / Soul,Contemporary R&B,llm,
-k-rock,true,Rock,,fuzzy,90
+k-rock,true,Rock,K-Rock,exact,100
 k.i.d,false,,,llm,
 k1r7m,false,,,llm,
 kabyle,true,"Folk, World, & Country",African,llm,
@@ -6472,7 +6472,7 @@ kites without strings,false,,,llm,
 kitsch,false,,,llm,
 kitsune,false,,,llm,
 kiwi,false,,,llm,
-kizomba,true,"Folk, World, & Country",World,llm,
+kizomba,true,"Folk, World, & Country",Kizomba,exact,100
 kksi,false,,,llm,
 klaas,false,,,llm,
 klangkarussell,false,,,llm,
@@ -6483,7 +6483,7 @@ klasyczna,true,Classical,Classical,llm,
 klavier,false,,,llm,
 klavierwerke,true,Classical,,llm,
 kleinkunst,true,Pop,Chanson,llm,
-klezmer,true,"Folk, World, & Country",World,llm,
+klezmer,true,"Folk, World, & Country",Klezmer,exact,100
 klingande,false,,,llm,
 kmn,false,,,llm,
 knack am,false,,,llm,
@@ -6549,7 +6549,7 @@ kurupt,false,,,llm,
 kuschelrock,true,Rock,Soft Rock,llm,
 kuschelrock 9,false,,,llm,
 kuwait,false,,,llm,
-kwaito,true,Electronic,,llm,
+kwaito,true,Hip Hop,Kwaito,exact,100
 kweens,false,,,llm,
 kwela,true,"Folk, World, & Country",African,llm,
 ky-mani marley,false,,,llm,
@@ -6597,7 +6597,7 @@ lalah hathaway,false,,,llm,
 lalamusic,false,,,llm,
 lali,false,,,llm,
 lalo rodriguez,false,,,llm,
-lambada,true,Latin,,llm,
+lambada,true,Latin,Lambada,exact,100
 lammer,false,,,llm,
 lana del rey,false,,,llm,
 landon cube,false,,,llm,
@@ -6845,21 +6845,21 @@ lloyd,false,,,llm,
 lloyd banks,false,,,llm,
 lm5,false,,,llm,
 lmm,false,,,llm,
-lo fi,true,Hip Hop,,llm,
-lo fi hip hop,true,Hip Hop,,fuzzy,90
-lo fi house,true,Electronic,House,fuzzy,90
+lo fi,true,Rock,Lo-Fi,exact,100
+lo fi hip hop,true,Hip Hop,,llm,
+lo fi house,true,Rock,Lo-Fi,fuzzy,90
 lo mejor,false,,,llm,
-lo-fi,true,Hip Hop,,llm,
-lo-fi beat,true,Hip Hop,Instrumental,llm,
-lo-fi beats,true,Hip Hop,Instrumental,llm,
-lo-fi hip hop,true,Hip Hop,,fuzzy,90
-lo-fi hip-hop,true,Hip Hop,,fuzzy,90
-lo-fi hiphop,true,Hip Hop,Instrumental,llm,
-lo-fi house,true,Electronic,House,fuzzy,90
-lo-fi indie,true,Rock,Indie Rock,llm,
-lo-fi music,true,Hip Hop,,llm,
-lo-fi pop,true,Pop,,fuzzy,90
-lo-fi tech house,true,Electronic,Tech House,fuzzy,90
+lo-fi,true,Rock,Lo-Fi,exact,100
+lo-fi beat,true,Rock,Lo-Fi,fuzzy,90
+lo-fi beats,true,Rock,Lo-Fi,fuzzy,90
+lo-fi hip hop,true,Hip Hop,,llm,
+lo-fi hip-hop,true,Hip Hop,,llm,
+lo-fi hiphop,true,Rock,Lo-Fi,fuzzy,90
+lo-fi house,true,Rock,Lo-Fi,fuzzy,90
+lo-fi indie,true,Rock,Lo-Fi,fuzzy,90
+lo-fi music,true,Rock,Lo-Fi,fuzzy,90
+lo-fi pop,true,Rock,Lo-Fi,fuzzy,90
+lo-fi tech house,true,Electronic,Tech House,llm,
 lo-fihop,true,Hip Hop,Instrumental,llm,
 lobo,false,,,llm,
 locoplaya,false,,,llm,
@@ -6920,7 +6920,7 @@ louis chedid,false,,,llm,
 louis landon,false,,,llm,
 louisiana,false,,,llm,
 louisville,false,,,llm,
-lounge,true,Jazz,Easy Listening,llm,
+lounge,true,Rock,Lounge,exact,100
 lounge / chill out,true,Electronic,Downtempo,llm,
 lounge music,true,Jazz,Easy Listening,llm,
 lounge-radio,true,Jazz,Easy Listening,llm,
@@ -7133,7 +7133,7 @@ mandelao,true,Electronic,,llm,
 mando diao,false,,,llm,
 mandolin,false,,,llm,
 mandoline de italy,false,,,llm,
-mandopop,true,Pop,,llm,
+mandopop,true,Pop,Mandopop,exact,100
 manele,true,Pop,,llm,
 mangue beat,true,"Folk, World, & Country",,llm,
 manguebeat,true,"Folk, World, & Country",,llm,
@@ -7178,7 +7178,7 @@ marie-paule belle,false,,,llm,
 marihuana,false,,,llm,
 marillion,false,,,llm,
 marilyn monroe,false,,,llm,
-marimba,false,,,llm,
+marimba,true,Latin,Marimba,exact,100
 marin alsop,false,,,llm,
 marin mazzie,false,,,llm,
 marina,false,,,llm,
@@ -7273,7 +7273,7 @@ mayo,false,,,llm,
 mayotte,false,,,llm,
 maze runner,false,,,llm,
 mb takeover,false,,,llm,
-mbalax,true,"Folk, World, & Country",African,llm,
+mbalax,true,"Folk, World, & Country",Mbalax,exact,100
 mbaqanga,true,"Folk, World, & Country",African,llm,
 mbf,false,,,llm,
 mbs-333,false,,,llm,
@@ -7364,7 +7364,7 @@ melodic dnb,true,Electronic,Drum n Bass,llm,
 melodic dubstep,true,Electronic,Dubstep,fuzzy,90
 melodic electro,true,Electronic,Electro,llm,
 melodic hard rock,true,Rock,Hard Rock,fuzzy,90
-melodic hard techno,true,Electronic,Techno,fuzzy,90
+melodic hard techno,true,Electronic,Hard Techno,fuzzy,90
 melodic hardcore,true,Rock,Melodic Hardcore,exact,100
 melodic hardstyle,true,Electronic,Hardstyle,fuzzy,90
 melodic harstyle,true,Electronic,Hardstyle,llm,
@@ -7426,7 +7426,7 @@ menno,false,,,llm,
 menschenverachtende untergrundmusik,false,,,llm,
 mental,false,,,llm,
 mentalcore,true,Electronic,Breakcore,llm,
-mento,true,Reggae,Calypso,llm,
+mento,true,Reggae,Mento,exact,100
 mentos,false,,,llm,
 menudo,false,,,llm,
 merde,false,,,llm,
@@ -7595,7 +7595,7 @@ minimalistic,true,Electronic,Minimal,llm,
 minimalistic dub-techno,true,Electronic,Dub Techno,fuzzy,90
 ministry of sound,false,,,llm,
 minneapolis,false,,,llm,
-minneapolis sound,true,Funk / Soul,Funk,llm,
+minneapolis sound,true,Funk / Soul,Minneapolis Sound,exact,100
 minnesota,false,,,llm,
 minnesota hip hop,true,Hip Hop,,fuzzy,90
 minnie riperton,false,,,llm,
@@ -7637,7 +7637,7 @@ mixes,false,,,llm,
 mixtape,false,,,llm,
 mixtaperoom,false,,,llm,
 mizik rasin,true,"Folk, World, & Country",World,llm,
-mizrahi,true,"Folk, World, & Country",World,llm,
+mizrahi,true,"Folk, World, & Country",Mizrahi,exact,100
 mj-house bounce,true,Electronic,House,fuzzy,90
 mj-smooth jazz,true,Jazz,Smooth Jazz,fuzzy,90
 mk,false,,,llm,
@@ -7659,8 +7659,8 @@ modern alternative rock,true,Rock,Alternative Rock,fuzzy,90
 modern blues,true,Blues,,fuzzy,90
 modern classic,true,Classical,Modern,llm,
 modern classica,true,Classical,Modern,llm,
-modern classical,true,Classical,Classical,fuzzy,90
-modern classical music,true,Classical,Classical,fuzzy,90
+modern classical,true,Electronic,Modern Classical,exact,100
+modern classical music,true,Electronic,Modern Classical,fuzzy,90
 modern composition,true,Classical,Modern,llm,
 modern country,true,"Folk, World, & Country",Country,llm,
 modern creative,true,Jazz,Contemporary Jazz,llm,
@@ -7744,7 +7744,7 @@ moog,false,,,llm,
 moogsploitation,true,Electronic,,llm,
 moombah,true,Electronic,,llm,
 moombahcore,true,Electronic,,llm,
-moombahton,true,Electronic,,llm,
+moombahton,true,Electronic,Moombahton,exact,100
 moombathon,true,Electronic,,llm,
 moonbootica,false,,,llm,
 moonrats,false,,,llm,
@@ -7758,7 +7758,7 @@ morbius,false,,,llm,
 more cowbell,false,,,llm,
 more fucking house,true,Electronic,House,fuzzy,90
 mormor,false,,,llm,
-morna,true,"Folk, World, & Country",World,llm,
+morna,true,"Folk, World, & Country",Morna,exact,100
 morning goa,true,Electronic,Goa Trance,llm,
 moroccan,false,,,llm,
 moroccan chaabi,true,"Folk, World, & Country",World,llm,
@@ -7839,7 +7839,7 @@ murder,false,,,llm,
 murder folk,true,"Folk, World, & Country",Folk,llm,
 murderfolk,true,"Folk, World, & Country",Folk,llm,
 muse,false,,,llm,
-musette,true,Pop,,llm,
+musette,true,Latin,Musette,exact,100
 mushroom,false,,,llm,
 music,false,,,llm,
 music and lyrics,false,,,llm,
@@ -7949,7 +7949,7 @@ mzansi,false,,,llm,
 mzansi house,true,Electronic,House,fuzzy,90
 mzanzi,false,,,llm,
 méxico,false,,,llm,
-música criolla,true,Latin,,llm,
+música criolla,true,Latin,Música Criolla,exact,100
 música latina,true,Latin,,llm,
 música mexicana,true,"Folk, World, & Country",Regional Mexico,llm,
 música popular brasileira,true,Latin,MPB,llm,
@@ -8029,7 +8029,7 @@ nct dream,false,,,llm,
 ndaga,false,,,llm,
 ndr,false,,,llm,
 ndt-step,false,,,llm,
-ndw,true,Electronic,New Wave,llm,
+ndw,true,Rock,NDW,exact,100
 ne-yo,false,,,llm,
 neapolitan,true,"Folk, World, & Country",Canzone Napoletana,llm,
 neapolitan music,true,"Folk, World, & Country",Canzone Napoletana,llm,
@@ -8073,7 +8073,7 @@ neo punk,true,Rock,Punk,fuzzy,90
 neo rnb,true,Funk / Soul,Neo Soul,llm,
 neo soul,true,Funk / Soul,Neo Soul,exact,100
 neo swing,true,Jazz,Swing,fuzzy,90
-neo trance,true,Electronic,Trance,fuzzy,90
+neo trance,true,Electronic,Neo Trance,exact,100
 neo-classical,true,Classical,Neo-Classical,exact,100
 neo-classical metal,true,Classical,Neo-Classical,fuzzy,90
 neo-disco,true,Electronic,Nu-Disco,llm,
@@ -8091,7 +8091,7 @@ neo-swing,true,Jazz,Swing,fuzzy,90
 neo-synthpop,true,Electronic,Synth-pop,llm,
 neo-traditional country,true,"Folk, World, & Country",Country,llm,
 neo-traditionalist country,true,"Folk, World, & Country",Country,llm,
-neo-trance,true,Electronic,Trance,fuzzy,90
+neo-trance,true,Electronic,Neo Trance,exact,100
 neobolero,true,Latin,Bolero,llm,
 neochrome,false,,,llm,
 neoclassic,true,Classical,Neo-Classical,llm,
@@ -8102,7 +8102,7 @@ neoclassical metal,true,Rock,Heavy Metal,llm,
 neoclassical new age,true,Electronic,New Age,fuzzy,90
 neoclassical power metal,true,Rock,Power Metal,fuzzy,90
 neoclassicism,true,Classical,Neo-Classical,llm,
-neofolk,true,"Folk, World, & Country",Folk,llm,
+neofolk,true,Electronic,Neofolk,exact,100
 neofunk,true,Funk / Soul,Funk,llm,
 neomedieval,true,Classical,Medieval,llm,
 neomelodica,true,"Folk, World, & Country",Canzone Napoletana,llm,
@@ -8183,10 +8183,10 @@ new soul,true,Funk / Soul,Soul,fuzzy,90
 new soul - hip hop - rap,true,Hip Hop,,fuzzy,90
 new south wales,false,,,llm,
 new traditionalist country,true,"Folk, World, & Country",Country,llm,
-new wave,true,Electronic,New Wave,exact,100
-new wave of british heavy metal,true,Rock,Heavy Metal,llm,
-new wave pop,true,Electronic,New Wave,fuzzy,90
-new wave rap,true,Electronic,New Wave,fuzzy,90
+new wave,true,Rock,New Wave,llm,
+new wave of british heavy metal,true,Rock,Heavy Metal,fuzzy,90
+new wave pop,true,Pop,,fuzzy,90
+new wave rap,true,Hip Hop,,llm,
 new weird america,true,"Folk, World, & Country",Folk,llm,
 new york,false,,,llm,
 new york band,false,,,llm,
@@ -8300,7 +8300,7 @@ noise by women,false,,,llm,
 noise pop,true,Pop,,fuzzy,90
 noise rock,true,Rock,Noise Rock,exact,100
 noise-pop,true,Pop,,fuzzy,90
-noisecore,true,Rock,Grindcore,llm,
+noisecore,true,Rock,Noisecore,exact,100
 noisia,false,,,llm,
 noisy synth,false,,,llm,
 nola,false,,,llm,
@@ -8352,10 +8352,10 @@ norwegian house,true,Electronic,House,fuzzy,90
 norwegian industrial,true,Electronic,Industrial,llm,
 norwegian jazz,true,Jazz,,fuzzy,90
 norwegian music scene 2022,false,,,llm,
-norwegian new wave,true,Electronic,New Wave,fuzzy,90
+norwegian new wave,true,Rock,New Wave,llm,
 norwegian pianist,false,,,llm,
 norwegian pop,true,Pop,,fuzzy,90
-norwegian synth and new wave,true,Electronic,New Wave,fuzzy,90
+norwegian synth and new wave,true,Electronic,New Wave,llm,
 norweigan,false,,,llm,
 norykko,false,,,llm,
 nostalgic,false,,,llm,
@@ -8434,8 +8434,8 @@ nueva canción,true,Latin,Nueva Cancion,exact,100
 nueva canción chilena,true,Latin,Nueva Cancion,fuzzy,90
 nueva canción española,true,Latin,Nueva Cancion,fuzzy,90
 nueva canción latinoamericana,true,Latin,Nueva Cancion,fuzzy,90
-nueva trova,true,Latin,Nueva Cancion,llm,
-nueva trova cubana,true,Latin,Nueva Cancion,llm,
+nueva trova,true,Latin,Nueva Trova,exact,100
+nueva trova cubana,true,Latin,Nueva Trova,fuzzy,90
 nuevo cancionero,true,Latin,Nueva Cancion,llm,
 nuevo flamenco,true,"Folk, World, & Country",Flamenco,fuzzy,90
 nuevo tango,true,Latin,Tango,fuzzy,90
@@ -8479,7 +8479,7 @@ obsesionado,false,,,llm,
 obsession,false,,,llm,
 obsolete units,false,,,llm,
 oc remix,false,,,llm,
-occitan,false,,,llm,
+occitan,true,Latin,Occitan,exact,100
 occult,false,,,llm,
 oceania,false,,,llm,
 oddatelier,false,,,llm,
@@ -8596,7 +8596,7 @@ operacion triunfo,false,,,llm,
 operatic,true,Classical,Opera,llm,
 operatic performers,false,,,llm,
 operatic pop,true,Pop,,fuzzy,90
-operetta,true,Classical,,llm,
+operetta,true,Classical,Operetta,exact,100
 operette,true,Classical,,llm,
 opium,false,,,llm,
 opm,true,Pop,,llm,
@@ -8610,7 +8610,7 @@ orchestral,true,Classical,,llm,
 orchestral dubstep,true,Electronic,Dubstep,fuzzy,90
 orchestral electronic,true,Electronic,,fuzzy,90
 orchestral glitchstep,true,Electronic,Dubstep,llm,
-orchestral groove metal,true,Rock,Heavy Metal,llm,
+orchestral groove metal,true,Rock,Groove Metal,fuzzy,90
 orchestral pop,true,Pop,,fuzzy,90
 orchestral song,true,Classical,,llm,
 orchestral soundtrack,true,Stage & Screen,Soundtrack,llm,
@@ -8893,7 +8893,7 @@ philly,false,,,llm,
 philly club,true,Electronic,,llm,
 philly soul,true,Funk / Soul,Soul,fuzzy,90
 phonetic phail,false,,,llm,
-phonk,true,Hip Hop,Trap,llm,
+phonk,true,Hip Hop,Phonk,exact,100
 phresher,false,,,llm,
 phreshy duzit,false,,,llm,
 physician,false,,,llm,
@@ -8923,7 +8923,7 @@ piano/easy listening,true,Jazz,Easy Listening,fuzzy,90
 piano/new age,true,Electronic,New Age,fuzzy,90
 pianopop,true,Pop,,llm,
 picovat do niecoho a o polroka spravit to iste,false,,,llm,
-piedmont blues,true,Blues,,fuzzy,90
+piedmont blues,true,Blues,Piedmont Blues,exact,100
 piepmatz records,false,,,llm,
 pietro mascagni,false,,,llm,
 pigfuck,true,Rock,Noise Rock,llm,
@@ -9013,7 +9013,7 @@ polish trance,true,Electronic,Trance,fuzzy,90
 polish trap,true,Hip Hop,Trap,fuzzy,90
 polish underground force,false,,,llm,
 polishindie,true,Rock,Indie Rock,llm,
-political,false,,,llm,
+political,true,Non-Music,Political,exact,100
 political hip hop,true,Hip Hop,,fuzzy,90
 political hip-hop,true,Hip Hop,,fuzzy,90
 political music,false,,,llm,
@@ -9119,7 +9119,7 @@ porno corridos,true,"Folk, World, & Country",Regional Mexico,llm,
 porno for pyros,false,,,llm,
 porno gay,false,,,llm,
 pornoes,false,,,llm,
-porro,true,Latin,,llm,
+porro,true,Latin,Porro,exact,100
 port elizabeth,false,,,llm,
 port salerno,false,,,llm,
 porta,false,,,llm,
@@ -9155,7 +9155,7 @@ post rock,true,Rock,Post Rock,exact,100
 post-alternative,true,Rock,Alternative Rock,llm,
 post-black metal,true,Rock,Black Metal,fuzzy,90
 post-bop,true,Jazz,Post Bop,exact,100
-post-brexit new wave,true,Electronic,New Wave,fuzzy,90
+post-brexit new wave,true,Rock,New Wave,llm,
 post-britpop,true,Rock,Brit Pop,llm,
 post-classical,true,Classical,Classical,fuzzy,90
 post-club,true,Electronic,Leftfield,llm,
@@ -9203,7 +9203,7 @@ power metal,true,Rock,Power Metal,exact,100
 power noise,true,Electronic,Rhythmic Noise,llm,
 power pop,true,Rock,Power Pop,exact,100
 power rock,true,Rock,,fuzzy,90
-power violence,true,Rock,Hardcore,llm,
+power violence,true,Rock,Power Violence,exact,100
 power world,false,,,llm,
 powerful,false,,,llm,
 powerful voice,false,,,llm,
@@ -9262,8 +9262,8 @@ progresive trance,true,Electronic,Trance,fuzzy,90
 progressi,true,Rock,Prog Rock,llm,
 progressive,true,Rock,Prog Rock,llm,
 progressive black metal,true,Rock,Black Metal,fuzzy,90
-progressive bluegrass,true,"Folk, World, & Country",Bluegrass,fuzzy,90
-progressive breaks,true,Electronic,Breaks,fuzzy,90
+progressive bluegrass,true,"Folk, World, & Country",Progressive Bluegrass,exact,100
+progressive breaks,true,Electronic,Progressive Breaks,exact,100
 progressive country,true,"Folk, World, & Country",Country,llm,
 progressive death metal,true,Rock,Death Metal,fuzzy,90
 progressive deathcore,true,Rock,Deathcore,llm,
@@ -9281,7 +9281,7 @@ progressive indie rock,true,Rock,Indie Rock,fuzzy,90
 progressive jazz,true,Jazz,,fuzzy,90
 progressive math metal,true,Rock,Math Rock,llm,
 progressive merengue,true,Latin,Merengue,fuzzy,90
-progressive metal,true,Rock,Prog Rock,llm,
+progressive metal,true,Rock,Progressive Metal,exact,100
 progressive metalcore,true,Rock,Metalcore,fuzzy,90
 progressive new age,true,Electronic,New Age,fuzzy,90
 progressive pop,true,Pop,,fuzzy,90
@@ -9349,7 +9349,7 @@ psychedelic trance,true,Electronic,Trance,fuzzy,90
 psychedelic-disco,true,Funk / Soul,Disco,llm,
 psychedellic rock,true,Rock,,fuzzy,90
 psychill,true,Electronic,Downtempo,llm,
-psychobilly,true,Rock,Rockabilly,llm,
+psychobilly,true,Rock,Psychobilly,exact,100
 psychocore,true,Electronic,Hardcore,llm,
 psychodelic,true,Rock,Psychedelic Rock,llm,
 psychofolk,true,"Folk, World, & Country",Folk,llm,
@@ -9396,7 +9396,7 @@ punk n roll,true,Rock,Punk,fuzzy,90
 punk rap,true,Rock,Punk,fuzzy,90
 punk rock,true,Rock,Punk,alias,100
 punk-hardcore,true,Rock,Punk,fuzzy,90
-punk/new wave,true,Electronic,New Wave,fuzzy,90
+punk/new wave,true,Rock,Punk,fuzzy,90
 punkabilly,true,Rock,Rockabilly,llm,
 punkrock,true,Rock,Punk,llm,
 punta,true,Latin,Cumbia,llm,
@@ -9419,7 +9419,7 @@ pyotr ilyich tchaikovsky,false,,,llm,
 pzk,false,,,llm,
 q-jones,false,,,llm,
 q-pop,true,Pop,,fuzzy,90
-qawwali,true,"Folk, World, & Country",Traditional,llm,
+qawwali,true,"Folk, World, & Country",Qawwali,exact,100
 qc,false,,,llm,
 qi-patronymic,false,,,llm,
 qlencja jazz selection,true,Jazz,,fuzzy,90
@@ -9542,7 +9542,7 @@ rap beat,true,Hip Hop,Instrumental,llm,
 rap belge,true,Hip Hop,,llm,
 rap bordeaulais,true,Hip Hop,,llm,
 rap classique,true,Hip Hop,Golden Age Hip Hop,llm,
-rap cloud rap,true,Hip Hop,,llm,
+rap cloud rap,true,Hip Hop,Cloud Rap,fuzzy,90
 rap concret,true,Hip Hop,Conscious,llm,
 rap conscient,true,Hip Hop,Conscious,llm,
 rap dominicano,true,Hip Hop,,llm,
@@ -9884,7 +9884,7 @@ rock music,true,Rock,,fuzzy,90
 rock musicians,true,Rock,,fuzzy,90
 rock n roll,true,Rock,,fuzzy,90
 rock nacional,true,Rock,,fuzzy,90
-rock opera,true,Rock,,llm,
+rock opera,true,Rock,Rock Opera,exact,100
 rock peruano,true,Rock,,fuzzy,90
 rock pop,true,Rock,Pop Rock,llm,
 rock prog,true,Rock,,fuzzy,90
@@ -9920,7 +9920,7 @@ roman school,false,,,llm,
 roman sidorov,false,,,llm,
 romance,true,Pop,Ballad,llm,
 romaneasca,false,,,llm,
-romani,false,,,llm,
+romani,true,"Folk, World, & Country",Romani,exact,100
 romania,false,,,llm,
 romanian,false,,,llm,
 romanian band,false,,,llm,
@@ -10092,7 +10092,7 @@ samba paulista,true,Latin,Samba,fuzzy,90
 samba raiz,true,Latin,Samba,fuzzy,90
 samba rock,true,Latin,Samba,llm,
 samba soul,true,Latin,Samba,llm,
-samba-canção,true,Latin,Samba,fuzzy,90
+samba-canção,true,Latin,Samba-Canção,exact,100
 samba-jazz,true,Latin,Samba,llm,
 samba-rock,true,Latin,Samba,llm,
 sambass,true,Electronic,Drum n Bass,llm,
@@ -10283,7 +10283,7 @@ sentada na esquina,false,,,llm,
 sentimental,false,,,llm,
 sentimental ballad,true,Pop,Ballad,fuzzy,90
 sentimientos,false,,,llm,
-sephardic,true,"Folk, World, & Country",World,llm,
+sephardic,true,"Folk, World, & Country",Sephardic,exact,100
 sequels and hunches e p,false,,,llm,
 sequencer & tracker,false,,,llm,
 sequencer and midi,false,,,llm,
@@ -10298,7 +10298,7 @@ serbian metal,true,Rock,Heavy Metal,llm,
 serbian rap,true,Hip Hop,,llm,
 serebro,false,,,llm,
 serenity,false,,,llm,
-seresta,true,Latin,,llm,
+seresta,true,Latin,Seresta,exact,100
 serge gainsbourg,false,,,llm,
 serge sphere,false,,,llm,
 sergei prokofiev,false,,,llm,
@@ -10728,7 +10728,7 @@ soulfulness,false,,,llm,
 souljazz,true,Jazz,Soul-Jazz,llm,
 soulstep,true,Electronic,,llm,
 sound,false,,,llm,
-sound art,true,Electronic,,llm,
+sound art,true,Non-Music,Sound Art,exact,100
 sound collage,true,Electronic,Sound Collage,exact,100
 sound design,false,,,llm,
 sound designer,false,,,llm,
@@ -10737,7 +10737,7 @@ sound engineers,false,,,llm,
 sound of freedom,false,,,llm,
 sound of legend,false,,,llm,
 sound of nature,true,Non-Music,Field Recording,llm,
-sound poetry,true,Non-Music,Poetry,llm,
+sound poetry,true,Non-Music,Sound Poetry,exact,100
 sound recording executives and producers,false,,,llm,
 sound system,false,,,llm,
 sound track,true,Stage & Screen,Soundtrack,llm,
@@ -10854,11 +10854,11 @@ special to me songs,false,,,llm,
 specific generalities,false,,,llm,
 spectral sound,false,,,llm,
 spectralism,true,Classical,Contemporary,llm,
-speech,true,Non-Music,Spoken Word,llm,
-speed garage,true,Electronic,UK Garage,llm,
+speech,true,Non-Music,Speech,exact,100
+speed garage,true,Electronic,Speed Garage,exact,100
 speed metal,true,Rock,Speed Metal,exact,100
 speed thrash metal,true,Rock,Thrash,fuzzy,90
-speedcore,true,Electronic,Hardcore,llm,
+speedcore,true,Electronic,Speedcore,exact,100
 speedhouse,true,Electronic,House,llm,
 speedpunk,true,Rock,Punk,llm,
 spelling mistake,false,,,llm,
@@ -10990,7 +10990,7 @@ street music,false,,,llm,
 street pop,true,Pop,,fuzzy,90
 street punk,true,Rock,Punk,fuzzy,90
 street rap,true,Hip Hop,Gangsta,llm,
-stride,true,Jazz,Ragtime,llm,
+stride,true,Jazz,Stride,exact,100
 strike,false,,,llm,
 string,false,,,llm,
 string orchestra,false,,,llm,
@@ -11188,10 +11188,10 @@ symphonic,true,Rock,Symphonic Rock,llm,
 symphonic black metal,true,Rock,Black Metal,fuzzy,90
 symphonic death metal,true,Rock,Death Metal,fuzzy,90
 symphonic gay metal,true,Rock,Symphonic Rock,llm,
-symphonic metal,true,Rock,Symphonic Rock,llm,
+symphonic metal,true,Rock,Symphonic Metal,exact,100
 symphonic power metal,true,Rock,Power Metal,fuzzy,90
 symphonic prog,true,Rock,Prog Rock,llm,
-symphonic progressive metal,true,Rock,Prog Rock,llm,
+symphonic progressive metal,true,Rock,Progressive Metal,fuzzy,90
 symphonic rock,true,Rock,Symphonic Rock,exact,100
 symphonic techno,true,Electronic,Techno,fuzzy,90
 symphonic thrash metal,true,Rock,Thrash,fuzzy,90
@@ -11311,7 +11311,7 @@ tech-trance,true,Electronic,Tech Trance,exact,100
 techgrind,true,Rock,Grindcore,llm,
 techhouse,true,Electronic,Tech House,llm,
 techlifting trance,true,Electronic,Trance,fuzzy,90
-technical,false,,,llm,
+technical,true,Non-Music,Technical,exact,100
 technical brutal death metal,true,Rock,Death Metal,fuzzy,90
 technical death metal,true,Rock,Technical Death Metal,exact,100
 technical deathcore,true,Rock,Deathcore,llm,
@@ -11599,7 +11599,7 @@ tiktokcore,true,Pop,,llm,
 tilburg,false,,,llm,
 tim berg,false,,,llm,
 tim mcgraw,false,,,llm,
-timba,true,Latin,Salsa,llm,
+timba,true,Latin,Timba,exact,100
 timbaland,false,,,llm,
 timbales,false,,,llm,
 time,false,,,llm,
@@ -11848,7 +11848,7 @@ tronder-rock,true,Rock,,fuzzy,90
 tropic house,true,Electronic,House,fuzzy,90
 tropical,true,Latin,,llm,
 tropical bass,true,Electronic,,llm,
-tropical house,true,Electronic,House,fuzzy,90
+tropical house,true,Electronic,Tropical House,exact,100
 tropical music,true,Latin,,llm,
 tropical pop,true,Pop,,fuzzy,90
 tropical remix,false,,,llm,
@@ -11858,7 +11858,7 @@ tropicanibalismo,true,Rock,Psychedelic Rock,llm,
 tropicália,true,Rock,Psychedelic Rock,llm,
 tropipop,true,Pop,,llm,
 trouse,true,Electronic,Progressive House,llm,
-trova,true,Latin,,llm,
+trova,true,Latin,Trova,exact,100
 trovador,false,,,llm,
 trovarobato,false,,,llm,
 trp-hop,true,Electronic,Trip Hop,llm,
@@ -11982,7 +11982,7 @@ uk dancehall,true,Reggae,Dancehall,llm,
 uk drill,true,Hip Hop,Trap,llm,
 uk dub,true,Reggae,Dub,llm,
 uk electronic,true,Electronic,,fuzzy,90
-uk funky,true,Electronic,UK Garage,llm,
+uk funky,true,Electronic,UK Funky,exact,100
 uk garage,true,Electronic,UK Garage,exact,100
 uk grime,true,Electronic,Grime,fuzzy,90
 uk hardcore,true,Electronic,Hardcore,llm,
@@ -12170,7 +12170,7 @@ variété française,true,Pop,,llm,
 variété pop,true,Pop,,fuzzy,90
 vasco rossi,false,,,llm,
 vassy,false,,,llm,
-vaudeville,true,Pop,Music Hall,llm,
+vaudeville,true,Stage & Screen,Vaudeville,exact,100
 vedic leo moon,false,,,llm,
 vedic taurus,false,,,llm,
 vegan,false,,,llm,
@@ -12212,7 +12212,7 @@ video,false,,,llm,
 video game,false,,,llm,
 video game developer,false,,,llm,
 video game metal,true,Rock,Heavy Metal,llm,
-video game music,true,Stage & Screen,Soundtrack,llm,
+video game music,true,Stage & Screen,Video Game Music,exact,100
 video game remixes,true,Stage & Screen,Soundtrack,llm,
 video game soundtrack,true,Stage & Screen,Soundtrack,llm,
 video game soundtracks,true,Stage & Screen,Soundtrack,llm,
@@ -12315,7 +12315,7 @@ voice crush,false,,,llm,
 voice of an angel,false,,,llm,
 voix,false,,,llm,
 volare,false,,,llm,
-volksmusik,true,"Folk, World, & Country",Traditional,llm,
+volksmusik,true,"Folk, World, & Country",Volksmusik,exact,100
 voltio,false,,,llm,
 vonwegenlisbeth,false,,,llm,
 vory,false,,,llm,
@@ -12407,7 +12407,7 @@ western,false,,,llm,
 western classical,true,Classical,Classical,fuzzy,90
 western classical music,true,Classical,Classical,fuzzy,90
 western european traditions,false,,,llm,
-western swing,true,Jazz,Swing,fuzzy,90
+western swing,true,"Folk, World, & Country",Western Swing,exact,100
 westlife,false,,,llm,
 wet wet wet,false,,,llm,
 whales records,false,,,llm,
@@ -12475,7 +12475,7 @@ wish ill see them one day,false,,,llm,
 wisiin y yandel,false,,,llm,
 wisin y yandel,false,,,llm,
 wistful,false,,,llm,
-witch house,true,Electronic,House,fuzzy,90
+witch house,true,Electronic,Witch House,exact,100
 witch trap,true,Hip Hop,Trap,fuzzy,90
 withhouse,true,Electronic,,llm,
 wiz khalifa,false,,,llm,
@@ -12678,7 +12678,7 @@ zurich,false,,,llm,
 zweckreim massaker,false,,,llm,
 zwoele zwollie,false,,,llm,
 zwoele zwollies,false,,,llm,
-zydeco,true,"Folk, World, & Country",,llm,
+zydeco,true,"Folk, World, & Country",Zydeco,exact,100
 åsanefest 2025,false,,,llm,
 éire,false,,,llm,
 électro-organique,true,Electronic,,llm,
