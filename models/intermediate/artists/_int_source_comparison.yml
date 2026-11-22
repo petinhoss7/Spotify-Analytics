@@ -58,7 +58,7 @@ models:
 
       - name: discogs_style
         description: >
-          Discogs style (sous-genre, one of the 372 closed-list values)
+          Discogs style (sous-genre, one of the 611 closed-list values)
           when a specific style fits, else null.
 
       - name: match_method

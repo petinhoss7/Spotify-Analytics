@@ -31,9 +31,37 @@ class TestNormalize(unittest.TestCase):
 
 class TestTaxonomy(unittest.TestCase):
     def test_counts(self):
+        # 611 styles after the merge with the Quantixed Discogs export
+        # (372 before). These numbers must be updated deliberately whenever
+        # the taxonomy is rebuilt with scripts/build_taxonomy.py.
         self.assertEqual(len(GENRES), 15)
-        self.assertEqual(sum(len(v) for v in GENRES.values()), 372)
-        self.assertEqual(len(FUZZY_KEYS) + len(AMBIGUOUS), 373)
+        self.assertEqual(sum(len(v) for v in GENRES.values()), 611)
+        # a genre that is also its own style ("Classical", "Reggae") collapses
+        # onto one key, so there are fewer keys than genre + style entries
+        self.assertEqual(len(FUZZY_KEYS) + len(AMBIGUOUS), 608)
+
+    def test_no_spelling_collisions(self):
+        # two spellings of one style ("Norteño" / "Norteno") would fold onto a
+        # single normalized key; build_taxonomy.py dedupes them, and this is
+        # the invariant that guarantees it
+        seen: dict[str, set] = {}
+        for genre, styles in GENRES.items():
+            for style in styles:
+                seen.setdefault(ct.normalize(style), set()).add(style)
+        collisions = {key: value for key, value in seen.items() if len(value) > 1}
+        self.assertEqual(collisions, {})
+
+    def test_no_style_is_another_genres_name(self):
+        # "Hip Hop" as a style under Electronic would make the tag "hip hop"
+        # ambiguous and send it to the LLM instead of resolving it
+        genre_keys = {ct.normalize(g) for g in GENRES}
+        offenders = [
+            (genre, style)
+            for genre, styles in GENRES.items()
+            for style in styles
+            if ct.normalize(style) in genre_keys and ct.normalize(style) != ct.normalize(genre)
+        ]
+        self.assertEqual(offenders, [])
 
     def test_genre_style_merges(self):
         self.assertEqual(EXACT_INDEX["classical"], ("Classical", "Classical"))

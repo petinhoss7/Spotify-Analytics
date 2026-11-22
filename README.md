@@ -34,7 +34,7 @@ flowchart LR
 | `models/staging/` | Flattens JSON, types columns, normalizes timestamps to UTC, hashes IPs (PII) |
 | `models/intermediate/` | Deduplication, listening features, artist profiles, cross-source comparison, genre scoring & attribution |
 | `models/marts/` | `fct_streams` (one row per music stream) and `fct_genre_listening` (minutes per month x genre) |
-| `seeds/` | Closed Discogs taxonomy (15 genres / 372 styles) and the 12,697-tag classification map |
+| `seeds/` | Closed Discogs taxonomy (15 genres / 611 styles) and the 12,697-tag classification map |
 | `tests/` | Singular reconciliation and business-rule tests |
 
 Full DAG and model-by-model documentation: [`docs/architecture.md`](docs/architecture.md).

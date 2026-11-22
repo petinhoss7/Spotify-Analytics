@@ -11,7 +11,7 @@
           test_staging_tags_all_mapped.sql guards against gaps
 
     discogs_genre : closed-list genre (15 values, acts as the genre family)
-    discogs_style : closed-list style/sous-genre (372 values), may be null
+    discogs_style : closed-list style/sous-genre (611 values), may be null
                     when no specific style fits the raw tag
 
 */

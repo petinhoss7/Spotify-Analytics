@@ -84,3 +84,7 @@ seeds:
       # hand-verification list produced by scripts/classifier/tags_to_verify.py
       # (a working document, not warehouse reference data)
       +enabled: false
+    discogs_genres_styles_quantixed:
+      # upstream Discogs export merged by scripts/build_taxonomy.py
+      # (an input, not warehouse reference data)
+      +enabled: false

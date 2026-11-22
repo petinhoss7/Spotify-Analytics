@@ -5,7 +5,7 @@ models:
     description: >
       All artist tags from RapidAPI (Spotify genres), Last.fm, and MusicBrainz,
       classified against the closed Discogs genre/style taxonomy
-      (seeds/discogs_genres_styles.json, 15 genres / 372 styles).
+      (seeds/discogs_genres_styles.json, 15 genres / 611 styles).
 
       Classification is built offline by scripts/classifier/classify_tags.py
       (exact, alias, containment and LLM layers) and materialized as the
@@ -55,7 +55,7 @@ models:
       - name: discogs_style
         description: >
           Discogs style (sous-genre) assigned to the raw tag. One of the
-          372 closed-list styles, or null when no specific style fits.
+          611 closed-list styles, or null when no specific style fits.
 
   - name: int_artists
     description: >

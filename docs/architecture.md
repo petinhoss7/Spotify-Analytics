@@ -139,8 +139,34 @@ Interactive version: `dbt docs generate` then `dbt docs serve`.
 
 | Seed | Role |
 |---|---|
-| `discogs_genres_styles` | Closed Discogs list flattened from `discogs_genres_styles.json` (15 genres x 372 styles); referential-integrity reference for tests |
+| `discogs_genres_styles` | Closed Discogs list flattened from `discogs_genres_styles.json` (15 genres x 611 styles); referential-integrity reference for tests. Built by `scripts/build_taxonomy.py`, which merges several Discogs exports — see below |
 | `tag_genre_map` | 1 row per unique raw tag (12,697): `is_genre_tag`, `discogs_genre`, `discogs_style`, `match_method`, `match_score`. Produced offline by `scripts/classifier/classify_tags.py` |
+
+#### Building the closed taxonomy
+
+`seeds/discogs_genres_styles.json` is **reference data, not hand-edited**:
+`scripts/build_taxonomy.py` merges every available Discogs export and writes
+both the JSON (with its provenance and counts in `meta`) and the flat
+`discogs_genre_styles.csv` seed.
+
+Sources are merged, never replaced. The Discogs style list evolves and no
+single export is complete: a 2022 export and the older local file each missed
+styles the other had — the local file lacked `Lo-Fi`, `Lounge` and
+`Jangle Pop`, the export lacked `Deep Funk`, `Detroit Techno` and
+`Proto-Punk`. A straight replacement would have dropped 13 styles and
+invalidated 45 pairs already in use.
+
+Two rules keep the result sound:
+
+- **one spelling per style**, grouped by normalized form, so `Norteno` and
+  `Norteño` cannot both exist and fold onto the same lookup key;
+- **a style named after a different genre is dropped**: the export lists
+  `Hip Hop` and `Latin` as styles under Electronic, which would make the tags
+  `hip hop` (1,964 artists) and `latin` (542) ambiguous and send them to the
+  LLM instead of resolving them deterministically.
+
+Current build: **15 genres, 611 styles, 592 exact keys, 16 ambiguous keys**,
+with 0 spelling collisions and 0 in-use pairs invalidated.
 
 #### Tag classification (offline, `scripts/classifier/`)
 
