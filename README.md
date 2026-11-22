@@ -50,11 +50,12 @@ bonus `1 + 0.5 x (distinct_sources - 1)` so agreement outranks tag volume.
 Each artist is then described by a **combination** of four attributes: a
 primary pair `(primary_genre, primary_style)` and a secondary pair
 `(secondary_genre, secondary_style)`, each style belonging to the genre it is
-paired with. The secondary pair is filled whenever the artist has a second
-scored genre — it is not gated, its strength is reported instead through
-`secondary_score_ratio` and `secondary_sources_count`. `genre_share` (shares
-sum to 1 per artist) is what `fct_genre_listening` uses to split listening time
-across **all** scored genres, not only the primary pair.
+paired with. The secondary pair is kept only when it is real evidence: at
+least 2 distinct tags must back it, or it must still weigh at least 10% of the
+primary score — a genre resting on a single stray tag is not a genre.
+`genre_share` (shares sum to 1 per artist) is what `fct_genre_listening` uses
+to split listening time across **all** scored genres, not only the primary
+pair.
 
 ## Data sources
 

@@ -26,11 +26,16 @@
     Selection:
         - primary_genre = highest genre_score
           (ties: nb_sources desc, then genre name - deterministic)
-        - secondary_genre = runner-up genre, filled whenever the artist has a
-          second scored genre. It is NOT gated: an artist with two genres has
-          two genres, and hiding the weaker one would leave the combination
-          incomplete. Its strength is reported instead, through
-          secondary_score_ratio and secondary_sources_count.
+        - secondary_genre = runner-up genre, kept when it is real evidence:
+              nb_tags >= {{ var('attribution_min_secondary_tags', 2) }}
+              or score_ratio >= {{ var('attribution_min_secondary_score_ratio', 0.10) }}
+          A genre resting on a single stray tag is not a genre (an isolated
+          "pop" or "orchestral" tag used to create a second genre at ~1% of
+          the primary score). Counts, not weights, are used for the tag
+          floor: sources without a tag count weigh less by construction, and
+          a weight floor would disqualify Spotify genres. Below the floor the
+          secondary pair is null; strength is still reported through
+          secondary_score_ratio, secondary_nb_tags and secondary_sources_count.
         - primary_style = highest scoring style among the primary genre's rows
         - secondary_style = highest scoring style among the secondary genre's
           rows (null when the artist has no secondary genre, or no styled tag
@@ -46,6 +51,8 @@
 
 */
 
+{% set min_secondary_tags = var('attribution_min_secondary_tags', 2) %}
+{% set min_secondary_ratio = var('attribution_min_secondary_score_ratio', 0.10) %}
 {% set ambiguity_ratio = var('attribution_ambiguity_ratio', 0.75) %}
 
 /*
@@ -106,9 +113,10 @@ genre_summary as (
         max(case when rank_position = 1 then genre_score end) as primary_genre_score,
         max(case when rank_position = 1 then nb_sources end) as nb_supporting_sources,
         max(case when rank_position = 1 then nb_tags end) as primary_nb_tags,
-        max(case when rank_position = 2 then discogs_genre end) as secondary_genre,
+        max(case when rank_position = 2 then discogs_genre end) as secondary_genre_candidate,
         max(case when rank_position = 2 then genre_score end) as secondary_genre_score,
         max(case when rank_position = 2 then nb_sources end) as secondary_sources_count,
+        max(case when rank_position = 2 then nb_tags end) as secondary_nb_tags,
         count(*) as nb_distinct_genres,
         sum(genre_score) as total_score
     from genre_ranked
@@ -121,7 +129,19 @@ genre_final as (
     select
         *,
         secondary_genre_score / nullif(primary_genre_score, 0) as secondary_score_ratio,
-        primary_genre_score / nullif(total_score, 0) as primary_share
+        primary_genre_score / nullif(total_score, 0) as primary_share,
+
+        -- a genre resting on a single stray tag is not a genre: keep the
+        -- runner-up only when it has real evidence behind it
+        case
+            when secondary_genre_candidate is not null
+                 and (
+                     secondary_nb_tags >= {{ min_secondary_tags }}
+                     or secondary_genre_score / nullif(primary_genre_score, 0)
+                        >= {{ min_secondary_ratio }}
+                 )
+            then secondary_genre_candidate
+        end as secondary_genre
 
     from genre_summary
 
@@ -199,6 +219,7 @@ select
     round(g.secondary_genre_score, 3) as secondary_genre_score,
     round(g.secondary_score_ratio, 4) as secondary_score_ratio,
     g.secondary_sources_count,
+    g.secondary_nb_tags,
 
     ss.discogs_style as secondary_style,
     round(ss.style_score, 3) as secondary_style_score,

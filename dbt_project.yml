@@ -52,10 +52,16 @@ data_tests:
   +schema: test_failures
 
 # Attribution tunables (int_artists_genre_attribution)
-# The secondary genre is no longer gated: an artist with two scored genres
-# gets two genres, and the weaker one's strength is reported through
-# secondary_score_ratio / secondary_sources_count instead of being hidden.
+# The secondary genre is filled from the runner-up, but it must be real
+# evidence: a genre backed by a single tag is not a genre. It is kept when it
+# rests on at least attribution_min_secondary_tags distinct tags, or when it
+# still weighs at least attribution_min_secondary_score_ratio of the primary.
+# Counts, not weights, are used for the tag floor: sources without a tag count
+# (Spotify genres) weigh less by construction, and a weight floor would
+# disqualify them.
 vars:
+  attribution_min_secondary_tags: 2
+  attribution_min_secondary_score_ratio: 0.10
   attribution_ambiguity_ratio: 0.75
 
 # Seeds: closed-list reference data and the tag classification map

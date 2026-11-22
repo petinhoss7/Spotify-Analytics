@@ -246,10 +246,15 @@ views and zero `unmapped` lines). On top of it:
   fuzzy 0.9, llm 0.8), genre score
   multiplied by `(1 + 0.5 × (distinct_sources − 1))` so cross-source
   agreement outranks tag volume. Primary = top score; the secondary genre is
-  the runner-up and is **not gated** — an artist with two scored genres has
-  two genres, and the weaker one's strength is reported through
-  `secondary_score_ratio` and `secondary_sources_count` instead of being
-  hidden. Styles are ranked **within each genre**, so the primary style is
+  the runner-up, kept only when it is real evidence — at least
+  `attribution_min_secondary_tags` distinct tags back it, or it still weighs
+  at least `attribution_min_secondary_score_ratio` of the primary. A genre
+  resting on a single stray tag is not a genre (an isolated `pop`,
+  `orchestral` or `black metal` used to invent a second genre at ~1% of the
+  primary score). Counts, not weights, are used for the tag floor, so sources
+  without a tag count are not penalised. Strength is always reported through
+  `secondary_score_ratio`, `secondary_nb_tags` and `secondary_sources_count`.
+  Styles are ranked **within each genre**, so the primary style is
   the best style of the primary genre, and the secondary style the best style
   of the secondary genre. `combined_confidence = 0.6 × primary_share +
   0.4 × (sources / 3)`; `is_ambiguous` flags near-ties (runner-up ratio

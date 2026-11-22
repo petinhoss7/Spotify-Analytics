@@ -17,12 +17,15 @@ models:
       outranks tag volume; scores are deterministic (ties broken by
       source count then name).
 
-      The secondary genre is NOT gated: an artist with two scored genres
-      gets two genres, and the weaker one's strength is reported through
-      secondary_score_ratio and secondary_sources_count instead of being
-      hidden. Styles are ranked within each genre, so the primary style is
-      the best style of the primary genre and the secondary style the best
-      style of the secondary genre.
+      The secondary pair is filled from the runner-up genre, but only when it
+      is real evidence: it must rest on at least
+      attribution_min_secondary_tags distinct tags, or still weigh at least
+      attribution_min_secondary_score_ratio of the primary score. A genre
+      resting on a single stray tag is not a genre. Its strength is always
+      reported through secondary_score_ratio, secondary_nb_tags and
+      secondary_sources_count. Styles are ranked within each genre, so the
+      primary style is the best style of the primary genre and the secondary
+      style the best style of the secondary genre.
 
       Confidence: primary_share (score share of the artist) and
       combined_confidence = 0.6 x primary_share + 0.4 x (sources / 3).
@@ -71,18 +74,22 @@ models:
 
       - name: secondary_genre
         description: >
-          Runner-up genre by score, filled whenever the artist has a second
-          scored genre (nb_distinct_genres >= 2). Null only when the artist
-          has a single genre. Never equal to primary_genre.
+          Runner-up genre, kept when it is real evidence: at least
+          {{ var('attribution_min_secondary_tags', 2) }} distinct tags back
+          it, or it still weighs at least
+          {{ var('attribution_min_secondary_score_ratio', 0.10) }} of the
+          primary score. A genre resting on a single stray tag is not a
+          genre. Null when the artist has a single scored genre, or when the
+          runner-up fails the rule. Never equal to primary_genre.
 
       - name: secondary_genre_score
         description: Weighted score of the secondary genre.
 
       - name: secondary_score_ratio
         description: >
-          Runner-up genre score / primary genre score (0 to 1), null when
-          the artist has a single genre. A low value means the second genre
-          is weak evidence.
+          Runner-up genre score / primary genre score (0 to 1), null when the
+          artist has a single genre. Reported for candidates that fail the
+          rule too, so the strength is never hidden.
         tests:
           - dbt_utils.accepted_range:
               arguments:
@@ -92,6 +99,11 @@ models:
 
       - name: secondary_sources_count
         description: Number of distinct sources tagging the runner-up genre.
+
+      - name: secondary_nb_tags
+        description: >
+          Distinct raw tags backing the runner-up genre - the evidence the
+          inclusion rule is based on.
 
       - name: primary_style
         description: >
