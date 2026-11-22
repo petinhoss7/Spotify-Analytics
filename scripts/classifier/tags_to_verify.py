@@ -165,7 +165,17 @@ def main(argv=None) -> int:
     print(f"  tags with a classification: "
           f"{sum(1 for r in selected if r['current_match_method'])}")
     if previous:
-        print(f"  verdicts carried over from the previous file: {preserved}")
+        preserved = sum(1 for r in selected if (r["verdict"] or "").strip())
+        print(f"  verdicts carried over from the previous file: {preserved}"
+              f" / {len(selected)}")
+        drifted = [
+            r["raw_tag"] for r in selected
+            if r["raw_tag"] in previous
+            and ((r["current_genre"] or "") != (previous[r["raw_tag"]]["current_genre"] or "")
+                 or (r["current_style"] or "") != (previous[r["raw_tag"]]["current_style"] or ""))
+        ]
+        print(f"  rows whose classification changed since the review: {len(drifted)}"
+              + (f" ({', '.join(drifted[:8])}{'...' if len(drifted) > 8 else ''})" if drifted else ""))
     print("  fill `verdict` (ok / wrong) and, when wrong, correct_genre / "
           "correct_style / comment")
     return 0
