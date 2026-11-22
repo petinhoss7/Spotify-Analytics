@@ -6,9 +6,7 @@ models:
       Genre-level evidence scores per artist. One row per artist x
       Discogs genre - every scored genre, not only the sanctioned
       primary/secondary pair. genre_score = sum(row_weight) x
-      (1 + 0.5 x (distinct_sources - 1)) where row_weight =
-      method_weight x confidence x ln(1 + tag_count) (see
-      int_artists_tag_scores); genre_share = genre_score /
+      (1 + 0.5 x (distinct_sources - 1)); genre_share = genre_score /
       artist total (shares sum to 1 per artist). Full float precision is
       kept on purpose: the attribution model reuses these values, and
       rounding here would drift its outputs.

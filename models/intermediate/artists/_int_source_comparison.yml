@@ -63,20 +63,11 @@ models:
 
       - name: match_method
         description: >
-          Classification layer that resolved the tag: override (human
-          curation, seeds/tag_overrides.csv), exact, alias, fuzzy (token
-          containment), llm or noise.
+          Classification layer that resolved the tag: exact, alias, fuzzy
+          (token containment), llm or noise.
 
       - name: match_score
-        description: Deterministic confidence (100 exact/alias, 90 containment); null for llm and override.
-
-      - name: confidence
-        description: >
-          Tag-specificity weight from the seed: 1.0 by default, lowered by
-          the curated overrides for generic tags ("dance", "lo-fi",
-          "oldies"...). Null for non-genre rows. Consumed by
-          int_artists_tag_scores as a second reliability factor next to
-          the method weight.
+        description: Deterministic confidence (100 exact/alias, 90 containment); null for llm.
 
       - name: classification_status
         description: >
@@ -226,14 +217,6 @@ models:
 
       - name: style_rate
         description: Share of genre lines carrying a style (style_rows / genre_rows).
-
-      - name: hedged_genre_rows
-        description: >
-          Genre lines whose confidence is below 1.0, i.e. curated generic
-          tags weighted down by seeds/tag_overrides.csv.
-
-      - name: method_manual
-        description: Lines fixed by a human-curated override.
 
       - name: method_exact
         description: Lines resolved by exact match.

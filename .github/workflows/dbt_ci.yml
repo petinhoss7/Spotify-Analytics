@@ -36,20 +36,11 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Classifier unit tests
-        run: python -m unittest discover -s scripts/classifier -p "test_*.py"
-
-      - name: Gold set evaluation
-        run: python scripts/classifier/eval_classify.py
-
       - name: Build synthetic fixture database
         run: python ci/seed_fixture.py
 
       - name: dbt build (models + seeds + tests)
         run: dbt build --target ci
-
-      - name: Quality report (informational)
-        run: python scripts/classifier/quality_report.py --db ci/fixture.duckdb
 
       - name: Upload dbt artifacts on failure
         if: failure()

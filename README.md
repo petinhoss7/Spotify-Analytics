@@ -34,7 +34,7 @@ flowchart LR
 | `models/staging/` | Flattens JSON, types columns, normalizes timestamps to UTC, hashes IPs (PII) |
 | `models/intermediate/` | Deduplication, listening features, artist profiles, cross-source comparison, genre scoring & attribution |
 | `models/marts/` | `fct_streams` (one row per music stream) and `fct_genre_listening` (minutes per month x genre) |
-| `seeds/` | Closed Discogs taxonomy (15 genres / 372 styles), the 12,697-tag classification map, and the curated tag overrides |
+| `seeds/` | Closed Discogs taxonomy (15 genres / 372 styles) and the 12,697-tag classification map |
 | `tests/` | Singular reconciliation and business-rule tests |
 
 Full DAG and model-by-model documentation: [`docs/architecture.md`](docs/architecture.md).
@@ -43,18 +43,14 @@ Interactive version: `dbt docs generate && dbt docs serve`.
 ### Genre attribution in one paragraph
 
 Every genre-classified tag becomes a weighted row:
-`row_weight = method_weight x confidence x ln(1 + tag_count)`, where
-`method_weight` is the reliability of the mechanism (manual/exact/alias 1.0,
-fuzzy 0.9, LLM 0.8) and `confidence` is the tag's specificity (1.0 by default,
-lowered by the curated `seeds/tag_overrides.csv` for generic tags such as
-`dance`, `indie` or `oldies`, which do not determine a genre by themselves).
-Row weights are summed per artist x genre and multiplied by a cross-source
-bonus `1 + 0.5 x (distinct_sources - 1)` so agreement outranks tag volume. The
-top genre is the primary; a second genre is kept only with two sources and at
-least 50% of the primary score. `genre_share` (shares sum to 1 per artist) is
-what `fct_genre_listening` uses to split listening time across **all** scored
-genres. Styles are ranked only within the final genres, so a sub-genre is
-always coherent with its parent genre.
+`row_weight = method_weight x ln(1 + tag_count)` (exact/alias 1.0, fuzzy 0.9,
+LLM 0.8), summed per artist x genre and multiplied by a cross-source bonus
+`1 + 0.5 x (distinct_sources - 1)` so agreement outranks tag volume. The top
+genre is the primary; a second genre is kept only with two sources and at least
+50% of the primary score. `genre_share` (shares sum to 1 per artist) is what
+`fct_genre_listening` uses to split listening time across **all** scored genres.
+Styles are ranked only within the final genres, so a sub-genre is always
+coherent with its parent genre.
 
 ## Data sources
 
@@ -116,7 +112,7 @@ resumable.
 
 ## Data quality
 
-`dbt build` runs 171 tests, including 14 singular tests that guard the logic
+`dbt build` runs 169 tests, including 14 singular tests that guard the logic
 rather than the columns:
 
 - `fct_streams` and `fct_genre_listening` reconcile against their upstream
@@ -128,102 +124,6 @@ rather than the columns:
   coherent with its parent genre.
 
 Failures are stored in the `test_failures` schema (`+store_failures: true`).
-
-The classifier has its own unit tests (57, run in CI) and an observational
-quality report:
-
-```bash
-python -m unittest discover -s scripts/classifier -p "test_*.py"
-python scripts/classifier/quality_report.py
-```
-
-The report tracks the metrics used to judge a classification change, including
-the **MusicBrainz structured-genre confirmation rate** — MusicBrainz's
-`genres` field is never fed to the classifier, so it acts as an external
-referee for the tag-based attributions.
-
-### Curated tag overrides
-
-`seeds/tag_overrides.csv` fixes 30 high-volume tags by hand, before any
-automatic layer. It carries two kinds of decisions:
-
-- tags that are **not genres** and must not be forced into one:
-  `indie` (Rock 0.30 vs Pop 0.28 — a coin flip across 1,751 artists),
-  `oldies`, `urban`, `instrumental` (Discogs lists that style only under
-  Hip Hop, which mislabelled 1,177 artists);
-- tags that do not determine a genre **by themselves**, kept as weak priors so
-  an artist's specific tags always outrank them: `dance`, `lo-fi`, `chillout`,
-  `electronica`, `edm`, `club`, `progressive`, `singer-songwriter`...
-
-Each row stores the measured justification (the dominant-genre share among the
-artists carrying the tag).
-
-### The containment layer was the real weak point
-
-Once the head was curated, a measurement settled where the remaining risk
-lived: the curated overrides hold 13.0% of the evidence rows, the LLM layer
-only 14.4%, and the deterministic layers 72.7%. So swapping the LLM for a
-stronger model would have moved very little.
-
-`scripts/classifier/context_audit.py` then compared each tag with the dominant
-genre of the *other* tags its artists carry. A tag used by many artists that
-almost all point elsewhere is a strong error candidate — a hundred artists
-cannot all be wrong, but one heuristic can. It found the containment layer at
-**64.8% agreement**, with systematic errors of a recognisable shape: the
-modifier is matched instead of the genre head, because containment takes the
-longest *taxonomy* key and the head is not one.
-
-| Tag | Was | Its artists' context | Now |
-|---|---|---|---|
-| `jazz beats` | Jazz | Hip Hop 79% | Hip Hop / Jazzy Hip-Hop |
-| `punk rap` | Rock / Punk | Hip Hop 90% | Hip Hop |
-| `pop urbaine` | Pop | Hip Hop 57% | Hip Hop |
-| `liquid funk` | Funk / Soul | Electronic 84% | Electronic / Drum n Bass |
-| `cinematic classical` | Classical | Stage & Screen 68% | Stage & Screen / Soundtrack |
-| `emo pop` | Pop | Rock 83% | Rock / Emo |
-| `british blues` | Blues | Rock 90% | Rock / Blues Rock |
-
-A second class of error was not a genre at all: a Lidarr tagging workflow had
-leaked `funk_add_to_lidarr_batch_<n>` 32 times, each resolving to Funk / Soul
-on the single token `funk`. `is_noise` now recognises those workflow
-artifacts.
-
-Cumulative effect of the curation work, measured on two independent signals
-(MusicBrainz's structured genres, never fed to the classifier, and cross-source
-Jaccard):
-
-| | Before | After |
-|---|---|---|
-| MusicBrainz confirmation | 90.4% | **91.2%** |
-| Mean cross-source genre Jaccard | 0.613 | **0.652** |
-| Artists below 0.5 agreement | 29.0% | **24.3%** |
-
-### Gold set: the arbiter
-
-`seeds/tag_gold.csv` is a 209-tag sample (40 highest-usage, 30 carrying an
-ambiguous taxonomy key, 40 containment-resolved, 40 suspected wrong by the
-context audit, 60 random) pre-filled with the current classification, so
-reviewing means editing only the rows you disagree with. The generator flags
-rows whose data-derived signal disagrees with the label, so attention goes
-where it matters:
-
-```bash
-python scripts/classifier/gold_sample.py      # (re)generate the sample
-python scripts/classifier/eval_classify.py    # score the seed against it
-python scripts/classifier/context_audit.py    # find tags the artists contradict
-```
-
-`eval_classify.py` reports accuracy overall, per classification method and per
-usage bucket, then fails below a threshold. It runs in CI, so no change to the
-classifier can land unmeasured. It is also the honest answer to "is this
-change an improvement?": without it, swapping a model or promoting a layer just
-replaces one black box with another.
-
-The disagreements the first runs surfaced fixed six systematic bugs, including
-`rhythm and blues` resolved to *Blues* by a containment match on the token
-`blues` even though the phrase is an ambiguous taxonomy key (it now abstains
-and resolves through an explicit alias), and the containment errors listed
-above.
 
 ## CI
 
@@ -259,12 +159,8 @@ in the job and git-ignored.
 
 - History covered: **2018-09-23 → 2026-02-04**, 175,484 raw plays → 173,659
   music streams.
-- 17,369 artists, 39,788 tracks, 14,691 artists with a genre attribution
-  (2,678 unclassified).
-- 12,697 raw tags classified: 62 curated overrides, 385 exact, 48 alias,
-  1,808 containment, 10,258 LLM, 136 noise / workflow artifacts.
-- Independent checks: **91.2%** of the comparable artists have their primary
-  genre confirmed by MusicBrainz's structured `genres` field; mean cross-source
-  Jaccard is **0.652** at genre level and 0.387 at style level.
-- Last full build: **199/199 nodes green** (28 models/seeds, 171 tests) plus
-  60 classifier unit tests.
+- 17,369 artists, 39,788 tracks, 14,753 artists with a genre attribution
+  (1,480 flagged ambiguous).
+- 12,697 raw tags classified (389 exact, 47 alias, 1,860 containment, 10,297
+  LLM, 104 noise).
+- Last full build: **197/197 nodes green** (28 models/seeds, 169 tests).

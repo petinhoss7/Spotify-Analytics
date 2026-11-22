@@ -6,13 +6,9 @@
 
     Scoring (weighted sum, explainable):
 
-        method_weight  = manual / exact / alias 1.0, fuzzy 0.9, llm 0.8
-                         (reliability of the mechanism)
-        confidence     = tag-specificity weight from the seed, 1.0 by
-                         default, lowered by seeds/tag_overrides.csv for
-                         generic tags ("dance", "lo-fi", "oldies"...)
-        row_weight     = method_weight x confidence x ln(1 + tag_count)
-                         tag_count: source popularity weight, null -> 1
+        row_weight  = method_weight x ln(1 + tag_count)
+                      method_weight: exact/alias 1.0, fuzzy 0.9, llm 0.8
+                      tag_count: source popularity weight, null -> 1
         genre_score = sum(row_weight) x (1 + 0.5 x (distinct_sources - 1))
 
     Selection:
@@ -60,8 +56,7 @@ with tag_rows as (
         discogs_genre,
         discogs_style,
         tag_count,
-        method_weight,
-        confidence
+        method_weight
 
     from {{ ref('int_artists_tag_scores') }}
 
@@ -153,8 +148,7 @@ style_rows as (
         t.source,
         t.discogs_style,
         t.tag_count,
-        t.method_weight,
-        t.confidence
+        t.method_weight
     from tag_rows t
     inner join final_genres g
         on t.artist_id = g.artist_id
@@ -178,7 +172,7 @@ style_ranked as (
         select
             artist_id,
             discogs_style,
-            sum(method_weight * confidence * ln(1 + coalesce(tag_count, 1)))
+            sum(method_weight * ln(1 + coalesce(tag_count, 1)))
                 * (1 + 0.5 * (count(distinct source) - 1)) as style_score,
             count(distinct source) as nb_style_sources
         from style_rows
