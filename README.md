@@ -53,9 +53,19 @@ primary pair `(primary_genre, primary_style)` and a secondary pair
 paired with. The secondary pair is kept only when it is real evidence: at
 least 2 distinct tags must back it, or it must still weigh at least 10% of the
 primary score — a genre resting on a single stray tag is not a genre.
+
+A few cases cannot be settled by any threshold: evidence cannot judge
+*plausibility*. Marsh gets a `Rock / Black Metal` secondary from two low-count
+Last.fm tags whose numbers (10% of the primary, 2 tags) are indistinguishable
+from Red Hot Chili Peppers' legitimate `Funk / Soul` secondary (10%, 1 tag).
+Those go in `seeds/artist_overrides.csv`, a small hand-made table applied as
+the final step of the attribution — see
+[`docs/architecture.md`](docs/architecture.md).
+
 `genre_share` (shares sum to 1 per artist) is what `fct_genre_listening` uses
 to split listening time across **all** scored genres, not only the primary
-pair.
+pair; that split stays evidence-proportional and is deliberately not
+overridden.
 
 ## Data sources
 

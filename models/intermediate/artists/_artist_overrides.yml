@@ -1,0 +1,25 @@
+version: 2
+
+seeds:
+  - name: artist_overrides
+    description: >
+      Hand-made artist-level corrections. The attribution model decides from
+      tag evidence, and evidence cannot judge plausibility: it cannot know
+      that "black metal" is absurd for a progressive house producer while the
+      ratio and the tag count look exactly like a legitimate secondary (Marsh
+      10% on 2 tags, against Red Hot Chili Peppers 10% on 1 tag for a real
+      Funk secondary).
+
+      Each row overrides the four label columns for one artist. An empty
+      secondary_genre means "explicitly no secondary", not "unspecified".
+      Every pair is validated against the closed taxonomy by
+      test_artist_overrides_pair_valid, and the override nulls the
+      evidence-derived scores, share, ratio and confidence for that artist
+      rather than leaving them describing a ranking that no longer applies.
+      attribution_source says whether a row comes from evidence or from here.
+
+      Scope: the artist dimension and the marts that read it. The
+      evidence-proportional listening split (fct_genre_listening) is
+      deliberately NOT overridden - it distributes minutes by genre_share over
+      all scored genres, which is a different question from "which genre is
+      this artist".

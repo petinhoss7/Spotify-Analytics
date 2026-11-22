@@ -192,6 +192,29 @@ artist_names as (
     from {{ ref('int_source_tag_classification') }}
     group by artist_id
 
+),
+
+/*
+    Hand-made artist-level corrections. The model decides from tag evidence,
+    which cannot judge plausibility - it cannot know that "black metal" is
+    absurd for a house producer while the ratio and tag counts look exactly
+    like a legitimate secondary. Such cases are recorded here by hand, with a
+    reason, and this overrides the four label columns for the listed artists
+    only. Everything the evidence produced (scores, share, ratio, confidence)
+    is nulled for them rather than left describing a ranking that no longer
+    applies, and attribution_source says where the labels come from.
+*/
+manual_overrides as (
+
+    select
+        artist_id,
+        primary_genre,
+        nullif(primary_style, '') as primary_style,
+        nullif(secondary_genre, '') as secondary_genre,
+        nullif(secondary_style, '') as secondary_style,
+        comment
+    from {{ ref('artist_overrides') }}
+
 )
 
 select
@@ -201,35 +224,42 @@ select
     an.spotify_artist_name,
 
     -- primary pair
-    g.primary_genre,
+    coalesce(o.primary_genre, g.primary_genre) as primary_genre,
 
-    round(g.primary_genre_score, 3) as primary_genre_score,
-    round(g.primary_share, 4) as primary_share,
+    case when o.artist_id is null then round(g.primary_genre_score, 3) end as primary_genre_score,
+    case when o.artist_id is null then round(g.primary_share, 4) end as primary_share,
     g.nb_supporting_sources,
     g.primary_nb_tags as nb_genre_tags,
     g.nb_distinct_genres,
 
-    ps.discogs_style as primary_style,
-    round(ps.style_score, 3) as primary_style_score,
+    case when o.artist_id is null then ps.discogs_style else o.primary_style end as primary_style,
+    case when o.artist_id is null then round(ps.style_score, 3) end as primary_style_score,
 
-    -- secondary pair (null when the artist has a single scored genre, or no
-    -- styled tag under the runner-up genre)
-    g.secondary_genre,
+    -- secondary pair (empty in the seed means "explicitly none")
+    case when o.artist_id is not null then o.secondary_genre else g.secondary_genre end as secondary_genre,
 
-    round(g.secondary_genre_score, 3) as secondary_genre_score,
-    round(g.secondary_score_ratio, 4) as secondary_score_ratio,
-    g.secondary_sources_count,
-    g.secondary_nb_tags,
+    case when o.artist_id is null then round(g.secondary_genre_score, 3) end as secondary_genre_score,
+    case when o.artist_id is null then round(g.secondary_score_ratio, 4) end as secondary_score_ratio,
+    case when o.artist_id is null then g.secondary_sources_count end as secondary_sources_count,
+    case when o.artist_id is null then g.secondary_nb_tags end as secondary_nb_tags,
 
-    ss.discogs_style as secondary_style,
-    round(ss.style_score, 3) as secondary_style_score,
+    case when o.artist_id is not null then o.secondary_style else ss.discogs_style end as secondary_style,
+    case when o.artist_id is null then round(ss.style_score, 3) end as secondary_style_score,
 
-    round(
-        0.6 * g.primary_share + 0.4 * (g.nb_supporting_sources / 3.0),
-        4
-    ) as combined_confidence,
+    case
+        when o.artist_id is null then round(
+            0.6 * g.primary_share + 0.4 * (g.nb_supporting_sources / 3.0), 4
+        )
+    end as combined_confidence,
 
-    coalesce(g.secondary_score_ratio >= {{ ambiguity_ratio }}, false) as is_ambiguous
+    case
+        when o.artist_id is null
+        then coalesce(g.secondary_score_ratio >= {{ ambiguity_ratio }}, false)
+        else false
+    end as is_ambiguous,
+
+    case when o.artist_id is null then 'evidence' else 'manual' end as attribution_source,
+    o.comment as override_reason
 
 from genre_final g
 
@@ -245,3 +275,6 @@ left join style_ranked ss
 
 left join artist_names an
     on an.artist_id = g.artist_id
+
+left join manual_overrides o
+    on o.artist_id = g.artist_id

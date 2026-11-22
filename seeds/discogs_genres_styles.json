@@ -4,13 +4,14 @@
     "built_at": "2026-11-22",
     "sources": [
       "seeds/discogs_genres_styles.json",
-      "seeds/discogs_genres_styles_quantixed.csv"
+      "seeds/discogs_genres_styles_quantixed.csv",
+      "seeds/discogs_genres_styles_local.csv"
     ],
     "note": "Closed reference list. Built by scripts/build_taxonomy.py - do not hand-edit: edit the sources and rebuild.",
     "structure": "genre -> list of allowed styles (sub-genres)",
     "counts": {
       "genres": 15,
-      "styles": 611
+      "styles": 612
     },
     "dropped": [
       "Electronic | Hip Hop (style name is another genre's name)",
@@ -500,6 +501,7 @@
       "Cantopop",
       "Chanson",
       "City Pop",
+      "Dance-pop",
       "Enka",
       "Ethno-pop",
       "Europop",

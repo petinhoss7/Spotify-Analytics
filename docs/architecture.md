@@ -143,6 +143,7 @@ Interactive version: `dbt docs generate` then `dbt docs serve`.
 | `tag_genre_map` | 1 row per unique raw tag (12,697): `is_genre_tag`, `discogs_genre`, `discogs_style`, `match_method`, `match_score`. Produced offline by `scripts/classifier/classify_tags.py` |
 | `tags_to_verify` | The reviewer's working list: the 200 most-used tags (64.6% of all evidence) pre-filled with the current classification. Regenerable without losing verdicts (`scripts/classifier/tags_to_verify.py`) |
 | `tag_verified` | The reviewer's verdicts, applied by the classifier **before every automatic layer** (`scripts/classifier/apply_verdicts.py`). Not materialized in the warehouse |
+| `artist_overrides` | Hand-made artist-level corrections, applied as the **final step** of `int_artists_genre_attribution`. Materialized in the warehouse |
 
 #### Hand verification of the head
 
@@ -259,6 +260,25 @@ views and zero `unmapped` lines). On top of it:
   of the secondary genre. `combined_confidence = 0.6 × primary_share +
   0.4 × (sources / 3)`; `is_ambiguous` flags near-ties (runner-up ratio
   ≥ 0.75), in which case the two pairs are best read as unordered.
+
+- **Artist-level overrides** (`seeds/artist_overrides.csv`): a small hand-made
+  table applied as the final step of the attribution, where each row fixes the
+  four label columns for one artist. It exists because **evidence cannot judge
+  plausibility**: Marsh comes out with a `Rock / Black Metal` secondary from
+  two low-count Last.fm tags, and its numbers (10% of the primary, 2 tags) are
+  indistinguishable from Red Hot Chili Peppers' legitimate `Funk / Soul`
+  secondary (10%, 1 tag). No threshold on ratio, tag count or listener count
+  separates them — the junk sits *between* two valid cases (Marsh 12 listener
+  tags, Post Malone 11, RHCP 20). Those cases need an explicit decision.
+
+  An override nulls the evidence-derived scores, share, ratio and confidence
+  for that artist rather than leaving them describing a ranking that no longer
+  applies, and `attribution_source` says whether a row came from evidence or
+  from the seed. Pairs are validated against the closed list by
+  `test_artist_overrides_pair_valid`. The **evidence-proportional listening
+  split is deliberately not overridden**: `fct_genre_listening` distributes
+  minutes by `genre_share` over all scored genres, which answers a different
+  question than "which genre is this artist".
 
 #### Score models (shared by attribution and marts)
 

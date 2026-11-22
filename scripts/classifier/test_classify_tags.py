@@ -31,11 +31,12 @@ class TestNormalize(unittest.TestCase):
 
 class TestTaxonomy(unittest.TestCase):
     def test_counts(self):
-        # 611 styles after the merge with the Quantixed Discogs export
-        # (372 before). These numbers must be updated deliberately whenever
-        # the taxonomy is rebuilt with scripts/build_taxonomy.py.
+        # 612 styles after the merge with the Quantixed Discogs export plus the
+        # deliberate local additions (612 before the Pop | Dance-pop addition).
+        # These numbers must be updated deliberately whenever the taxonomy is
+        # rebuilt with scripts/build_taxonomy.py.
         self.assertEqual(len(GENRES), 15)
-        self.assertEqual(sum(len(v) for v in GENRES.values()), 611)
+        self.assertEqual(sum(len(v) for v in GENRES.values()), 612)
         # a genre that is also its own style ("Classical", "Reggae") collapses
         # onto one key, so there are fewer keys than genre + style entries
         self.assertEqual(len(FUZZY_KEYS) + len(AMBIGUOUS), 608)

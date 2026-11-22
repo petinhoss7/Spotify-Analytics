@@ -48,6 +48,10 @@ JSON_PATH = ROOT / "seeds" / "discogs_genres_styles.json"
 CSV_PATH = ROOT / "seeds" / "discogs_genre_styles.csv"
 DEFAULT_SOURCES = [
     ROOT / "seeds" / "discogs_genres_styles_quantixed.csv",
+    # deliberate local additions on top of the upstream exports. Kept in a
+    # separate file so the deviation from Discogs stays explicit and the
+    # upstream exports remain untouched.
+    ROOT / "seeds" / "discogs_genres_styles_local.csv",
 ]
 
 

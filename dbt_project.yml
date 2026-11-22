@@ -94,6 +94,14 @@ seeds:
       # the reviewer's verdicts, applied by the classifier before every
       # automatic layer (scripts/classifier/apply_verdicts.py)
       +enabled: false
+    discogs_genres_styles_local:
+      # deliberate local additions to the taxonomy, merged by
+      # scripts/build_taxonomy.py (an input, not warehouse reference data)
+      +enabled: false
+    artist_overrides:
+      # hand-made artist-level corrections, applied as a final override by
+      # int_artists_genre_attribution
+      +enabled: true
     discogs_genres_styles_quantixed:
       # upstream Discogs export merged by scripts/build_taxonomy.py
       # (an input, not warehouse reference data)

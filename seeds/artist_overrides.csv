@@ -1,0 +1,4 @@
+artist_id,artist_name,primary_genre,primary_style,secondary_genre,secondary_style,comment
+1eucLGnPT27tdEh6MU29wp,Marsh,Electronic,House,,,Two low-count Last.fm tags - black metal 12 and post-black metal 1 - are implausible for a progressive house producer. A tag-quality problem rather than a strength one: its 10 pc ratio is the same as the legitimate Funk secondary of Red Hot Chili Peppers.
+6M2wZ9GZgrQXHCFfjv46we,Dua Lipa,Pop,Dance-pop,Electronic,Synth-pop,Reviewer: she should be Pop then Dance-pop. Pop plus Dance-pop is a deliberate local taxonomy addition in seeds/discogs_genres_styles_local.csv because Discogs lists Dance-pop under Electronic only.
+4gzpq5DPGxSnKTe4SA8HAU,Coldplay,Rock,Pop Rock,Pop,,Reviewer: he should be Rock then Pop Rock. The tags favour Alternative Rock - alternative plus alternative rock weigh 12.1 against 3.2 for pop rock - so this needs an explicit artist-level decision.
