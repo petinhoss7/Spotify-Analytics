@@ -422,7 +422,7 @@ afro-soul,true,Funk / Soul,Soul,fuzzy,90,1
 afro-tech,true,Electronic,Tech House,llm,,1
 afro-zouk,true,"Folk, World, & Country",Zouk,fuzzy,90,1
 afrobashment,true,Hip Hop,,llm,,1
-afrobeat,true,Funk / Soul,Afrobeat,llm,,1
+afrobeat,true,Funk / Soul,Afrobeat,manual,,0.37
 afrobeats,true,Funk / Soul,Afrobeat,llm,,1
 afrobros,false,,,llm,,1
 afrocarribean,true,Reggae,,llm,,1
@@ -1622,7 +1622,7 @@ boogie-woogie,true,Funk / Soul,Boogie,fuzzy,90,1
 book,false,,,llm,,1
 booka shade,false,,,llm,,1
 bookmark,false,,,llm,,1
-boom bap,true,Hip Hop,Boom Bap,llm,,1
+boom bap,true,Hip Hop,Boom Bap,manual,,0.94
 boom bap rap beats,true,Hip Hop,Boom Bap,llm,,1
 bootleg,false,,,llm,,1
 bootshaus,false,,,llm,,1
@@ -3191,7 +3191,7 @@ disappointing,false,,,llm,,1
 disbanded,false,,,llm,,1
 disciples,false,,,llm,,1
 discjockey,false,,,llm,,1
-disco,true,Electronic,Disco,llm,,1
+disco,true,Electronic,Disco,manual,,0.63
 disco edits,true,Electronic,Disco,llm,,1
 disco funk,true,Funk / Soul,Funk,fuzzy,90,1
 disco house,true,Electronic,House,fuzzy,90,1
@@ -3400,7 +3400,7 @@ dsbm,true,Rock,Depressive Black Metal,llm,,1
 dsds,false,,,llm,,1
 dsp entertainment,false,,,llm,,1
 dtf,false,,,llm,,1
-dub,true,Reggae,Dub,llm,,1
+dub,true,Reggae,Dub,manual,,0.43
 dub electronica,true,Electronic,Dub,llm,,1
 dub incorporation,false,,,llm,,1
 dub n bass,true,Electronic,Drum n Bass,llm,,1
@@ -4992,7 +4992,7 @@ gore-hop,true,Hip Hop,Horrorcore,llm,,1
 goregrind,true,Rock,Goregrind,exact,100,1
 gorne,false,,,llm,,1
 gorny,false,,,llm,,1
-gospel,true,Funk / Soul,Gospel,llm,,1
+gospel,true,Funk / Soul,Gospel,manual,,0.49
 gospel black gospel,true,Funk / Soul,Gospel,llm,,1
 gospel house,true,Electronic,House,fuzzy,90,1
 gospel music,true,Funk / Soul,Gospel,llm,,1
@@ -5237,7 +5237,7 @@ hard-pop,true,Pop,,fuzzy,90,1
 hard-rock,true,Rock,Hard Rock,exact,100,1
 hard-techno,true,Electronic,Techno,fuzzy,90,1
 hardbass,true,Electronic,Hardstyle,llm,,1
-hardcore,true,Electronic,Hardcore,llm,,1
+hardcore,true,Electronic,Hardcore,manual,,0.39
 hardcore brasil,true,Electronic,Hardcore,llm,,1
 hardcore breaks,true,Electronic,Breaks,fuzzy,90,1
 hardcore hip hop,true,Hip Hop,Hardcore Hip-Hop,exact,100,1
@@ -5724,7 +5724,7 @@ indonesian indie,true,Rock,Indie Rock,llm,,1
 indonesian metal,true,Rock,Heavy Metal,llm,,1
 indonesian pop,true,Pop,,fuzzy,90,1
 indorock,true,Rock,Rock & Roll,llm,,1
-industrial,true,Electronic,Industrial,llm,,1
+industrial,true,Electronic,Industrial,manual,,0.59
 industrial ambient,true,Electronic,Ambient,fuzzy,90,1
 industrial black metal,true,Rock,Black Metal,fuzzy,90,1
 industrial dance,true,Electronic,Industrial,llm,,1
@@ -8295,7 +8295,7 @@ nocturnal,false,,,llm,,1
 noel gallagher,false,,,llm,,1
 noir et blanc,false,,,llm,,1
 nois-o-lution,false,,,llm,,1
-noise,true,Electronic,Noise,llm,,1
+noise,true,Rock,Noise,manual,,0.64
 noise by women,false,,,llm,,1
 noise pop,true,Rock,,manual,,0.6
 noise rock,true,Rock,Noise Rock,exact,100,1
@@ -8758,7 +8758,7 @@ parisien,false,,,llm,,1
 parisienne,false,,,llm,,1
 park gyuri,false,,,llm,,1
 parma,false,,,llm,,1
-parody,true,Pop,Parody,llm,,1
+parody,true,Pop,Parody,manual,,0.38
 paroles,false,,,llm,,1
 parolier,false,,,llm,,1
 parov stelar,false,,,llm,,1
@@ -10513,7 +10513,7 @@ six,false,,,llm,,1
 sixties,false,,,llm,,1
 sizzla,false,,,llm,,1
 sk supreme,false,,,llm,,1
-ska,true,Reggae,Ska,llm,,1
+ska,true,Reggae,Ska,manual,,0.46
 ska core,true,Rock,Ska,llm,,1
 ska punk,true,Rock,Punk,fuzzy,90,1
 ska revival,true,Reggae,Ska,llm,,1
@@ -11824,10 +11824,10 @@ trinidadian,false,,,llm,,1
 trinix remix,false,,,llm,,1
 trio,false,,,llm,,1
 trio los panchos,false,,,llm,,1
-trip hop,true,Electronic,Trip Hop,llm,,1
+trip hop,true,Electronic,Trip Hop,manual,,0.58
 trip hop-cabaret-dance punk,true,Rock,Punk,fuzzy,90,1
 trip rock,true,Rock,,fuzzy,90,1
-trip-hop,true,Electronic,Trip Hop,llm,,1
+trip-hop,true,Electronic,Trip Hop,manual,,0.58
 trip-rock,true,Rock,,fuzzy,90,1
 triper,false,,,llm,,1
 triphop,true,Electronic,Trip Hop,llm,,1
