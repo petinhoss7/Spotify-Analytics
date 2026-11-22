@@ -159,6 +159,32 @@ Each row stores the measured justification (the dominant-genre share among the
 artists carrying the tag). The overrides are deliberately conservative: they
 change the primary genre of 507 artists (3.4%).
 
+### Gold set: the arbiter
+
+`seeds/tag_gold.csv` is a 150-tag sample (40 highest-usage, 30 carrying an
+ambiguous taxonomy key, 80 random) pre-filled with the current classification,
+so reviewing means editing only the rows you disagree with. The generator
+flags rows whose data-derived signal disagrees with the label, so attention
+goes where it matters:
+
+```bash
+python scripts/classifier/gold_sample.py    # (re)generate the sample
+python scripts/classifier/eval_classify.py  # score the seed against it
+```
+
+`eval_classify.py` reports accuracy overall, per classification method and per
+usage bucket, then fails below a threshold. It runs in CI, so no change to the
+classifier can land unmeasured. It is also the honest answer to "is this
+change an improvement?": without it, swapping a model or promoting a layer just
+replaces one black box with another.
+
+The 7 disagreements the first run surfaced already fixed two systematic bugs:
+`rhythm and blues` was resolved to *Blues* by a containment match on the token
+`blues` even though the phrase is an ambiguous taxonomy key (now abstains and
+resolves through an explicit alias to `Funk / Soul | Rhythm & Blues`), and
+`noise pop` was resolved to *Pop* via the generic token `pop` while its artists
+are Rock.
+
 ## CI
 
 `.github/workflows/dbt_ci.yml` runs on every push and pull request:

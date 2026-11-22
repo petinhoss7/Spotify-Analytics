@@ -143,6 +143,27 @@ class TestStaticClassify(unittest.TestCase):
     def test_no_match(self):
         self.assertIsNone(ct.static_classify("zzzqqqwww", EXACT_INDEX, {}, self.entries))
 
+    def test_ambiguous_key_never_resolved_by_containment(self):
+        # "rhythm and blues" contains the genre key "blues"; without the guard
+        # containment would answer Blues, contradicting the taxonomy where the
+        # phrase lives under several genres
+        self.assertIsNone(
+            ct.static_classify("rhythm and blues", EXACT_INDEX, {}, self.entries, AMBIGUOUS)
+        )
+
+    def test_ambiguous_key_still_resolvable_by_explicit_alias(self):
+        aliases = ct.load_aliases(ct.ALIASES_PATH, GENRES, EXACT_INDEX, AMBIGUOUS)
+        pair, method, _ = ct.static_classify(
+            "rhythm and blues", EXACT_INDEX, aliases, self.entries, AMBIGUOUS
+        )
+        self.assertEqual((pair, method), (("Funk / Soul", "Rhythm & Blues"), "alias"))
+
+    def test_non_ambiguous_tags_unaffected_by_the_guard(self):
+        for tag, expected in [("mississippi blues", ("Blues", None)),
+                              ("old school thrash", ("Rock", "Thrash"))]:
+            pair, method, _ = ct.static_classify(tag, EXACT_INDEX, {}, self.entries, AMBIGUOUS)
+            self.assertEqual(pair, expected, tag)
+
 
 class TestValidateEntries(unittest.TestCase):
     def test_valid(self):
@@ -332,31 +353,40 @@ class TestSeedMatchesOverrides(unittest.TestCase):
         cls.overrides = ct.load_overrides(ct.OVERRIDES_PATH, GENRES)
         seed_path = ct.SEEDS / "tag_genre_map.csv"
         cls.seed = {}
+        cls.seed_by_norm = {}
         if seed_path.exists():
             with open(seed_path, encoding="utf-8", newline="") as f:
                 for row in csv.DictReader(f):
                     cls.seed[row["raw_tag"]] = row
+                    # several raw tags may normalize onto one override key
+                    # ("lo-fi" and "lo fi"), and every one of them is overridden
+                    cls.seed_by_norm.setdefault(ct.normalize(row["raw_tag"]), []).append(row)
 
     def test_seed_exists(self):
         self.assertTrue(self.seed)
 
     def test_every_override_is_applied(self):
         for key, override in self.overrides.items():
-            self.assertIn(key, self.seed, f"{key} missing from the seed")
-            row = self.seed[key]
-            self.assertEqual(row["is_genre_tag"], "true" if override["is_genre_tag"] else "false", key)
-            self.assertEqual(row["match_method"], "manual", key)
-            if override["is_genre_tag"]:
-                self.assertEqual(row["discogs_genre"], override["genre"], key)
-                self.assertEqual(row["discogs_style"], override["style"] or "", key)
-                self.assertAlmostEqual(float(row["confidence"]), override["confidence"], places=4, msg=key)
+            rows = self.seed_by_norm.get(key)
+            self.assertTrue(rows, f"override key {key!r} matched no seed row")
+            for row in rows:
+                self.assertEqual(row["match_method"], "manual", f"{row['raw_tag']!r} is not manual")
+                expected_flag = "true" if override["is_genre_tag"] else "false"
+                self.assertEqual(row["is_genre_tag"], expected_flag, f"{row['raw_tag']!r} flag")
+                if override["is_genre_tag"]:
+                    self.assertEqual(row["discogs_genre"], override["genre"], f"{row['raw_tag']!r} genre")
+                    self.assertEqual(row["discogs_style"], override["style"] or "", f"{row['raw_tag']!r} style")
+                    self.assertAlmostEqual(float(row["confidence"]), override["confidence"], places=4,
+                                           msg=f"{row['raw_tag']!r} confidence")
 
     def test_automatic_rows_carry_full_specificity(self):
         # confidence only encodes *tag specificity*; method reliability is
         # derived in dbt from match_method, so it must not be duplicated here
-        for tag, row in self.seed.items():
-            if row["match_method"] in {"exact", "alias", "fuzzy", "llm"}:
-                self.assertEqual(row["confidence"], "1", tag)
+        offenders = [
+            tag for tag, row in self.seed.items()
+            if row["match_method"] in {"exact", "alias", "fuzzy", "llm"} and row["confidence"] != "1"
+        ]
+        self.assertEqual(offenders, [])
 
 
 class TestNoise(unittest.TestCase):

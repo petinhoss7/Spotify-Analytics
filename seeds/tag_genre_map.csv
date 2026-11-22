@@ -7588,7 +7588,7 @@ minimal tech house,true,Electronic,Tech House,fuzzy,90,1
 minimal techno,true,Electronic,Minimal Techno,exact,100,1
 minimal techno artists,true,Electronic,Minimal Techno,fuzzy,90,1
 minimal wave,true,Electronic,Minimal,llm,,1
-minimalism,true,Electronic,Minimal,llm,,1
+minimalism,true,Classical,,manual,,0.5
 minimalist,true,Electronic,Minimal,llm,,1
 minimalist music,true,Electronic,Minimal,llm,,1
 minimalistic,true,Electronic,Minimal,llm,,1
@@ -8297,9 +8297,9 @@ noir et blanc,false,,,llm,,1
 nois-o-lution,false,,,llm,,1
 noise,true,Electronic,Noise,llm,,1
 noise by women,false,,,llm,,1
-noise pop,true,Pop,,fuzzy,90,1
+noise pop,true,Rock,,manual,,0.6
 noise rock,true,Rock,Noise Rock,exact,100,1
-noise-pop,true,Pop,,fuzzy,90,1
+noise-pop,true,Rock,,manual,,0.6
 noisecore,true,Rock,Grindcore,llm,,1
 noisia,false,,,llm,,1
 noisy synth,false,,,llm,,1
@@ -9160,7 +9160,7 @@ post-britpop,true,Rock,Brit Pop,llm,,1
 post-classical,true,Classical,Classical,fuzzy,90,1
 post-club,true,Electronic,Leftfield,llm,,1
 post-core,true,Rock,Post-Hardcore,llm,,1
-post-disco,true,Electronic,Disco,llm,,1
+post-disco,true,Funk / Soul,Disco,manual,,0.6
 post-dubstep,true,Electronic,Dubstep,fuzzy,90,1
 post-electro-mellow-idm-techno-jota-18-m-aviles,false,,,llm,,1
 post-emo,true,Rock,Emo,llm,,1
@@ -9755,8 +9755,8 @@ rheinland-pfalz,false,,,llm,,1
 rhymesayers,false,,,llm,,1
 rhyming slang,false,,,llm,,1
 rhys fulber,false,,,llm,,1
-rhythm & blues,true,Blues,,fuzzy,90,1
-rhythm and blues,true,Blues,,fuzzy,90,1
+rhythm & blues,true,Funk / Soul,Rhythm & Blues,alias,100,1
+rhythm and blues,true,Funk / Soul,Rhythm & Blues,alias,100,1
 rhythm and blues music,true,Blues,,fuzzy,90,1
 rhythm and flow,false,,,llm,,1
 rhythm n blues,true,Blues,,fuzzy,90,1

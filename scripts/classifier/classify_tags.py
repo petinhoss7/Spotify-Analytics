@@ -286,13 +286,25 @@ def containment_match(tag_norm: str, entries: list):
     return winners.pop()
 
 
-def static_classify(tag_norm: str, exact_index: dict, aliases: dict, containment_entries: list):
+def static_classify(
+    tag_norm: str,
+    exact_index: dict,
+    aliases: dict,
+    containment_entries: list,
+    ambiguous: set = frozenset(),
+):
     pair = exact_index.get(tag_norm)
     if pair:
         return pair, "exact", 100
     pair = alias_lookup(tag_norm, aliases, exact_index)
     if pair:
         return pair, "alias", 100
+    # A tag that *is* an ambiguous taxonomy key must never be resolved by
+    # containment: "rhythm and blues" contains the genre key "blues", but the
+    # phrase itself lives under several genres and only L4 (or an explicit
+    # alias) may decide it.
+    if tag_norm in ambiguous:
+        return None
     hit = containment_match(tag_norm, containment_entries)
     if hit:
         return hit, "fuzzy", 90
@@ -618,7 +630,7 @@ def main(argv=None) -> int:
                                 "method": "noise", "score": None, "confidence": None}
                 method_counts["noise"] += 1
                 continue
-            hit = static_classify(q, exact_index, aliases, containment_entries)
+            hit = static_classify(q, exact_index, aliases, containment_entries, ambiguous)
             if hit is None:
                 pending.append(tag)
                 continue

@@ -61,7 +61,7 @@ def build_musicbrainz_genre_sets(con: duckdb.DuckDBPyConnection) -> dict[str, se
         key = name.strip().lower()
         if key in map_rows:
             return map_rows[key]
-        hit = ct.static_classify(ct.normalize(key), exact_index, aliases, entries)
+        hit = ct.static_classify(ct.normalize(key), exact_index, aliases, entries, ambiguous)
         return hit[0][0] if hit else None
 
     sets: dict[str, set[str]] = {}

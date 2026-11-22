@@ -24,3 +24,6 @@ classic pop and rock,true,Rock,,0.36,"Q1: compound modifier, top genre share 0.3
 world,true,"Folk, World, & Country",World,0.6,"Q1: broad content genre (not a musical style), hedged."
 world music,true,"Folk, World, & Country",World,0.6,"Q1: alias of world, hedged consistently."
 acoustic,true,Rock,Acoustic,0.4,"Q1: taxonomy key but a cross-genre descriptor (top genre share 0.36); hedged."
+noise pop,true,Rock,,0.6,"Q4: containment resolved it to Pop via the single token 'pop', but the artists carrying it are Rock (share 0.85). No Discogs style fits."
+post-disco,true,Funk / Soul,Disco,0.6,"Q4: containment sent it to Electronic/Disco; the artists carrying it are Funk / Soul (share 0.74)."
+minimalism,true,Classical,,0.5,"Q4: the LLM read it as Electronic/Minimal; the artists carrying it are Classical (share 0.59). Hedged, both readings are plausible."

@@ -91,3 +91,7 @@ seeds:
       # curated by hand, consumed by the classifier script only
       # (seeds/tag_overrides.csv); not materialized in the warehouse
       +enabled: false
+    tag_gold:
+      # reviewed sample used as the arbiter by scripts/classifier/eval_classify.py;
+      # a review artifact, not materialized in the warehouse
+      +enabled: false
