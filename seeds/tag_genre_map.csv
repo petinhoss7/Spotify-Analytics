@@ -1791,7 +1791,7 @@ britain,false,,,llm,,1
 britannique,false,,,llm,,1
 british,false,,,llm,,1
 british asian,false,,,llm,,1
-british blues,true,Blues,,fuzzy,90,1
+british blues,true,Rock,Blues Rock,manual,,0.9
 british choir,false,,,llm,,1
 british christian music,true,"Folk, World, & Country",Gospel,llm,,1
 british composer,false,,,llm,,1
@@ -1819,7 +1819,7 @@ british progressive rock,true,Rock,,fuzzy,90,1
 british punk,true,Rock,Punk,fuzzy,90,1
 british rap,true,Hip Hop,,llm,,1
 british reggae,true,Reggae,Reggae,fuzzy,90,1
-british rhythm & blues,true,Blues,,fuzzy,90,1
+british rhythm & blues,true,Rock,Blues Rock,manual,,0.9
 british rock,true,Rock,,fuzzy,90,1
 british soul,true,Funk / Soul,Soul,fuzzy,90,1
 british uk,false,,,llm,,1
@@ -2337,7 +2337,7 @@ cincinnati pops orchestra,false,,,llm,,1
 cinderella,false,,,llm,,1
 cindy crawford,false,,,llm,,1
 cinematic,false,,,llm,,1
-cinematic classical,true,Classical,Classical,fuzzy,90,1
+cinematic classical,true,Stage & Screen,Soundtrack,manual,,0.68
 cinematic pop,true,Pop,,fuzzy,90,1
 cinematic rock,true,Rock,,fuzzy,90,1
 cinematic techno,true,Electronic,Techno,fuzzy,90,1
@@ -3755,14 +3755,14 @@ emmy award winner,false,,,llm,,1
 emmylou harris,false,,,llm,,1
 emo,true,Rock,Emo,exact,100,1
 emo as fuck and makes me wanna die,true,Rock,Emo,llm,,1
-emo pop,true,Pop,,fuzzy,90,1
+emo pop,true,Rock,Emo,manual,,0.83
 emo rap,true,Hip Hop,Trap,llm,,1
 emo revival,true,Rock,Emo,llm,,1
 emo rnb,true,Funk / Soul,Contemporary R&B,llm,,1
 emo rock,true,Rock,,fuzzy,90,1
 emo trap,true,Hip Hop,Trap,fuzzy,90,1
 emo violence,true,Rock,Hardcore,llm,,1
-emo-pop,true,Pop,,fuzzy,90,1
+emo-pop,true,Rock,Emo,manual,,0.83
 emo-trap,true,Hip Hop,Trap,fuzzy,90,1
 emocore,true,Rock,Emo,llm,,1
 emogaze,true,Rock,Emo,llm,,1
@@ -4604,38 +4604,38 @@ funk rock,true,Rock,Funk Metal,llm,,1
 funk soul,true,Funk / Soul,,exact,100,1
 funk-hop,true,Funk / Soul,Funk,fuzzy,90,1
 funk-rock,true,Rock,Funk Metal,llm,,1
-funk_add_to_lidarr,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_1,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_1,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_10,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_11,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_12,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_13,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_14,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_15,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_16,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_17,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_18,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_19,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_2,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_20,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_21,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_22,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_23,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_24,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_25,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_26,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_27,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_28,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_29,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_3,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_30,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_4,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_5,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_6,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_7,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_8,true,Funk / Soul,Funk,fuzzy,90,1
-funk_add_to_lidarr_batch_9,true,Funk / Soul,Funk,fuzzy,90,1
+funk_add_to_lidarr,false,,,noise,,
+funk_add_to_lidarr_1,false,,,noise,,
+funk_add_to_lidarr_batch_1,false,,,noise,,
+funk_add_to_lidarr_batch_10,false,,,noise,,
+funk_add_to_lidarr_batch_11,false,,,noise,,
+funk_add_to_lidarr_batch_12,false,,,noise,,
+funk_add_to_lidarr_batch_13,false,,,noise,,
+funk_add_to_lidarr_batch_14,false,,,noise,,
+funk_add_to_lidarr_batch_15,false,,,noise,,
+funk_add_to_lidarr_batch_16,false,,,noise,,
+funk_add_to_lidarr_batch_17,false,,,noise,,
+funk_add_to_lidarr_batch_18,false,,,noise,,
+funk_add_to_lidarr_batch_19,false,,,noise,,
+funk_add_to_lidarr_batch_2,false,,,noise,,
+funk_add_to_lidarr_batch_20,false,,,noise,,
+funk_add_to_lidarr_batch_21,false,,,noise,,
+funk_add_to_lidarr_batch_22,false,,,noise,,
+funk_add_to_lidarr_batch_23,false,,,noise,,
+funk_add_to_lidarr_batch_24,false,,,noise,,
+funk_add_to_lidarr_batch_25,false,,,noise,,
+funk_add_to_lidarr_batch_26,false,,,noise,,
+funk_add_to_lidarr_batch_27,false,,,noise,,
+funk_add_to_lidarr_batch_28,false,,,noise,,
+funk_add_to_lidarr_batch_29,false,,,noise,,
+funk_add_to_lidarr_batch_3,false,,,noise,,
+funk_add_to_lidarr_batch_30,false,,,noise,,
+funk_add_to_lidarr_batch_4,false,,,noise,,
+funk_add_to_lidarr_batch_5,false,,,noise,,
+funk_add_to_lidarr_batch_6,false,,,noise,,
+funk_add_to_lidarr_batch_7,false,,,noise,,
+funk_add_to_lidarr_batch_8,false,,,noise,,
+funk_add_to_lidarr_batch_9,false,,,noise,,
 funkeiro,true,Hip Hop,Miami Bass,llm,,1
 funknejo,true,Hip Hop,Miami Bass,llm,,1
 funktronica,true,Electronic,Electro,llm,,1
@@ -4665,7 +4665,7 @@ future,false,,,llm,,1
 future bass,true,Electronic,,manual,,0.6
 future beats,true,Electronic,,llm,,1
 future bounce,true,Electronic,Bounce,llm,,1
-future funk,true,Funk / Soul,Funk,fuzzy,90,1
+future funk,true,Electronic,,manual,,0.7
 future garage,true,Electronic,UK Garage,llm,,1
 future garage;dubstep;ambient,true,Electronic,,llm,,1
 future grooves,false,,,llm,,1
@@ -4675,7 +4675,7 @@ future jazz,true,Electronic,Future Jazz,exact,100,1
 future rave,true,Electronic,Progressive House,llm,,1
 future techno,true,Electronic,Techno,fuzzy,90,1
 future trap,true,Hip Hop,Trap,fuzzy,90,1
-future-funk,true,Funk / Soul,Funk,fuzzy,90,1
+future-funk,true,Electronic,,manual,,0.7
 futurebass,true,Electronic,,llm,,1
 futurefunk,true,Electronic,Vaporwave,llm,,1
 futurepop,true,Electronic,EBM,llm,,1
@@ -6002,7 +6002,7 @@ jan smit,false,,,llm,,1
 jane austen,false,,,llm,,1
 jane the virgin,false,,,llm,,1
 janet jackson,false,,,llm,,1
-jangle pop,true,Pop,,fuzzy,90,1
+jangle pop,true,Rock,,manual,,0.89
 janie,false,,,llm,,1
 jap,false,,,llm,,1
 japan,false,,,llm,,1
@@ -6059,7 +6059,7 @@ jazz,true,Jazz,,exact,100,1
 jazz and blues,true,Jazz,,llm,,1
 jazz ballads,true,Jazz,,fuzzy,90,1
 jazz bass,true,Jazz,,fuzzy,90,1
-jazz beats,true,Jazz,,fuzzy,90,1
+jazz beats,true,Hip Hop,Jazzy Hip-Hop,manual,,0.79
 jazz blues,true,Jazz,,llm,,1
 jazz favorites ram,true,Jazz,,fuzzy,90,1
 jazz flute,true,Jazz,,fuzzy,90,1
@@ -6072,7 +6072,7 @@ jazz guitarists,true,Jazz,,fuzzy,90,1
 jazz harmonica,true,Jazz,,fuzzy,90,1
 jazz harp,true,Jazz,,fuzzy,90,1
 jazz hip-hop,true,Hip Hop,,fuzzy,90,1
-jazz hop,true,Jazz,,fuzzy,90,1
+jazz hop,true,Hip Hop,Jazzy Hip-Hop,manual,,0.86
 jazz house,true,Electronic,House,llm,,1
 jazz instrument,true,Jazz,,fuzzy,90,1
 jazz instrumental,true,Jazz,,fuzzy,90,1
@@ -6087,7 +6087,7 @@ jazz piano,true,Jazz,,fuzzy,90,1
 jazz playlist king,true,Jazz,,fuzzy,90,1
 jazz pop,true,Pop,,llm,,1
 jazz ragtime piano,true,Jazz,Ragtime,llm,,1
-jazz rap,true,Jazz,,fuzzy,90,1
+jazz rap,true,Hip Hop,Jazzy Hip-Hop,manual,,0.81
 jazz rock,true,Jazz,Jazz-Rock,exact,100,1
 jazz saxophone,true,Jazz,,fuzzy,90,1
 jazz trio,true,Jazz,,fuzzy,90,1
@@ -6103,7 +6103,7 @@ jazz-blues,true,Jazz,,llm,,1
 jazz-funk,true,Jazz,Jazz-Funk,exact,100,1
 jazz-fusion,true,Jazz,Fusion,alias,100,1
 jazz-guitar,true,Jazz,,fuzzy,90,1
-jazz-hop,true,Jazz,,fuzzy,90,1
+jazz-hop,true,Hip Hop,Jazzy Hip-Hop,manual,,0.86
 jazz-house,true,Electronic,House,llm,,1
 jazz-inspired,true,Jazz,,fuzzy,90,1
 jazz-pop,true,Pop,,llm,,1
@@ -6801,7 +6801,7 @@ lionkingcore,false,,,llm,,1
 liquid,true,Electronic,Drum n Bass,llm,,1
 liquid dnb,true,Electronic,Drum n Bass,alias,100,1
 liquid dubstep,true,Electronic,Dubstep,fuzzy,90,1
-liquid funk,true,Funk / Soul,Funk,fuzzy,90,1
+liquid funk,true,Electronic,Drum n Bass,manual,,0.84
 liquid sound design,false,,,llm,,1
 liquidfunk,true,Electronic,Drum n Bass,llm,,1
 liquidstep,true,Electronic,Dubstep,llm,,1
@@ -9083,7 +9083,7 @@ pop screamo,true,Pop,,fuzzy,90,1
 pop soul,true,Funk / Soul,Soul,llm,,1
 pop star,true,Pop,,fuzzy,90,1
 pop trance,true,Electronic,Trance,llm,,1
-pop urbaine,true,Pop,,fuzzy,90,1
+pop urbaine,true,Hip Hop,,manual,,0.57
 pop urban,true,Pop,,fuzzy,90,1
 pop urbano,true,Pop,,fuzzy,90,1
 pop vocals,true,Pop,,fuzzy,90,1
@@ -9339,7 +9339,7 @@ psychedelic hardstyle,true,Electronic,Hardstyle,fuzzy,90,1
 psychedelic hip hop,true,Hip Hop,,fuzzy,90,1
 psychedelic house,true,Electronic,House,fuzzy,90,1
 psychedelic jazz,true,Jazz,,fuzzy,90,1
-psychedelic pop,true,Pop,,fuzzy,90,1
+psychedelic pop,true,Rock,,manual,,0.65
 psychedelic punk,true,Rock,Punk,fuzzy,90,1
 psychedelic rap,true,Hip Hop,,llm,,1
 psychedelic rock,true,Rock,Psychedelic Rock,exact,100,1
@@ -9393,7 +9393,7 @@ punk funk,true,Rock,Funk Metal,llm,,1
 punk hardcore,true,Rock,Punk,fuzzy,90,1
 punk jazz,true,Jazz,Avant-garde Jazz,llm,,1
 punk n roll,true,Rock,Punk,fuzzy,90,1
-punk rap,true,Rock,Punk,fuzzy,90,1
+punk rap,true,Hip Hop,,manual,,0.9
 punk rock,true,Rock,Punk,alias,100,1
 punk-hardcore,true,Rock,Punk,fuzzy,90,1
 punk/new wave,true,Electronic,New Wave,fuzzy,90,1

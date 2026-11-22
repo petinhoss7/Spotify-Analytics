@@ -141,8 +141,9 @@ Interactive version: `dbt docs generate` then `dbt docs serve`.
 |---|---|
 | `discogs_genres_styles` | Closed Discogs list flattened from `discogs_genres_styles.json` (15 genres x 372 styles); referential-integrity reference for tests |
 | `tag_genre_map` | 1 row per unique raw tag (12,697): `is_genre_tag`, `discogs_genre`, `discogs_style`, `match_method`, `match_score`, `confidence`. Produced offline by `scripts/classifier/classify_tags.py` |
-| `tag_overrides` | Human-curated overrides (30 tags): fixes the answer and the tag-specificity `confidence` before any automatic layer runs. Not materialized in the warehouse |
+| `tag_overrides` | Human-curated overrides (62 tags): fixes the answer and the tag-specificity `confidence` before any automatic layer runs. Not materialized in the warehouse |
 | `tag_aliases` | Alias rewrites consumed by the classifier script only |
+| `tag_gold` | Reviewed 209-tag sample used as the arbiter by `eval_classify.py`. Not materialized in the warehouse |
 
 #### Tag classification (offline, `scripts/classifier/`)
 
@@ -152,10 +153,20 @@ closed list -> alias rewrite (`seeds/tag_aliases.csv`) -> token-boundary
 containment of a closed-list key (longest key wins, ties abstain) -> LLM
 classification (GLM via OpenRouter, closed list in the system prompt,
 server-side validation) -> review file for anything left. Pure-noise tags
-(numbers, hex, decades) are flagged non-genre deterministically. LLM answers
+(numbers, hex, decades) and workflow artifacts (a Lidarr batch leaked
+`funk_add_to_lidarr_batch_<n>` 32 times) are flagged non-genre
+deterministically. LLM answers
 are cached in `data/tag_llm_cache.json`, so re-runs are free and resumable.
 Ambiguous style names shared by several genres ("dub", "disco", "ska"...)
 never match deterministically; they are always decided by the LLM layer.
+
+Token containment is the only heuristic layer left, and the one that held
+the most unvalidated weight. `scripts/classifier/context_audit.py` compares
+each tag with the dominant genre of the artists' *other* tags; it found the
+layer at 64.8% agreement with a recognisable failure mode (the modifier is
+matched instead of the genre head: `jazz beats` -> Jazz though its 100
+artists are Hip Hop 79%). The audit is now a standing tool, and the
+corrected tags are curated overrides.
 
 Two independent reliability factors score every tag row:
 

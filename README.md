@@ -156,20 +156,61 @@ automatic layer. It carries two kinds of decisions:
   `electronica`, `edm`, `club`, `progressive`, `singer-songwriter`...
 
 Each row stores the measured justification (the dominant-genre share among the
-artists carrying the tag). The overrides are deliberately conservative: they
-change the primary genre of 507 artists (3.4%).
+artists carrying the tag).
+
+### The containment layer was the real weak point
+
+Once the head was curated, a measurement settled where the remaining risk
+lived: the curated overrides hold 13.0% of the evidence rows, the LLM layer
+only 14.4%, and the deterministic layers 72.7%. So swapping the LLM for a
+stronger model would have moved very little.
+
+`scripts/classifier/context_audit.py` then compared each tag with the dominant
+genre of the *other* tags its artists carry. A tag used by many artists that
+almost all point elsewhere is a strong error candidate — a hundred artists
+cannot all be wrong, but one heuristic can. It found the containment layer at
+**64.8% agreement**, with systematic errors of a recognisable shape: the
+modifier is matched instead of the genre head, because containment takes the
+longest *taxonomy* key and the head is not one.
+
+| Tag | Was | Its artists' context | Now |
+|---|---|---|---|
+| `jazz beats` | Jazz | Hip Hop 79% | Hip Hop / Jazzy Hip-Hop |
+| `punk rap` | Rock / Punk | Hip Hop 90% | Hip Hop |
+| `pop urbaine` | Pop | Hip Hop 57% | Hip Hop |
+| `liquid funk` | Funk / Soul | Electronic 84% | Electronic / Drum n Bass |
+| `cinematic classical` | Classical | Stage & Screen 68% | Stage & Screen / Soundtrack |
+| `emo pop` | Pop | Rock 83% | Rock / Emo |
+| `british blues` | Blues | Rock 90% | Rock / Blues Rock |
+
+A second class of error was not a genre at all: a Lidarr tagging workflow had
+leaked `funk_add_to_lidarr_batch_<n>` 32 times, each resolving to Funk / Soul
+on the single token `funk`. `is_noise` now recognises those workflow
+artifacts.
+
+Cumulative effect of the curation work, measured on two independent signals
+(MusicBrainz's structured genres, never fed to the classifier, and cross-source
+Jaccard):
+
+| | Before | After |
+|---|---|---|
+| MusicBrainz confirmation | 90.4% | **91.2%** |
+| Mean cross-source genre Jaccard | 0.613 | **0.652** |
+| Artists below 0.5 agreement | 29.0% | **24.3%** |
 
 ### Gold set: the arbiter
 
-`seeds/tag_gold.csv` is a 150-tag sample (40 highest-usage, 30 carrying an
-ambiguous taxonomy key, 80 random) pre-filled with the current classification,
-so reviewing means editing only the rows you disagree with. The generator
-flags rows whose data-derived signal disagrees with the label, so attention
-goes where it matters:
+`seeds/tag_gold.csv` is a 209-tag sample (40 highest-usage, 30 carrying an
+ambiguous taxonomy key, 40 containment-resolved, 40 suspected wrong by the
+context audit, 60 random) pre-filled with the current classification, so
+reviewing means editing only the rows you disagree with. The generator flags
+rows whose data-derived signal disagrees with the label, so attention goes
+where it matters:
 
 ```bash
-python scripts/classifier/gold_sample.py    # (re)generate the sample
-python scripts/classifier/eval_classify.py  # score the seed against it
+python scripts/classifier/gold_sample.py      # (re)generate the sample
+python scripts/classifier/eval_classify.py    # score the seed against it
+python scripts/classifier/context_audit.py    # find tags the artists contradict
 ```
 
 `eval_classify.py` reports accuracy overall, per classification method and per
@@ -178,12 +219,11 @@ classifier can land unmeasured. It is also the honest answer to "is this
 change an improvement?": without it, swapping a model or promoting a layer just
 replaces one black box with another.
 
-The 7 disagreements the first run surfaced already fixed two systematic bugs:
-`rhythm and blues` was resolved to *Blues* by a containment match on the token
-`blues` even though the phrase is an ambiguous taxonomy key (now abstains and
-resolves through an explicit alias to `Funk / Soul | Rhythm & Blues`), and
-`noise pop` was resolved to *Pop* via the generic token `pop` while its artists
-are Rock.
+The disagreements the first runs surfaced fixed six systematic bugs, including
+`rhythm and blues` resolved to *Blues* by a containment match on the token
+`blues` even though the phrase is an ambiguous taxonomy key (it now abstains
+and resolves through an explicit alias), and the containment errors listed
+above.
 
 ## CI
 
@@ -219,11 +259,12 @@ in the job and git-ignored.
 
 - History covered: **2018-09-23 → 2026-02-04**, 175,484 raw plays → 173,659
   music streams.
-- 17,369 artists, 39,788 tracks, 14,699 artists with a genre attribution
-  (2,670 unclassified), 507 of them decided by a curated generic tag.
-- 12,697 raw tags classified: 30 curated overrides, 385 exact, 46 alias,
-  1,860 containment, 10,272 LLM, 104 noise.
-- Independent checks: **91.0%** of the comparable artists have their primary
+- 17,369 artists, 39,788 tracks, 14,691 artists with a genre attribution
+  (2,678 unclassified).
+- 12,697 raw tags classified: 62 curated overrides, 385 exact, 48 alias,
+  1,808 containment, 10,258 LLM, 136 noise / workflow artifacts.
+- Independent checks: **91.2%** of the comparable artists have their primary
   genre confirmed by MusicBrainz's structured `genres` field; mean cross-source
-  Jaccard is **0.641** at genre level and 0.384 at style level.
-- Last full build: **199/199 nodes green** (28 models/seeds, 171 tests).
+  Jaccard is **0.652** at genre level and 0.387 at style level.
+- Last full build: **199/199 nodes green** (28 models/seeds, 171 tests) plus
+  60 classifier unit tests.

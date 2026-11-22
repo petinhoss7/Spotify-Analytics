@@ -12,13 +12,17 @@ Three strata, so a change cannot silently trade quality on one for another:
   ambiguous tags carrying a taxonomy key that exists under several genres
            ("hardcore", "dub", "disco", "ska"...), the ones no
            deterministic layer may resolve
+  fuzzy    the highest-usage tags resolved by token containment - the only
+           heuristic layer left once exact, alias and the curated overrides
+           are in place, and the one that holds the largest unvalidated
+           share of the evidence
   random   a reproducible random draw from the rest, to catch regressions
            outside the head
 
 Usage::
 
     python scripts/classifier/gold_sample.py
-    python scripts/classifier/gold_sample.py --top 40 --ambiguous 30 --random 80
+    python scripts/classifier/gold_sample.py --top 40 --ambiguous 30 --fuzzy 40 --random 60
 
 Reviewing:
   * keep a row as is when you agree with it
@@ -41,6 +45,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import classify_tags as ct  # noqa: E402
+import context_audit  # noqa: E402
 
 DB_PATH = ROOT / "data" / "spotify.duckdb"
 SEED_CSV = ROOT / "seeds" / "tag_genre_map.csv"
@@ -149,11 +154,21 @@ def ambiguous_key_tags(seed: dict[str, dict], _genres, _exact, ambiguous: set) -
 MIN_OTHER_ARTISTS = 10
 
 
-def build(top: int, ambiguous_n: int, random_n: int, seed_value: int) -> list[dict]:
+def build(top: int, ambiguous_n: int, fuzzy_n: int, context_n: int, random_n: int,
+          seed_value: int, db_path: Path = DB_PATH) -> list[dict]:
     genres, exact_index, ambiguous = ct.load_taxonomy()
     seed_rows = load_seed()
     usage = load_usage()
     dominant, others = load_dominant_genre()
+
+    # context audit: candidates whose artists overwhelmingly point elsewhere
+    con = duckdb.connect(str(db_path), read_only=True)
+    try:
+        context_stats = context_audit.context_agreement(con, seed_rows)
+    finally:
+        con.close()
+    candidates = context_audit.offenders(context_stats)
+    flagged = dict(candidates)
 
     genre_tags = [t for t, r in seed_rows.items() if r["is_genre_tag"] == "true"]
     ranked = sorted(genre_tags, key=lambda t: (-usage.get(t, 0), t))
@@ -174,6 +189,23 @@ def build(top: int, ambiguous_n: int, random_n: int, seed_value: int) -> list[di
         chosen.append(tag)
         strata[tag] = "ambiguous"
 
+    # containment is the only heuristic left holding real weight, so it gets
+    # its own stratum weighted by usage instead of being left to chance
+    fuzzy = sorted(
+        (t for t in genre_tags
+         if seed_rows[t]["match_method"] == "fuzzy" and t not in strata),
+        key=lambda t: (-usage.get(t, 0), t),
+    )
+    for tag in fuzzy[:fuzzy_n]:
+        chosen.append(tag)
+        strata[tag] = "fuzzy"
+
+    # suspected errors, ranked by agreement then usage
+    for tag, _ in candidates[:context_n]:
+        if tag not in strata:
+            chosen.append(tag)
+            strata[tag] = "context"
+
     remaining = [t for t in ranked if t not in strata]
     rng = random.Random(seed_value)
     for tag in rng.sample(remaining, min(random_n, len(remaining))):
@@ -184,17 +216,24 @@ def build(top: int, ambiguous_n: int, random_n: int, seed_value: int) -> list[di
     for tag in sorted(chosen):
         row = seed_rows[tag]
         note = ""
-        dom = dominant.get(tag)
-        if others.get(tag, 0) < MIN_OTHER_ARTISTS:
-            note = ""
-        elif dom is None:
-            note = "no other evidence to compare against"
+        ctx = flagged.get(tag)
+        if ctx is not None:
+            proposed = ctx["context"][0][0] if ctx["context"] else ""
+            share = ctx["context"][0][1] / ctx["compared"] if ctx["context"] else 0
+            note = (f"context suggests {proposed} ({share:.0%} of {ctx['compared']} artists' "
+                    f"other tags) instead of {row['discogs_genre']}")
         else:
-            genre, share = dom
-            if share < WEAK_SHARE:
-                note = f"no dominant genre (top share {share:.2f}: {genre})"
-            elif genre != row["discogs_genre"]:
-                note = f"data suggests {genre} (share {share:.2f}) instead of {row['discogs_genre']}"
+            dom = dominant.get(tag)
+            if others.get(tag, 0) < MIN_OTHER_ARTISTS:
+                note = ""
+            elif dom is None:
+                note = "no other evidence to compare against"
+            else:
+                genre, share = dom
+                if share < WEAK_SHARE:
+                    note = f"no dominant genre (top share {share:.2f}: {genre})"
+                elif genre != row["discogs_genre"]:
+                    note = f"data suggests {genre} (share {share:.2f}) instead of {row['discogs_genre']}"
         rows.append({
             "raw_tag": tag,
             "is_genre_tag": row["is_genre_tag"],
@@ -211,12 +250,15 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--top", type=int, default=40, help="highest-usage tags")
     parser.add_argument("--ambiguous", type=int, default=30, help="tags carrying an ambiguous key")
-    parser.add_argument("--random", type=int, default=80, help="random draw from the rest")
+    parser.add_argument("--fuzzy", type=int, default=40, help="highest-usage containment-resolved tags")
+    parser.add_argument("--context", type=int, default=40,
+                        help="tags suspected wrong by the context audit (context_audit.py)")
+    parser.add_argument("--random", type=int, default=60, help="random draw from the rest")
     parser.add_argument("--seed", type=int, default=42, help="random seed (reproducible draw)")
     parser.add_argument("--out", type=Path, default=GOLD_CSV)
     args = parser.parse_args(argv)
 
-    rows = build(args.top, args.ambiguous, args.random, args.seed)
+    rows = build(args.top, args.ambiguous, args.fuzzy, args.context, args.random, args.seed)
     with open(args.out, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=HEADER)
         writer.writeheader()
@@ -224,7 +266,8 @@ def main(argv=None) -> int:
 
     flagged = sum(1 for r in rows if r["note"])
     print(f"wrote {args.out} ({len(rows)} tags)")
-    print(f"  {args.top} highest-usage, {args.ambiguous} ambiguous, {args.random} random")
+    print(f"  {args.top} highest-usage, {args.ambiguous} ambiguous, {args.fuzzy} containment, "
+          f"{args.context} context-suspect, {args.random} random")
     print(f"  {flagged} rows carry a note worth reviewing")
     return 0
 
