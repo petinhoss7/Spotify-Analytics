@@ -26,7 +26,7 @@ with genre_tags as (
         discogs_style,
         tag_count,
         case
-            when match_method in ('exact', 'alias') then 1.0
+            when match_method in ('verified', 'exact', 'alias') then 1.0
             when match_method = 'fuzzy' then 0.9
             else 0.8
         end as method_weight

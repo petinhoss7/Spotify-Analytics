@@ -34,7 +34,7 @@ flowchart LR
 | `models/staging/` | Flattens JSON, types columns, normalizes timestamps to UTC, hashes IPs (PII) |
 | `models/intermediate/` | Deduplication, listening features, artist profiles, cross-source comparison, genre scoring & attribution |
 | `models/marts/` | `fct_streams` (one row per music stream) and `fct_genre_listening` (minutes per month x genre) |
-| `seeds/` | Closed Discogs taxonomy (15 genres / 611 styles) and the 12,697-tag classification map |
+| `seeds/` | Closed Discogs taxonomy (15 genres / 611 styles), the 12,697-tag classification map, and the hand-verified verdicts |
 | `tests/` | Singular reconciliation and business-rule tests |
 
 Full DAG and model-by-model documentation: [`docs/architecture.md`](docs/architecture.md).
@@ -112,7 +112,7 @@ resumable.
 
 ## Data quality
 
-`dbt build` runs 169 tests, including 14 singular tests that guard the logic
+`dbt build` runs 171 tests, including 14 singular tests that guard the logic
 rather than the columns:
 
 - `fct_streams` and `fct_genre_listening` reconcile against their upstream
@@ -124,6 +124,35 @@ rather than the columns:
   coherent with its parent genre.
 
 Failures are stored in the `test_failures` schema (`+store_failures: true`).
+
+The classifier has its own unit tests, run in CI:
+
+```bash
+python -m unittest discover -s scripts/classifier -p "test_*.py"
+```
+
+### Hand verification of the head
+
+Most of the evidence sits on a few hundred tags, so those are checked by hand
+rather than trusted:
+
+```bash
+python scripts/classifier/tags_to_verify.py    # top 200 tags, verdict columns empty
+# ...fill verdict / correct_genre / correct_style in seeds/tags_to_verify.csv
+python scripts/classifier/apply_verdicts.py    # -> seeds/tag_verified.csv
+python scripts/classifier/classify_tags.py     # applies it, then rebuilds the seed
+```
+
+`tags_to_verify.py` pre-fills the current classification and keeps verdicts
+already present when regenerated; its `variant_family` column groups spellings
+of one word (plural kept, so `afrobeat` and `afrobeats` stay apart).
+`apply_verdicts.py` validates every verdict against the taxonomy — anything it
+cannot express is reported, never guessed, and the few cases left open are
+resolved by an explicit `DECISIONS` table in the script.
+
+Current effect: **253 tags verified**, carrying **80,608 genre rows across
+13,962 artists**. LLM-decided evidence fell from 61,026 rows to **12,960**: the
+head of the distribution is now human-decided, with weight 1.0.
 
 ## CI
 
@@ -159,8 +188,10 @@ in the job and git-ignored.
 
 - History covered: **2018-09-23 → 2026-02-04**, 175,484 raw plays → 173,659
   music streams.
-- 17,369 artists, 39,788 tracks, 14,753 artists with a genre attribution
-  (1,480 flagged ambiguous).
-- 12,697 raw tags classified (389 exact, 47 alias, 1,860 containment, 10,297
-  LLM, 104 noise).
-- Last full build: **197/197 nodes green** (28 models/seeds, 169 tests).
+- 17,369 artists, 39,788 tracks, 14,660 artists with a genre attribution
+  (2,709 unclassified).
+- 12,697 raw tags classified: 253 hand-verified, 388 exact, 31 alias,
+  1,783 containment, 10,110 LLM, 132 noise / workflow artifacts.
+- Closed taxonomy: 15 genres, **611 styles**, built from merged Discogs
+  exports by `scripts/build_taxonomy.py`.
+- Last full build: **197/197 nodes green** plus 45 classifier unit tests.

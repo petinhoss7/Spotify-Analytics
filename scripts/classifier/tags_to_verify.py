@@ -99,7 +99,16 @@ def main(argv=None) -> int:
     parser.add_argument("--db", type=Path, default=DB_PATH)
     parser.add_argument("--seed", type=Path, default=SEED_CSV)
     parser.add_argument("--out", type=Path, default=OUT_CSV)
+    parser.add_argument("--no-preserve", action="store_true",
+                        help="do not carry existing verdicts over into the regenerated file")
     args = parser.parse_args(argv)
+
+    # keep the reviewer's work: if the file already exists, carry the verdict
+    # columns over, so refreshing the classification never loses the review
+    previous: dict[str, dict] = {}
+    if args.out.exists() and not args.no_preserve:
+        with open(args.out, encoding="utf-8", newline="") as f:
+            previous = {row["raw_tag"]: row for row in csv.DictReader(f)}
 
     seed = load_seed(args.seed)
     con = duckdb.connect(str(args.db), read_only=True)
@@ -116,7 +125,7 @@ def main(argv=None) -> int:
             continue
         if artists < args.min_artists:
             continue
-        rows.append((tag_rows, {
+        chosen = {
             "raw_tag": raw_tag,
             "variant_family": variant_family(raw_tag),
             "sources": sources,
@@ -130,7 +139,12 @@ def main(argv=None) -> int:
             "correct_genre": "",
             "correct_style": "",
             "comment": "",
-        }))
+        }
+        old = previous.get(raw_tag)
+        if old:
+            for column in ("verdict", "correct_genre", "correct_style", "comment"):
+                chosen[column] = old.get(column, "") or ""
+        rows.append((tag_rows, chosen))
 
     rows.sort(key=lambda r: (-r[0], r[1]["raw_tag"]))
     selected = [r[1] for r in rows[: args.top]]
@@ -150,6 +164,8 @@ def main(argv=None) -> int:
           f"of all artist x tag evidence")
     print(f"  tags with a classification: "
           f"{sum(1 for r in selected if r['current_match_method'])}")
+    if previous:
+        print(f"  verdicts carried over from the previous file: {preserved}")
     print("  fill `verdict` (ok / wrong) and, when wrong, correct_genre / "
           "correct_style / comment")
     return 0

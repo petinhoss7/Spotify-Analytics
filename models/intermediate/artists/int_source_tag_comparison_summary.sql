@@ -27,6 +27,7 @@ with per_source as (
         count(*) filter (where classification_status = 'genre'
                           and discogs_style is not null) as style_rows,
 
+        count(*) filter (where match_method = 'verified') as method_verified,
         count(*) filter (where match_method = 'exact') as method_exact,
         count(*) filter (where match_method = 'alias') as method_alias,
         count(*) filter (where match_method = 'fuzzy') as method_fuzzy,
@@ -126,6 +127,7 @@ select
     ps.style_rows,
     round(ps.style_rows / nullif(ps.genre_rows, 0), 4) as style_rate,
 
+    ps.method_verified,
     ps.method_exact,
     ps.method_alias,
     ps.method_fuzzy,

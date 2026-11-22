@@ -63,8 +63,8 @@ models:
 
       - name: match_method
         description: >
-          Classification layer that resolved the tag: exact, alias, fuzzy
-          (token containment), llm or noise.
+          Classification layer that resolved the tag: verified (hand-checked
+          verdict), exact, alias, fuzzy (token containment), llm or noise.
 
       - name: match_score
         description: Deterministic confidence (100 exact/alias, 90 containment); null for llm.
@@ -217,6 +217,9 @@ models:
 
       - name: style_rate
         description: Share of genre lines carrying a style (style_rows / genre_rows).
+
+      - name: method_verified
+        description: Lines fixed by a hand-checked verdict (seeds/tags_to_verify.csv).
 
       - name: method_exact
         description: Lines resolved by exact match.

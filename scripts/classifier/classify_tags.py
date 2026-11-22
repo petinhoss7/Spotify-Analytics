@@ -2,6 +2,7 @@
 """Classify raw music tags into the closed Discogs genre/style taxonomy.
 
 Layers:
+  L0 verified     seeds/tag_verified.csv, hand-checked by the reviewer, always wins
   L0 normalize    lowercase, strip accents/punctuation, & -> and
   L1 exact        normalized tag == normalized closed-list key
   L2 alias        seeds/tag_aliases.csv rewrite (one hop) then L1
@@ -46,6 +47,7 @@ LOGS = ROOT / "logs" / "classifier"
 DATA = ROOT / "data"
 TAXONOMY_PATH = SEEDS / "discogs_genres_styles.json"
 ALIASES_PATH = SEEDS / "tag_aliases.csv"
+VERIFIED_PATH = SEEDS / "tag_verified.csv"
 DB_PATH = DATA / "spotify.duckdb"
 DEFAULT_CACHE = DATA / "tag_llm_cache.json"
 
@@ -254,6 +256,50 @@ WORKFLOW_ARTIFACT_PATTERNS = (
     re.compile(r"\blidarr batch\b"),
     re.compile(r"\badd to beets\b"),
 )
+
+
+def load_verified(path: Path, genres: dict) -> dict:
+    """Hand-checked decisions, applied before every automatic layer.
+
+    Produced by scripts/classifier/apply_verdicts.py from the reviewer's
+    verdicts. Validated here as well, so a hand-edited file cannot put an
+    unknown genre or a misplaced style into the seed.
+    """
+    verified: dict[str, dict] = {}
+    errors: list[str] = []
+    if not path.exists():
+        return verified
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        for lineno, row in enumerate(csv.DictReader(f), start=2):
+            raw = (row.get("raw_tag") or "").strip()
+            if not raw or raw.startswith("#"):
+                continue
+            key = normalize(raw)
+            flag = (row.get("is_genre_tag") or "").strip().lower()
+            genre = (row.get("discogs_genre") or "").strip() or None
+            style = (row.get("discogs_style") or "").strip() or None
+            if flag not in {"true", "false"}:
+                errors.append(f"line {lineno}: is_genre_tag must be true or false: {raw!r}")
+                continue
+            if flag == "true":
+                if genre not in genres:
+                    errors.append(f"line {lineno}: unknown genre {genre!r}: {raw!r}")
+                    continue
+                if style is not None and style not in genres[genre]:
+                    errors.append(f"line {lineno}: style {style!r} is not under {genre!r}: {raw!r}")
+                    continue
+            elif genre or style:
+                errors.append(f"line {lineno}: a non-genre row must leave genre/style empty: {raw!r}")
+                continue
+            verified[key] = {
+                "is_genre_tag": flag == "true",
+                "genre": genre,
+                "style": style,
+                "comment": (row.get("comment") or "").strip(),
+            }
+    if errors:
+        raise BuildError("tag_verified.csv is invalid:\n" + "\n".join(errors))
+    return verified
 
 
 def is_noise(tag_norm: str) -> bool:
@@ -498,6 +544,7 @@ def main(argv=None) -> int:
     try:
         genres, exact_index, ambiguous = load_taxonomy()
         aliases = load_aliases(ALIASES_PATH, genres, exact_index, ambiguous)
+        verified_tags = load_verified(VERIFIED_PATH, genres)
         vocab = load_extract_vocab()
         if not args.no_db:
             vocab |= load_db_vocab()
@@ -509,17 +556,31 @@ def main(argv=None) -> int:
     containment_entries = build_containment_index(exact_index, genres)
     n_collisions = len(ambiguous)
     log(f"taxonomy: {len(genres)} genres, {len(exact_index)} unambiguous keys, {n_collisions} ambiguous keys -> L4")
+    log(f"verified: {len(verified_tags)} hand-checked tags from {VERIFIED_PATH.name}")
     log(f"vocabulary: {len(vocab)} unique tags")
 
     results: dict[str, dict] = {}
     review: list[tuple[str, str]] = []
     pending: list[str] = []
-    method_counts = {"exact": 0, "alias": 0, "fuzzy": 0, "llm": 0, "noise": 0}
+    method_counts = {"verified": 0, "exact": 0, "alias": 0, "fuzzy": 0, "llm": 0, "noise": 0}
     interrupted = False
 
     for tag in sorted(vocab):
         try:
             q = normalize(tag)
+            verified = verified_tags.get(q)
+            if verified is not None:
+                # hand-checked by the reviewer (seeds/tags_to_verify.csv via
+                # apply_verdicts.py); authoritative, so it runs first
+                results[tag] = {
+                    "is_genre_tag": verified["is_genre_tag"],
+                    "genre": verified["genre"],
+                    "style": verified["style"],
+                    "method": "verified",
+                    "score": None,
+                }
+                method_counts["verified"] += 1
+                continue
             if not q:
                 # non-Latin tag (CJK, Arabic, emoji...): normalize() cannot
                 # reduce it, L4 judges it directly from the raw value
@@ -545,7 +606,7 @@ def main(argv=None) -> int:
         except Exception as exc:
             review.append((tag, f"static_error: {type(exc).__name__}: {exc}"))
 
-    log(f"L1 exact: {method_counts['exact']}  L2 alias: {method_counts['alias']}  L3 containment: {method_counts['fuzzy']}  noise: {method_counts['noise']}")
+    log(f"verified: {method_counts['verified']}  L1 exact: {method_counts['exact']}  L2 alias: {method_counts['alias']}  L3 containment: {method_counts['fuzzy']}  noise: {method_counts['noise']}")
     log(f"pending for L4: {len(pending)}  review so far: {len(review)}")
 
     if args.dry_run:

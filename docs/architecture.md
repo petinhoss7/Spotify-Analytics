@@ -141,6 +141,31 @@ Interactive version: `dbt docs generate` then `dbt docs serve`.
 |---|---|
 | `discogs_genres_styles` | Closed Discogs list flattened from `discogs_genres_styles.json` (15 genres x 611 styles); referential-integrity reference for tests. Built by `scripts/build_taxonomy.py`, which merges several Discogs exports — see below |
 | `tag_genre_map` | 1 row per unique raw tag (12,697): `is_genre_tag`, `discogs_genre`, `discogs_style`, `match_method`, `match_score`. Produced offline by `scripts/classifier/classify_tags.py` |
+| `tags_to_verify` | The reviewer's working list: the 200 most-used tags (64.6% of all evidence) pre-filled with the current classification. Regenerable without losing verdicts (`scripts/classifier/tags_to_verify.py`) |
+| `tag_verified` | The reviewer's verdicts, applied by the classifier **before every automatic layer** (`scripts/classifier/apply_verdicts.py`). Not materialized in the warehouse |
+
+#### Hand verification of the head
+
+The seed's `match_method` values rank the evidence by how it was decided, and
+the head of the distribution carries most of the weight, so it is checked by
+hand:
+
+1. `tags_to_verify.py` writes the 200 most-used tags (64.6% of all artist x tag
+   evidence) pre-filled with the current classification and empty verdict
+   columns, plus a `variant_family` column that groups spellings of one word
+   (plural deliberately kept, so `afrobeat` and `afrobeats` stay apart).
+2. The reviewer fills `verdict` (`ok` / `nok`) and, when wrong,
+   `correct_genre` / `correct_style` / `comment`.
+3. `apply_verdicts.py` validates every verdict against the taxonomy and writes
+   `tag_verified.csv`. Anything it cannot express is **reported, never
+   guessed**; the few cases the reviewer left open are resolved by an explicit,
+   auditable `DECISIONS` table in the script.
+4. The layer is applied first, with weight 1.0 (`match_method = 'verified'`), so
+   the highest-volume evidence is human-decided.
+
+Current effect: 253 tags verified (spelling variants collapse onto one key),
+80,608 genre rows / 13,962 artists carrying verified evidence, and LLM-decided
+evidence down from 61,026 rows to 12,960.
 
 #### Building the closed taxonomy
 
@@ -170,7 +195,8 @@ with 0 spelling collisions and 0 in-use pairs invalidated.
 
 #### Tag classification (offline, `scripts/classifier/`)
 
-Layers, in priority order per tag: normalization -> exact match against the
+Layers, in priority order per tag: hand-checked verdicts
+(`seeds/tag_verified.csv`) -> normalization -> exact match against the
 closed list -> alias rewrite (`seeds/tag_aliases.csv`) -> token-boundary
 containment of a closed-list key (longest key wins, ties abstain) -> LLM
 classification (GLM via OpenRouter, closed list in the system prompt,
