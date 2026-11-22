@@ -43,14 +43,18 @@ Interactive version: `dbt docs generate && dbt docs serve`.
 ### Genre attribution in one paragraph
 
 Every genre-classified tag becomes a weighted row:
-`row_weight = method_weight x ln(1 + tag_count)` (exact/alias 1.0, fuzzy 0.9,
-LLM 0.8), summed per artist x genre and multiplied by a cross-source bonus
-`1 + 0.5 x (distinct_sources - 1)` so agreement outranks tag volume. The top
-genre is the primary; a second genre is kept only with two sources and at least
-50% of the primary score. `genre_share` (shares sum to 1 per artist) is what
-`fct_genre_listening` uses to split listening time across **all** scored genres.
-Styles are ranked only within the final genres, so a sub-genre is always
-coherent with its parent genre.
+`row_weight = method_weight x ln(1 + tag_count)` (verified/exact/alias 1.0,
+fuzzy 0.9, LLM 0.8), summed per artist x genre and multiplied by a cross-source
+bonus `1 + 0.5 x (distinct_sources - 1)` so agreement outranks tag volume.
+
+Each artist is then described by a **combination** of four attributes: a
+primary pair `(primary_genre, primary_style)` and a secondary pair
+`(secondary_genre, secondary_style)`, each style belonging to the genre it is
+paired with. The secondary pair is filled whenever the artist has a second
+scored genre — it is not gated, its strength is reported instead through
+`secondary_score_ratio` and `secondary_sources_count`. `genre_share` (shares
+sum to 1 per artist) is what `fct_genre_listening` uses to split listening time
+across **all** scored genres, not only the primary pair.
 
 ## Data sources
 

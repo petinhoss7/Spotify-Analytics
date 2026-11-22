@@ -69,6 +69,7 @@ select
     ga.combined_confidence,
     ga.is_ambiguous,
     ga.nb_supporting_sources,
+    ga.secondary_score_ratio,
 
     case
         when ga.primary_genre is not null then true

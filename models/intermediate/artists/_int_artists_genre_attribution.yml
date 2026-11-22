@@ -4,26 +4,30 @@ models:
   - name: int_artists_genre_attribution
     description: >
       Final genre / sous-genre attribution per artist, one row per artist
-      with at least one genre-classified tag. Picks at most 2 genres and
-      2 styles per artist from the closed Discogs list using an
-      explainable weighted sum:
+      with at least one genre-classified tag. The result is a *combination*
+      of four attributes: (primary_genre, primary_style) plus
+      (secondary_genre, secondary_style), each style belonging to the genre
+      it is paired with. The secondary pair is filled whenever the artist
+      has a second scored genre.
 
-      row_weight = method_weight x ln(1 + tag_count), with method_weight
-      exact/alias 1.0, fuzzy 0.9, llm 0.8; genre_score = sum(row_weight)
+      Weighted sum, explainable: row_weight = method_weight x
+      ln(1 + tag_count), with method_weight verified/exact/alias 1.0,
+      fuzzy 0.9, llm 0.8; genre_score = sum(row_weight)
       x (1 + 0.5 x (distinct_sources - 1)). Cross-source agreement
       outranks tag volume; scores are deterministic (ties broken by
       source count then name).
 
-      The secondary genre is only kept when it has >= 2 supporting
-      sources and >= 50% of the primary score (tunable via vars
-      attribution_min_secondary_*); the raw candidate, ratio and source
-      count are always stored for threshold analysis. Styles are ranked
-      only among rows whose genre is one of the final genres, so a
-      sous-genre is always coherent with its final genre.
+      The secondary genre is NOT gated: an artist with two scored genres
+      gets two genres, and the weaker one's strength is reported through
+      secondary_score_ratio and secondary_sources_count instead of being
+      hidden. Styles are ranked within each genre, so the primary style is
+      the best style of the primary genre and the secondary style the best
+      style of the secondary genre.
 
       Confidence: primary_share (score share of the artist) and
       combined_confidence = 0.6 x primary_share + 0.4 x (sources / 3).
-      is_ambiguous flags near-ties (runner-up ratio >= 0.75).
+      is_ambiguous flags near-ties (runner-up ratio >= 0.75), in which case
+      primary and secondary should be read as an unordered pair.
 
     columns:
 
@@ -38,7 +42,7 @@ models:
 
       - name: primary_genre
         description: >
-          The artist's final Discogs genre - highest scoring genre.
+          The artist's primary Discogs genre - highest scoring genre.
         tests:
           - not_null
 
@@ -67,18 +71,18 @@ models:
 
       - name: secondary_genre
         description: >
-          Second final genre when the inclusion rule passes (>= 2 sources
-          and ratio >= threshold), else null.
+          Runner-up genre by score, filled whenever the artist has a second
+          scored genre (nb_distinct_genres >= 2). Null only when the artist
+          has a single genre. Never equal to primary_genre.
 
-      - name: secondary_genre_candidate
-        description: >
-          Runner-up genre by score, stored even when the inclusion rule
-          rejects it - enables threshold sensitivity analysis.
+      - name: secondary_genre_score
+        description: Weighted score of the secondary genre.
 
       - name: secondary_score_ratio
         description: >
           Runner-up genre score / primary genre score (0 to 1), null when
-          the artist has a single genre.
+          the artist has a single genre. A low value means the second genre
+          is weak evidence.
         tests:
           - dbt_utils.accepted_range:
               arguments:
@@ -91,26 +95,21 @@ models:
 
       - name: primary_style
         description: >
-          Final sous-genre: highest scoring style among rows whose genre
-          is one of the final genres. Null when the artist has no styled
-          tags within the final genres.
+          Highest scoring style among the primary genre's rows for this
+          artist, so it always belongs to primary_genre. Null when the
+          artist has no styled tag under that genre.
 
       - name: primary_style_score
         description: Weighted score of the primary style.
 
       - name: secondary_style
         description: >
-          Second sous-genre when its score is >= the style ratio threshold
-          of the primary style, else null.
+          Highest scoring style among the secondary genre's rows, so it
+          always belongs to secondary_genre. Null when the artist has no
+          secondary genre, or no styled tag under it.
 
-      - name: secondary_style_score_ratio
-        description: Secondary style score / primary style score (0 to 1).
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 1
-                inclusive: true
+      - name: secondary_style_score
+        description: Weighted score of the secondary style.
 
       - name: combined_confidence
         description: >
@@ -125,6 +124,7 @@ models:
       - name: is_ambiguous
         description: >
           True when the runner-up genre ratio >= 0.75 - the top-2 genres
-          are nearly tied and the primary pick is a judgment call.
+          are nearly tied and the primary pick is a judgment call, so
+          primary and secondary are best read as an unordered pair.
         tests:
           - not_null

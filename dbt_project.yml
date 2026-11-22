@@ -52,10 +52,10 @@ data_tests:
   +schema: test_failures
 
 # Attribution tunables (int_artists_genre_attribution)
+# The secondary genre is no longer gated: an artist with two scored genres
+# gets two genres, and the weaker one's strength is reported through
+# secondary_score_ratio / secondary_sources_count instead of being hidden.
 vars:
-  attribution_min_secondary_score_ratio: 0.5
-  attribution_min_secondary_sources: 2
-  attribution_min_secondary_style_ratio: 0.5
   attribution_ambiguity_ratio: 0.75
 
 # Seeds: closed-list reference data and the tag classification map

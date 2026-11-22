@@ -1,13 +1,12 @@
--- Secondary genre inclusion rule: a secondary genre may only be present
--- when the stored evidence satisfies the configurable thresholds.
+-- The combination must be complete: an artist with at least two scored genres
+-- must carry a secondary genre, and it must be a different genre from the
+-- primary one. A missing secondary genre for such an artist means the
+-- combination is incomplete, which the model no longer allows.
 select
     artist_id,
+    primary_genre,
     secondary_genre,
-    secondary_sources_count,
-    secondary_score_ratio
+    nb_distinct_genres
 from {{ ref('int_artists_genre_attribution') }}
-where secondary_genre is not null
-  and (
-      secondary_sources_count < {{ var('attribution_min_secondary_sources', 2) }}
-      or secondary_score_ratio < {{ var('attribution_min_secondary_score_ratio', 0.5) }}
-  )
+where (nb_distinct_genres >= 2 and secondary_genre is null)
+   or (secondary_genre is not null and secondary_genre = primary_genre)

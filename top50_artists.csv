@@ -1,51 +1,51 @@
-rank,artist,minutes,streams,primary_genre,primary_style,secondary_genre,secondary_style,supporting_sources,is_ambiguous
-1,Joachim Pastor,5500.5,1402.0,Electronic,Techno,-,Minimal,3,
-2,Lana Del Rey,4587.0,1523.0,Pop,Indie Pop,Rock,Alternative Rock,2,
-3,Worakls,3936.8,947.0,Electronic,Techno,-,Minimal Techno,3,
-4,Billie Eilish,3459.0,1502.0,Pop,Indie Pop,-,-,2,
-5,Martin Garrix,3435.1,1397.0,Electronic,Dance-pop,-,House,3,
-6,Red Hot Chili Peppers,3297.3,996.0,Rock,Alternative Rock,-,Funk Metal,3,
-7,Ludovico Einaudi,2854.3,908.0,Classical,Classical,-,Neo-Classical,3,
-8,Queen,2800.2,978.0,Rock,Classic Rock,-,Hard Rock,3,
-9,The Beatles,2719.3,1215.0,Rock,Classic Rock,-,Psychedelic Rock,3,
-10,Paul Kalkbrenner,2522.9,743.0,Electronic,Techno,-,Minimal Techno,3,
-11,NTO,2495.1,621.0,Electronic,Techno,-,Minimal,3,
-12,Lorde,2493.5,980.0,Pop,Indie Pop,-,-,2,
-13,Tame Impala,2465.9,816.0,Rock,Psychedelic Rock,-,Indie Rock,2,
-14,Tove Lo,2449.4,842.0,Electronic,Synth-pop,Pop,Indie Pop,2,oui
-15,Green Day,2364.9,856.0,Rock,Punk,-,Pop Punk,3,
-16,Various Artists,2338.2,909.0,Stage & Screen,Soundtrack,-,Score,1,
-17,Avicii,2193.3,868.0,Electronic,Dance-pop,-,Progressive House,3,
-18,Teho,2059.7,574.0,Electronic,House,-,Techno,2,
-19,Linkin Park,2010.0,842.0,Rock,Nu Metal,-,Alternative Rock,3,
-20,Coldplay,1974.6,691.0,Rock,Alternative Rock,-,Brit Pop,2,
-21,Parcels,1933.9,570.0,Electronic,Funk,Funk / Soul,Nu-Disco,2,oui
-22,Parra for Cuva,1880.0,600.0,Electronic,Downtempo,-,Deep House,3,
-23,alt-J,1835.1,578.0,Rock,Indie Rock,-,Alternative Rock,3,
-24,Cigarettes After Sex,1826.4,530.0,Rock,Dream Pop,-,Shoegaze,3,
-25,Pink Floyd,1773.2,428.0,Rock,Prog Rock,-,Psychedelic Rock,3,
-26,Jovanotti,1744.1,594.0,Hip Hop,Pop Rap,Pop,-,2,
-27,Dua Lipa,1628.2,591.0,Electronic,Synth-pop,Pop,Dance-pop,2,
-28,Boris Brejcha,1556.0,367.0,Electronic,Minimal Techno,-,Techno,3,
-29,Joris Delacroix,1536.8,512.0,Electronic,Minimal,-,Trance,2,
-30,Dire Straits,1469.7,398.0,Rock,Classic Rock,-,Blues Rock,3,
-31,Ben Böhmer,1417.0,464.0,Electronic,Deep House,-,House,2,
-32,XXXTENTACION,1387.7,883.0,Hip Hop,Trap,-,Cloud Rap,3,
-33,French 79,1354.5,431.0,Electronic,House,-,Synth-pop,3,
-34,Keane,1343.8,489.0,Rock,Alternative Rock,-,Brit Pop,2,
-35,Elton John,1328.9,432.0,Rock,Classic Rock,-,Soft Rock,2,
-36,Adriano Celentano,1255.6,411.0,Pop,-,-,-,2,
-37,Post Malone,1253.3,647.0,Hip Hop,Trap,-,Cloud Rap,2,
-38,Angèle,1223.9,465.0,Pop,Chanson,-,Indie Pop,3,
-39,ROSALÍA,1211.0,467.0,"Folk, World, & Country",Flamenco,Latin,Reggaeton,2,oui
-40,Kali Uchis,1203.7,721.0,Funk / Soul,Rhythm & Blues,-,Neo Soul,2,
-41,Charles Aznavour,1166.5,433.0,Pop,Chanson,-,-,3,
-42,Petit Biscuit,1160.5,432.0,Electronic,Downtempo,-,House,2,
-43,Marsh,1151.3,455.0,Electronic,House,-,Progressive House,2,
-44,Men I Trust,1126.5,422.0,Pop,Indie Pop,Rock,Dream Pop,3,
-45,PLK,1114.8,443.0,Hip Hop,Pop Rap,-,Trap,2,
-46,CRO,1104.1,431.0,Hip Hop,Pop Rap,-,-,3,
-47,Justin Timberlake,1092.0,258.0,Funk / Soul,Rhythm & Blues,Pop,Contemporary R&B,2,
-48,Oasis,1090.7,316.0,Rock,Brit Pop,-,Alternative Rock,3,
-49,Kygo,1068.2,459.0,Electronic,Tropical House,-,Downtempo,3,
-50,Pascal Letoublon,1064.3,371.0,Electronic,House,-,Deep House,2,
+rank,artist,minutes,streams,primary_genre,primary_style,secondary_genre,secondary_style,secondary_score_ratio,is_ambiguous
+1,Joachim Pastor,5500.5,1402.0,Electronic,Techno,Pop,aucun,0.0147,False
+2,Lana Del Rey,4587.0,1523.0,Pop,Indie Pop,Rock,Alternative Rock,0.592,False
+3,Worakls,3936.8,947.0,Electronic,Techno,Classical,aucun,0.0145,False
+4,Billie Eilish,3459.0,1502.0,Pop,Indie Pop,Electronic,Synth-pop,0.3488,False
+5,Martin Garrix,3435.1,1397.0,Electronic,Dance-pop,Pop,aucun,0.0454,False
+6,Red Hot Chili Peppers,3297.3,996.0,Rock,Alternative Rock,Funk / Soul,Funk,0.1047,False
+7,Ludovico Einaudi,2854.3,908.0,Classical,Classical,Electronic,Ambient,0.1098,False
+8,Queen,2800.2,978.0,Rock,Classic Rock,Pop,aucun,0.0251,False
+9,The Beatles,2719.3,1215.0,Rock,Classic Rock,Pop,aucun,0.2122,False
+10,Paul Kalkbrenner,2522.9,743.0,Electronic,Techno,aucun,aucun,,False
+11,NTO,2495.1,621.0,Electronic,Techno,aucun,aucun,,False
+12,Lorde,2493.5,980.0,Pop,Indie Pop,Electronic,Synth-pop,0.4544,False
+13,Tame Impala,2465.9,816.0,Rock,Psychedelic Rock,Pop,aucun,0.2165,False
+14,Tove Lo,2449.4,842.0,Electronic,Synth-pop,Pop,Indie Pop,0.8274,True
+15,Green Day,2364.9,856.0,Rock,Punk,Pop,aucun,0.009,False
+16,Various Artists,2338.2,909.0,Stage & Screen,Soundtrack,Latin,Champeta,0.3095,False
+17,Avicii,2193.3,868.0,Electronic,Dance-pop,aucun,aucun,,False
+18,Teho,2059.7,574.0,Electronic,House,aucun,aucun,,False
+19,Linkin Park,2010.0,842.0,Rock,Nu Metal,aucun,aucun,,False
+20,Coldplay,1974.6,691.0,Rock,Alternative Rock,Pop,aucun,0.1658,False
+21,Parcels,1933.9,570.0,Electronic,Nu-Disco,Funk / Soul,Funk,0.8154,True
+22,Parra for Cuva,1880.0,600.0,Electronic,Downtempo,Classical,Classical,0.0153,False
+23,alt-J,1835.1,578.0,Rock,Indie Rock,Pop,Indie Pop,0.3361,False
+24,Cigarettes After Sex,1826.4,530.0,Rock,Dream Pop,Electronic,Ambient,0.1632,False
+25,Pink Floyd,1773.2,428.0,Rock,Prog Rock,Funk / Soul,Psychedelic,0.0645,False
+26,Jovanotti,1744.1,594.0,Hip Hop,Pop Rap,Pop,aucun,0.5049,False
+27,Dua Lipa,1628.2,591.0,Electronic,Synth-pop,Pop,Europop,0.6982,False
+28,Boris Brejcha,1556.0,367.0,Electronic,Minimal Techno,aucun,aucun,,False
+29,Joris Delacroix,1536.8,512.0,Electronic,Minimal,aucun,aucun,,False
+30,Dire Straits,1469.7,398.0,Rock,Classic Rock,Blues,aucun,0.0688,False
+31,Ben Böhmer,1417.0,463.0,Electronic,Deep House,aucun,aucun,,False
+32,XXXTENTACION,1387.7,883.0,Hip Hop,Trap,Rock,Emo,0.0456,False
+33,French 79,1354.5,431.0,Electronic,House,Pop,aucun,0.0915,False
+34,Keane,1343.8,489.0,Rock,Alternative Rock,Pop,Indie Pop,0.0659,False
+35,Elton John,1328.9,432.0,Rock,Classic Rock,Pop,aucun,0.4467,False
+36,Adriano Celentano,1255.6,411.0,Pop,aucun,Rock,Pop Rock,0.4796,False
+37,Post Malone,1253.3,647.0,Hip Hop,Trap,"Folk, World, & Country",Country,0.1262,False
+38,Angèle,1223.9,465.0,Pop,Chanson,Funk / Soul,Rhythm & Blues,0.0437,False
+39,ROSALÍA,1211.0,467.0,"Folk, World, & Country",Flamenco,Latin,Reggaeton,0.8652,True
+40,Kali Uchis,1203.7,721.0,Funk / Soul,Rhythm & Blues,Pop,aucun,0.1023,False
+41,Charles Aznavour,1166.5,433.0,Pop,Chanson,Jazz,aucun,0.3345,False
+42,Petit Biscuit,1160.5,432.0,Electronic,Downtempo,Classical,Romantic,0.0252,False
+43,Marsh,1151.3,454.0,Electronic,House,Rock,Black Metal,0.105,False
+44,Men I Trust,1126.5,422.0,Pop,Indie Pop,Rock,Dream Pop,0.5065,False
+45,PLK,1114.8,443.0,Hip Hop,Pop Rap,Electronic,Drum n Bass,0.5871,False
+46,CRO,1104.1,431.0,Hip Hop,Pop Rap,Pop,aucun,0.0885,False
+47,Justin Timberlake,1092.0,258.0,Funk / Soul,Rhythm & Blues,Pop,aucun,0.6078,False
+48,Oasis,1090.7,316.0,Rock,Brit Pop,Pop,aucun,0.0102,False
+49,Kygo,1068.2,459.0,Electronic,Tropical House,Pop,aucun,0.0105,False
+50,Pascal Letoublon,1064.3,371.0,Electronic,House,Pop,aucun,0.0369,False

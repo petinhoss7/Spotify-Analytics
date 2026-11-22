@@ -155,14 +155,16 @@ models:
 
       - name: secondary_genre
         description: >
-          Second final genre, present only when the runner-up has at
-          least 2 supporting sources and at least 50% of the primary
-          score (tunable via attribution_min_secondary_* vars), else null.
+          Second genre of the combination - the runner-up by score, filled
+          whenever the artist has a second scored genre. Null only for
+          artists with a single genre. Never equal to primary_genre; its
+          strength is in secondary_score_ratio and secondary_sources_count.
 
       - name: secondary_style
         description: >
-          Second sous-genre, present when its score reaches the style
-          ratio threshold of the primary style, else null.
+          Second sous-genre of the combination - the best style of the
+          secondary genre, so it always belongs to it. Null when the artist
+          has no secondary genre, or no styled tag under it.
 
       - name: primary_share
         description: >
@@ -196,6 +198,12 @@ models:
       - name: nb_supporting_sources
         description: >
           Number of distinct sources (1 to 3) tagging the primary genre.
+
+      - name: secondary_score_ratio
+        description: >
+          Secondary genre score / primary genre score (0 to 1), null when the
+          artist has a single genre. Tells a solid second genre from a weak
+          one: a low value means the secondary sits on thin evidence.
 
       - name: one_genre_found
         description: >

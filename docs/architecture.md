@@ -237,18 +237,23 @@ views and zero `unmapped` lines). On top of it:
   derived independently from each source are compared with a simple Jaccard
   score (shared / union). Pairwise confusion matrices expose systematic
   disagreements between sources (e.g. Rock vs Pop for the same artists).
-- **Final attribution** (`int_artists_genre_attribution`): genres are scored
-  with an explainable weighted sum — `row_weight = method_weight ×
-  ln(1 + tag_count)` (exact/alias 1.0, fuzzy 0.9, llm 0.8), genre score
+- **Final attribution** (`int_artists_genre_attribution`): each artist is
+  described by a **combination** of four attributes — a primary pair
+  `(primary_genre, primary_style)` and a secondary pair
+  `(secondary_genre, secondary_style)`, each style belonging to the genre it
+  is paired with. Genres are scored with an explainable weighted sum —
+  `row_weight = method_weight × ln(1 + tag_count)` (verified/exact/alias 1.0,
+  fuzzy 0.9, llm 0.8), genre score
   multiplied by `(1 + 0.5 × (distinct_sources − 1))` so cross-source
-  agreement outranks tag volume. Primary = top score; secondary kept only
-  with ≥2 sources and ≥50% of the primary score (tunable vars
-  `attribution_min_secondary_*`); the raw runner-up, ratio and source count
-  are stored even when rejected. Styles are ranked only among rows whose
-  genre is a final genre, so a sous-genre is always coherent with its
-  final genre. `combined_confidence = 0.6 × primary_share +
+  agreement outranks tag volume. Primary = top score; the secondary genre is
+  the runner-up and is **not gated** — an artist with two scored genres has
+  two genres, and the weaker one's strength is reported through
+  `secondary_score_ratio` and `secondary_sources_count` instead of being
+  hidden. Styles are ranked **within each genre**, so the primary style is
+  the best style of the primary genre, and the secondary style the best style
+  of the secondary genre. `combined_confidence = 0.6 × primary_share +
   0.4 × (sources / 3)`; `is_ambiguous` flags near-ties (runner-up ratio
-  ≥ 0.75).
+  ≥ 0.75), in which case the two pairs are best read as unordered.
 
 #### Score models (shared by attribution and marts)
 

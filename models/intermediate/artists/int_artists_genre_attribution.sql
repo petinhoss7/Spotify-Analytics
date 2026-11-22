@@ -4,26 +4,40 @@
 
     Grain: 1 row = 1 artist with at least one genre-classified tag.
 
+    The result is a *combination* of four attributes, so every artist is
+    described by a primary and a secondary pair:
+
+        primary_genre   + primary_style     (the strongest genre, and its
+                                             strongest style for this artist)
+        secondary_genre + secondary_style   (the runner-up genre, and ITS
+                                             strongest style)
+
+    Each style belongs to the genre it is paired with, so the combination
+    always reads as two valid (genre, style) pairs - never a style from the
+    primary genre sitting in the secondary slot.
+
     Scoring (weighted sum, explainable):
 
         row_weight  = method_weight x ln(1 + tag_count)
-                      method_weight: exact/alias 1.0, fuzzy 0.9, llm 0.8
+                      method_weight: verified/exact/alias 1.0, fuzzy 0.9, llm 0.8
                       tag_count: source popularity weight, null -> 1
         genre_score = sum(row_weight) x (1 + 0.5 x (distinct_sources - 1))
 
     Selection:
-        - primary_genre  = highest genre_score
+        - primary_genre = highest genre_score
           (ties: nb_sources desc, then genre name - deterministic)
-        - secondary_genre = runner-up ONLY if
-              nb_sources >= {{ var('attribution_min_secondary_sources', 2) }}
-              and score_ratio >= {{ var('attribution_min_secondary_score_ratio', 0.5) }}
-          otherwise null; the raw candidate + ratio + sources are kept
-          for threshold analysis.
-        - primary_style / secondary_style ranked among style rows whose
-          genre is the final genre(s) - style is always coherent with the
-          final genre. Style rule is ratio-only (styles are sparser).
+        - secondary_genre = runner-up genre, filled whenever the artist has a
+          second scored genre. It is NOT gated: an artist with two genres has
+          two genres, and hiding the weaker one would leave the combination
+          incomplete. Its strength is reported instead, through
+          secondary_score_ratio and secondary_sources_count.
+        - primary_style = highest scoring style among the primary genre's rows
+        - secondary_style = highest scoring style among the secondary genre's
+          rows (null when the artist has no secondary genre, or no styled tag
+          under it)
         - is_ambiguous = runner-up ratio >=
-          {{ var('attribution_ambiguity_ratio', 0.75) }} (top-2 nearly tied).
+          {{ var('attribution_ambiguity_ratio', 0.75) }} (top-2 nearly tied,
+          so treat primary and secondary as an unordered pair)
 
     Confidence:
         - primary_share = primary score / total score of the artist
@@ -32,19 +46,13 @@
 
 */
 
-{% set min_secondary_ratio = var('attribution_min_secondary_score_ratio', 0.5) %}
-{% set min_secondary_sources = var('attribution_min_secondary_sources', 2) %}
-{% set min_secondary_style_ratio = var('attribution_min_secondary_style_ratio', 0.5) %}
 {% set ambiguity_ratio = var('attribution_ambiguity_ratio', 0.75) %}
 
 /*
-
     Row-level weights and per-genre scores are defined once in
-    int_artists_tag_scores / int_artists_genre_scores and reused here -
-    same values as the former in-line CTEs (guarded by
-    test_attribution_scores_match_genre_scores), so the listening marts
-    and this model always score identically.
-
+    int_artists_tag_scores / int_artists_genre_scores and reused here, so the
+    listening marts and this model can never score differently (guarded by
+    test_attribution_scores_match_genre_scores).
 */
 
 with tag_rows as (
@@ -98,7 +106,7 @@ genre_summary as (
         max(case when rank_position = 1 then genre_score end) as primary_genre_score,
         max(case when rank_position = 1 then nb_sources end) as nb_supporting_sources,
         max(case when rank_position = 1 then nb_tags end) as primary_nb_tags,
-        max(case when rank_position = 2 then discogs_genre end) as secondary_genre_candidate,
+        max(case when rank_position = 2 then discogs_genre end) as secondary_genre,
         max(case when rank_position = 2 then genre_score end) as secondary_genre_score,
         max(case when rank_position = 2 then nb_sources end) as secondary_sources_count,
         count(*) as nb_distinct_genres,
@@ -112,48 +120,32 @@ genre_final as (
 
     select
         *,
-        secondary_genre_score / nullif(primary_genre_score, 0) as secondary_score_ratio_raw,
-        primary_genre_score / nullif(total_score, 0) as primary_share_raw,
-
-        case
-            when secondary_genre_candidate is not null
-                 and secondary_sources_count >= {{ min_secondary_sources }}
-                 and secondary_genre_score / nullif(primary_genre_score, 0) >= {{ min_secondary_ratio }}
-            then secondary_genre_candidate
-        end as secondary_genre
+        secondary_genre_score / nullif(primary_genre_score, 0) as secondary_score_ratio,
+        primary_genre_score / nullif(total_score, 0) as primary_share
 
     from genre_summary
 
 ),
 
 /*
-
-    Styles ranked only among rows whose genre is one of the final
-    genre(s): the sous-genre is always coherent with the final genre.
+    Style scores, then ranked *within each genre*, so the primary and the
+    secondary slot each get the best style of their own genre.
 */
-final_genres as (
+style_scores as (
 
     select
         artist_id,
-        primary_genre,
-        secondary_genre
-    from genre_final
-
-),
-
-style_rows as (
-
-    select
-        t.artist_id,
-        t.source,
-        t.discogs_style,
-        t.tag_count,
-        t.method_weight
-    from tag_rows t
-    inner join final_genres g
-        on t.artist_id = g.artist_id
-       and t.discogs_genre in (g.primary_genre, g.secondary_genre)
-    where t.discogs_style is not null
+        discogs_genre,
+        discogs_style,
+        sum(method_weight * ln(1 + coalesce(tag_count, 1)))
+            * (1 + 0.5 * (count(distinct source) - 1)) as style_score,
+        count(distinct source) as nb_style_sources
+    from tag_rows
+    where discogs_style is not null
+    group by
+        artist_id,
+        discogs_genre,
+        discogs_style
 
 ),
 
@@ -162,37 +154,13 @@ style_ranked as (
     select
         *,
         row_number() over (
-            partition by artist_id
+            partition by artist_id, discogs_genre
             order by
                 style_score desc,
                 nb_style_sources desc,
                 discogs_style
-        ) as rank_position
-    from (
-        select
-            artist_id,
-            discogs_style,
-            sum(method_weight * ln(1 + coalesce(tag_count, 1)))
-                * (1 + 0.5 * (count(distinct source) - 1)) as style_score,
-            count(distinct source) as nb_style_sources
-        from style_rows
-        group by
-            artist_id,
-            discogs_style
-    )
-
-),
-
-style_summary as (
-
-    select
-        artist_id,
-        max(case when rank_position = 1 then discogs_style end) as primary_style,
-        max(case when rank_position = 1 then style_score end) as primary_style_score,
-        max(case when rank_position = 2 then discogs_style end) as secondary_style,
-        max(case when rank_position = 2 then style_score end) as secondary_style_score
-    from style_ranked
-    group by artist_id
+        ) as style_rank
+    from style_scores
 
 ),
 
@@ -212,40 +180,47 @@ select
 
     an.spotify_artist_name,
 
+    -- primary pair
     g.primary_genre,
 
     round(g.primary_genre_score, 3) as primary_genre_score,
-    round(g.primary_share_raw, 4) as primary_share,
+    round(g.primary_share, 4) as primary_share,
     g.nb_supporting_sources,
     g.primary_nb_tags as nb_genre_tags,
     g.nb_distinct_genres,
 
+    ps.discogs_style as primary_style,
+    round(ps.style_score, 3) as primary_style_score,
+
+    -- secondary pair (null when the artist has a single scored genre, or no
+    -- styled tag under the runner-up genre)
     g.secondary_genre,
 
-    g.secondary_genre_candidate,
-    round(g.secondary_score_ratio_raw, 4) as secondary_score_ratio,
+    round(g.secondary_genre_score, 3) as secondary_genre_score,
+    round(g.secondary_score_ratio, 4) as secondary_score_ratio,
     g.secondary_sources_count,
 
-    st.primary_style,
-    round(st.primary_style_score, 3) as primary_style_score,
-
-    st.secondary_style,
-    round(
-        st.secondary_style_score / nullif(st.primary_style_score, 0),
-        4
-    ) as secondary_style_score_ratio,
+    ss.discogs_style as secondary_style,
+    round(ss.style_score, 3) as secondary_style_score,
 
     round(
-        0.6 * g.primary_share_raw + 0.4 * (g.nb_supporting_sources / 3.0),
+        0.6 * g.primary_share + 0.4 * (g.nb_supporting_sources / 3.0),
         4
     ) as combined_confidence,
 
-    coalesce(g.secondary_score_ratio_raw >= {{ ambiguity_ratio }}, false) as is_ambiguous
+    coalesce(g.secondary_score_ratio >= {{ ambiguity_ratio }}, false) as is_ambiguous
 
 from genre_final g
 
-left join style_summary st
-    using (artist_id)
+left join style_ranked ps
+    on ps.artist_id = g.artist_id
+   and ps.discogs_genre = g.primary_genre
+   and ps.style_rank = 1
+
+left join style_ranked ss
+    on ss.artist_id = g.artist_id
+   and ss.discogs_genre = g.secondary_genre
+   and ss.style_rank = 1
 
 left join artist_names an
-    using (artist_id)
+    on an.artist_id = g.artist_id
