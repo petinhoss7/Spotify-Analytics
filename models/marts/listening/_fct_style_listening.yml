@@ -1,0 +1,88 @@
+version: 2
+
+models:
+  - name: fct_style_listening
+    description: >
+      Listening time attributed to Discogs styles (sous-genres) per calendar
+      month - the sous-genre companion of fct_genre_listening. Grain: 1 row =
+      listening month x genre x style. Same allocation (from
+      int_stream_artist_pairs), grouped by style instead of genre, so the
+      styles of a genre roll up exactly to the genre table.
+
+      The genre is in the grain because a style name can live under several
+      genres (Dub is both Electronic and Reggae), and because it makes the
+      roll-up testable. Three buckets keep every month's total equal to the
+      month's listening minutes: '(no_style)' when the pair carries a genre
+      but no specific style, plus 'unclassified' and 'no_artist_data'.
+
+      Style evidence is thinner than genre evidence by nature: 65.7% of
+      (artist, style) couples rest on a single tag. Read the numbers with
+      nb_artists, and drill into int_artists_tag_scores for per-artist
+      evidence.
+
+    columns:
+
+      - name: listening_month
+        description: First day of the listening month.
+        data_tests:
+          - not_null
+
+      - name: discogs_genre
+        description: >
+          Discogs genre the style belongs to, or one of the reconciliation
+          buckets ('unclassified', 'no_artist_data').
+        data_tests:
+          - not_null
+
+      - name: discogs_style
+        description: >
+          Discogs style, or '(no_style)' when the pair carries a genre without
+          a specific style, or a reconciliation bucket.
+        data_tests:
+          - not_null
+
+      - name: total_minutes
+        description: Listening minutes attributed to the style this month.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: fractional_stream_count
+        description: >
+          Stream count with the same split rules (sum of 1/artist_count x pair
+          weight). Plain stream count in the 'no_artist_data' bucket.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: nb_artists
+        description: >
+          Distinct artists contributing to the style this month, null in the
+          'no_artist_data' bucket.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: share_of_month_minutes
+        description: >
+          total_minutes / total minutes of the month (all styles + buckets),
+          0 to 1; shares sum to 1 within rounding.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - listening_month
+              - discogs_genre
+              - discogs_style

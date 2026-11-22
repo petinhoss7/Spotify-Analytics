@@ -62,10 +62,34 @@ Those go in `seeds/artist_overrides.csv`, a small hand-made table applied as
 the final step of the attribution — see
 [`docs/architecture.md`](docs/architecture.md).
 
-`genre_share` (shares sum to 1 per artist) is what `fct_genre_listening` uses
-to split listening time across **all** scored genres, not only the primary
-pair; that split stays evidence-proportional and is deliberately not
-overridden.
+### From the artist to listening time
+
+The genre is an attribute of the **artist** (a fact, never divided); listening
+time is a **quantity**. Going from one to the other is an allocation, defined
+once in `int_stream_artist_pairs`:
+
+1. a stream's minutes are divided by the number of artists on the track;
+2. each artist's share goes to their primary pair `(genre, style)` at **0.7**
+   and to their secondary pair at **0.3** — an artist without a secondary
+   keeps the whole share on the primary pair.
+
+The weights sum to 1 per (stream, artist), which is what keeps the totals
+additive instead of double-counting a minute. Because a pair is
+`(genre, style)`, **the same rule serves both levels**:
+
+- `fct_genre_listening` — month x genre;
+- `fct_style_listening` — month x genre x style, and the styles of a genre
+  roll up **exactly** to the genre table (tested).
+
+| message | question | what to use |
+|---|---|---|
+| « quel est le genre de ce morceau ? » | a label | `fct_streams.lead_primary_genre` — a denomination, no proportion |
+| « combien de temps par genre ? » | a **measure** | `fct_genre_listening` |
+| « combien de temps par style ? » | a **measure** | `fct_style_listening` |
+
+**Never compare the label with the measures**: summing minutes by
+`lead_primary_genre` gives different numbers on purpose, because it cannot
+spread the 13% of minutes whose track artists disagree on genre.
 
 ## Data sources
 
@@ -127,16 +151,20 @@ resumable.
 
 ## Data quality
 
-`dbt build` runs 171 tests, including 14 singular tests that guard the logic
+`dbt build` runs 225 tests, including 19 singular tests that guard the logic
 rather than the columns:
 
-- `fct_streams` and `fct_genre_listening` reconcile against their upstream
-  models (rows and minutes), and genre shares sum to 1 per month;
+- `fct_streams` reconciles with its upstream model, and `fct_genre_listening`
+  and `fct_style_listening` both reconcile with `fct_streams` (rows and
+  minutes), with shares summing to 1 per month;
+- the allocation conserves time: the pair weights sum to `1 / artist_count`
+  for every stream × artist, and the **styles of a genre roll up exactly** to
+  `fct_genre_listening`;
 - every staging tag is mapped (no silently dropped tags) and every
   `(genre, style)` pair belongs to the closed Discogs list;
 - attribution reconciles with the line-by-line classification, its scores match
-  `int_artists_genre_scores`, the secondary-genre rule holds, and each style is
-  coherent with its parent genre.
+  `int_artists_genre_scores`, and each style is coherent with the parent genre
+  it is paired with.
 
 Failures are stored in the `test_failures` schema (`+store_failures: true`).
 
@@ -175,8 +203,10 @@ head of the distribution is now human-decided, with weight 1.0.
 
 1. installs `dbt-duckdb`;
 2. `dbt deps`;
-3. generates the synthetic fixture (`ci/seed_fixture.py`);
-4. runs `dbt build --target ci` (28 models/seeds + 169 tests).
+3. runs the classifier unit tests and the gold-set evaluation;
+4. generates the synthetic fixture (`ci/seed_fixture.py`);
+5. runs `dbt build --target ci` (225 nodes: 22 models, 9 seeds/views and
+   194 data tests).
 
 No credentials or private data are needed — the fixture database is generated
 in the job and git-ignored.
@@ -207,6 +237,9 @@ in the job and git-ignored.
   (2,709 unclassified).
 - 12,697 raw tags classified: 253 hand-verified, 388 exact, 31 alias,
   1,783 containment, 10,110 LLM, 132 noise / workflow artifacts.
-- Closed taxonomy: 15 genres, **611 styles**, built from merged Discogs
+- Closed taxonomy: 15 genres, **612 styles**, built from merged Discogs
   exports by `scripts/build_taxonomy.py`.
-- Last full build: **197/197 nodes green** plus 45 classifier unit tests.
+- Listening: **7 570 h**, split as `Electronic 36.2% / Rock 18.5% /
+  Pop 16.8% / Hip Hop 8.9%` at genre level and **11 942** month × genre ×
+  style rows, with `(no_style)` carrying 10.4% of the minutes.
+- Last full build: **225/225 nodes green** plus 45 classifier unit tests.

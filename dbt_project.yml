@@ -63,6 +63,14 @@ vars:
   attribution_min_secondary_tags: 2
   attribution_min_secondary_score_ratio: 0.10
   attribution_ambiguity_ratio: 0.75
+  # Listening allocation (int_stream_artist_pairs): how a stream's minutes
+  # spread over the (genre, style) pairs of the artists on the track. The
+  # stream's time is divided by the number of artists, then each artist's
+  # share goes to their primary pair and, when they have one, to their
+  # secondary pair. An artist without a secondary keeps the whole share on the
+  # primary pair, which is what keeps the per-stream weights summing to 1.
+  attribution_primary_pair_weight: 0.7
+  attribution_secondary_pair_weight: 0.3
 
 # Seeds: closed-list reference data and the tag classification map
 # produced offline by scripts/classifier/classify_tags.py

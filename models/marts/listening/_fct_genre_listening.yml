@@ -6,12 +6,22 @@ models:
       Listening time attributed to Discogs genres per calendar month -
       the flagship "what do I actually listen to, and when" mart. Grain:
       1 row = listening month x genre (15 closed genres + 2
-      reconciliation buckets). Attribution is evidence-proportional over
-      ALL scored genres (int_artists_genre_scores.genre_share): streams
-      are split fractionally across a track's artists, then each
-      artist's minutes across all their scored genres. Per month,
-      total_minutes reconcile with fct_streams (singular test) and the
-      genre shares sum to 1.
+      reconciliation buckets).
+
+      Attribution comes from int_stream_artist_pairs, the single definition
+      of the allocation: each stream's minutes are divided by the number of
+      artists on the track, then each artist's share goes to their primary
+      pair (0.7) and to their secondary pair (0.3) when they have one. The
+      pair is (genre, style), so this model is that allocation grouped by
+      genre, and fct_style_listening is the same allocation grouped by style
+      - the styles of a genre roll up exactly to this table.
+
+      This is a MEASURE, not a track label: it answers "how much time in each
+      genre". fct_streams.lead_primary_genre is a denomination and gives
+      different numbers on purpose.
+
+      Per month, total_minutes reconcile with fct_streams (singular test) and
+      the genre shares sum to 1.
 
     columns:
 

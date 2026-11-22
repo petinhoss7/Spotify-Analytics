@@ -1,0 +1,86 @@
+version: 2
+
+models:
+  - name: int_stream_artist_pairs
+    description: >
+      Allocation of a stream's listening time over the (genre, style) pairs of
+      the artists on the track. Grain: 1 row = 1 stream x 1 artist x 1 pair.
+      The stream's minutes are divided by the number of artists, then each
+      artist's share goes to their primary pair (0.7) and to their secondary
+      pair (0.3) when they have one; an artist without a secondary keeps the
+      whole share on the primary pair.
+
+      This is the single definition of "which genre does this listening belong
+      to", consumed by every listening mart, so fct_genre_listening and
+      fct_style_listening can never disagree. The proportion is an accounting
+      rule, not a claim about the genre: genre is an attribute of the artist,
+      and dividing the time is only what keeps the total additive instead of
+      counting the same minute several times.
+
+    columns:
+
+      - name: stream_id
+        description: Identifier of the stream (staging level).
+        data_tests:
+          - not_null
+
+      - name: stream_date
+        description: Calendar date of the stream (UTC).
+        data_tests:
+          - not_null
+
+      - name: track_id
+        description: The 22-character Spotify track id.
+        data_tests:
+          - not_null
+
+      - name: artist_id
+        description: Artist the share belongs to.
+        data_tests:
+          - not_null
+
+      - name: artist_count
+        description: Number of artists on the track, the divisor of the split.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+      - name: pair_rank
+        description: Whether this pair is the artist's primary or secondary one.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['primary', 'secondary']
+
+      - name: discogs_genre
+        description: >
+          Discogs genre of the pair. Never null: the primary pair always has a
+          genre, so every artist in the bridge contributes at least one row.
+        data_tests:
+          - not_null
+
+      - name: discogs_style
+        description: >
+          Discogs style of the pair, null when the pair carries no style (the
+          marts bucket those as '(no_style)').
+
+      - name: pair_weight
+        description: >
+          (1 / artist_count) x (0.7 or 0.3). Sums to 1 across the rows of one
+          stream, which is what makes the allocation conserve the minutes.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: allocated_minutes
+        description: >
+          (minutes_played / artist_count) x pair weight. Its sum over a stream
+          equals the stream's minutes.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0

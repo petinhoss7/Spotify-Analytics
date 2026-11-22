@@ -207,9 +207,7 @@ are cached in `data/tag_llm_cache.json`, so re-runs are free and resumable.
 Ambiguous style names shared by several genres ("dub", "disco", "ska"...)
 never match deterministically; they are always decided by the LLM layer.
 
-### Intermediate (tables, business logic)
-
-| Model | Role |
+### Intermediate (tables, business logic)| Model | Role |
 |---|---|
 | `int_spotify_streams_deduped` | One row per stream — removes plays duplicated across export files (keeps latest load) |
 | `int_spotify_streams_enriched` | Music-only streams + listening features: `stream_date`, hour, weekday, `is_meaningful_listen` (≥30 s) |
@@ -225,7 +223,8 @@ never match deterministically; they are always decided by the LLM layer.
 | `int_artists` | Consolidated artist profile: Spotify + Last.fm + MusicBrainz data + the final Discogs attribution embedded from `int_artists_genre_attribution` (primary/secondary genre & style, confidence, ambiguity flag) |
 | `int_tracks_artists` | Track × artist bridge with artist count and `is_collaboration` flag |
 | `int_artists_tag_scores` | Row-level evidence weights: 1 row = artist × source × genre-classified tag, `row_weight = method_weight × ln(1 + tag_count)` — the single definition consumed by attribution and marts |
-| `int_artists_genre_scores` | Genre evidence scores: 1 row = artist × genre (ALL scored genres), `genre_score` with cross-source bonus + `genre_share` (0-1, shares sum to 1 per artist) |
+| `int_artists_genre_scores` | Genre evidence scores: 1 row = artist × genre (ALL scored genres), `genre_score` with cross-source bonus + `genre_share` (0-1, shares sum to 1 per artist). This is the **evidence** distribution; it is no longer the listening rule, which reads `int_stream_artist_pairs` instead |
+| `int_stream_artist_pairs` | Listening allocation: 1 row = stream × artist × pair `(genre, style)`. The stream's minutes are divided by the number of artists, then each artist's share goes 0.7 to their primary pair and 0.3 to their secondary one (`pair_weight` sums to 1 per stream × artist). The single definition consumed by `fct_genre_listening` and `fct_style_listening` |
 
 #### Source tag comparison & final attribution
 
@@ -283,11 +282,11 @@ views and zero `unmapped` lines). On top of it:
 #### Score models (shared by attribution and marts)
 
 `int_artists_tag_scores` / `int_artists_genre_scores` define the
-scoring math once (row weights, genre scores, `genre_share`). The
-attribution model and the listening marts both consume them, so
-sanctioned attribution and evidence-proportional listening attribution
-can never drift apart (guards:
-`test_attribution_scores_match_genre_scores`,
+scoring math once (row weights, genre scores, `genre_share`). `genre_share`
+is the **evidence** distribution: it is no longer what the listening marts
+use, since they read the simpler artist-pair allocation, and it stays exposed
+as metadata about how strongly a genre is attested. The attribution model
+consumes them (guards: `test_attribution_scores_match_genre_scores`,
 `test_genre_scores_shares_sum`).
 
 ### Marts (serving layer)
@@ -295,7 +294,8 @@ can never drift apart (guards:
 | Model | Role |
 |---|---|
 | `fct_streams` | Event fact: 1 row = 1 music stream, reconciled to `int_spotify_streams_enriched` (rows + minutes); denormalized lead artist (name-matched, deterministic fallback), `artist_count`, `is_collaboration`, `lead_primary_genre` |
-| `fct_genre_listening` | Listening minutes per month × genre. Evidence-proportional attribution: stream minutes split across track artists (`minutes / artist_count`), then across ALL the artist's scored genres by `genre_share`. Two explicit buckets (`unclassified` = artist without genre evidence, `no_artist_data` = track absent from the bridge) keep every month's total equal to `fct_streams`; per-artist genre ranking follows the tag evidence (no gate-induced rank flips) |
+| `fct_genre_listening` | Listening minutes per month × genre. Allocation from `int_stream_artist_pairs`: a stream's minutes are divided by the number of artists on the track, then each artist's share goes 0.7 to their primary `(genre, style)` pair and 0.3 to their secondary one. Two explicit buckets (`unclassified` = artist without a genre attribution, `no_artist_data` = track absent from the bridge) keep every month's total equal to `fct_streams`. **This is a measure, not a track label** — see `fct_streams.lead_primary_genre` for the denomination, and never compare the two |
+| `fct_style_listening` | The same allocation grouped by **style** instead of genre (month × genre × style), with a `(no_style)` bucket for pairs that carry a genre but no specific style. Because it groups the same model, the styles of a genre roll up **exactly** to `fct_genre_listening` (guarded by `test_fct_style_listening_rolls_up_to_genre`). Style evidence is sparse by nature — 65.7% of (artist, style) couples rest on a single tag — and `(no_style)` carries 10.4% of the minutes, mostly under Pop |
 
 Per-artist distributions on real data: Childish Gambino → Hip Hop
 73.0 / Funk / Soul 19.9 / Rock 7.1; Lana Del Rey → Pop 49.0 / Rock
