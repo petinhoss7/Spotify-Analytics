@@ -140,11 +140,14 @@ Interactive version: `dbt docs generate` then `dbt docs serve`.
 | Seed | Role |
 |---|---|
 | `discogs_genres_styles` | Closed Discogs list flattened from `discogs_genres_styles.json` (15 genres x 372 styles); referential-integrity reference for tests |
-| `tag_genre_map` | 1 row per unique raw tag (12,697): `is_genre_tag`, `discogs_genre`, `discogs_style`, `match_method`, `match_score`. Produced offline by `scripts/classifier/classify_tags.py` |
+| `tag_genre_map` | 1 row per unique raw tag (12,697): `is_genre_tag`, `discogs_genre`, `discogs_style`, `match_method`, `match_score`, `confidence`. Produced offline by `scripts/classifier/classify_tags.py` |
+| `tag_overrides` | Human-curated overrides (30 tags): fixes the answer and the tag-specificity `confidence` before any automatic layer runs. Not materialized in the warehouse |
+| `tag_aliases` | Alias rewrites consumed by the classifier script only |
 
 #### Tag classification (offline, `scripts/classifier/`)
 
-Layers, in priority order per tag: normalization -> exact match against the
+Layers, in priority order per tag: curated overrides
+(`seeds/tag_overrides.csv`) -> normalization -> exact match against the
 closed list -> alias rewrite (`seeds/tag_aliases.csv`) -> token-boundary
 containment of a closed-list key (longest key wins, ties abstain) -> LLM
 classification (GLM via OpenRouter, closed list in the system prompt,
@@ -153,6 +156,20 @@ server-side validation) -> review file for anything left. Pure-noise tags
 are cached in `data/tag_llm_cache.json`, so re-runs are free and resumable.
 Ambiguous style names shared by several genres ("dub", "disco", "ska"...)
 never match deterministically; they are always decided by the LLM layer.
+
+Two independent reliability factors score every tag row:
+
+- `match_method` -> **method weight** (reliability of the mechanism):
+  manual/exact/alias 1.0, fuzzy 0.9, llm 0.8.
+- `confidence` -> **tag specificity** (reliability of the meaning), stored in
+  the seed: 1.0 for every automatic layer, lowered only by the curated
+  overrides for tags that do not determine a genre by themselves
+  ("dance", "indie", "oldies", "instrumental"...).
+
+`scripts/classifier/quality_report.py` prints the metrics used to judge a
+change: attribution coverage, primary-genre distribution, MusicBrainz
+structured-genre confirmation (an external referee never fed to the
+classifier), cross-source Jaccard and the share of hedged evidence.
 
 ### Intermediate (tables, business logic)
 
@@ -171,7 +188,7 @@ never match deterministically; they are always decided by the LLM layer.
 | `int_artists_genre_attribution` | Final attribution: 1 row per artist — primary + secondary genre (rule-gated) and styles, weighted-score based, with `primary_share`, `combined_confidence`, `is_ambiguous` |
 | `int_artists` | Consolidated artist profile: Spotify + Last.fm + MusicBrainz data + the final Discogs attribution embedded from `int_artists_genre_attribution` (primary/secondary genre & style, confidence, ambiguity flag) |
 | `int_tracks_artists` | Track × artist bridge with artist count and `is_collaboration` flag |
-| `int_artists_tag_scores` | Row-level evidence weights: 1 row = artist × source × genre-classified tag, `row_weight = method_weight × ln(1 + tag_count)` — the single definition consumed by attribution and marts |
+| `int_artists_tag_scores` | Row-level evidence weights: 1 row = artist × source × genre-classified tag, `row_weight = method_weight × confidence × ln(1 + tag_count)` — the single definition consumed by attribution and marts |
 | `int_artists_genre_scores` | Genre evidence scores: 1 row = artist × genre (ALL scored genres), `genre_score` with cross-source bonus + `genre_share` (0-1, shares sum to 1 per artist) |
 
 #### Source tag comparison & final attribution
@@ -187,7 +204,9 @@ views and zero `unmapped` lines). On top of it:
   disagreements between sources (e.g. Rock vs Pop for the same artists).
 - **Final attribution** (`int_artists_genre_attribution`): genres are scored
   with an explainable weighted sum — `row_weight = method_weight ×
-  ln(1 + tag_count)` (exact/alias 1.0, fuzzy 0.9, llm 0.8), genre score
+  confidence × ln(1 + tag_count)` (method_weight: manual/exact/alias 1.0,
+  fuzzy 0.9, llm 0.8; confidence: tag specificity from the seed, 1.0 unless a
+  curated override lowered it), genre score
   multiplied by `(1 + 0.5 × (distinct_sources − 1))` so cross-source
   agreement outranks tag volume. Primary = top score; secondary kept only
   with ≥2 sources and ≥50% of the primary score (tunable vars

@@ -8,8 +8,11 @@ models:
       2 styles per artist from the closed Discogs list using an
       explainable weighted sum:
 
-      row_weight = method_weight x ln(1 + tag_count), with method_weight
-      exact/alias 1.0, fuzzy 0.9, llm 0.8; genre_score = sum(row_weight)
+      row_weight = method_weight x confidence x ln(1 + tag_count), with
+      method_weight manual/exact/alias 1.0, fuzzy 0.9, llm 0.8 and
+      confidence the tag-specificity weight from the seed (1.0 by default,
+      lowered by seeds/tag_overrides.csv for generic tags);
+      genre_score = sum(row_weight)
       x (1 + 0.5 x (distinct_sources - 1)). Cross-source agreement
       outranks tag volume; scores are deterministic (ties broken by
       source count then name).

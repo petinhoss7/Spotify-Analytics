@@ -27,6 +27,10 @@ with per_source as (
         count(*) filter (where classification_status = 'genre'
                           and discogs_style is not null) as style_rows,
 
+        count(*) filter (where classification_status = 'genre'
+                          and coalesce(confidence, 1.0) < 1.0) as hedged_genre_rows,
+
+        count(*) filter (where match_method = 'manual') as method_manual,
         count(*) filter (where match_method = 'exact') as method_exact,
         count(*) filter (where match_method = 'alias') as method_alias,
         count(*) filter (where match_method = 'fuzzy') as method_fuzzy,
@@ -126,6 +130,9 @@ select
     ps.style_rows,
     round(ps.style_rows / nullif(ps.genre_rows, 0), 4) as style_rate,
 
+    ps.hedged_genre_rows,
+
+    ps.method_manual,
     ps.method_exact,
     ps.method_alias,
     ps.method_fuzzy,

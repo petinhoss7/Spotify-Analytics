@@ -68,7 +68,10 @@ seeds:
         discogs_style: varchar
     tag_genre_map:
       # fast: false -> agate-based batched inserts; DuckDB COPY chokes on
-      # RFC-4180 escaped quotes inside tag values
+      # RFC-4180 escaped quotes inside tag values.
+      # NOTE: dbt-duckdb appends to an existing seed table, so after adding
+      # or renaming a column (e.g. confidence) the table must be dropped
+      # first, or built with `dbt seed --full-refresh`.
       +fast: false
       +column_types:
         raw_tag: varchar
@@ -77,6 +80,14 @@ seeds:
         discogs_style: varchar
         match_method: varchar
         match_score: integer
+        # Tag-specificity weight, default 1.0. Human-curated overrides lower
+        # it for tags that do not determine a genre by themselves
+        # ("dance", "lo-fi", "oldies"...). Consumed by int_artists_tag_scores.
+        confidence: double
     tag_aliases:
       # consumed by the classifier script only, not materialized in the warehouse
+      +enabled: false
+    tag_overrides:
+      # curated by hand, consumed by the classifier script only
+      # (seeds/tag_overrides.csv); not materialized in the warehouse
       +enabled: false

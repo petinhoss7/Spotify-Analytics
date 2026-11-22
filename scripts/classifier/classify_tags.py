@@ -2,6 +2,7 @@
 """Classify raw music tags into the closed Discogs genre/style taxonomy.
 
 Layers:
+  L0 overrides    seeds/tag_overrides.csv, human-curated, always wins
   L0 normalize    lowercase, strip accents/punctuation, & -> and
   L1 exact        normalized tag == normalized closed-list key
   L2 alias        seeds/tag_aliases.csv rewrite (one hop) then L1
@@ -12,8 +13,21 @@ Layers:
   L4 llm          OpenRouter chat completion, closed list in system prompt
   review          failures parked to logs/classifier/review_pending.csv
 
+Confidence model (two independent factors, multiplied in dbt):
+
+  match_method -> method_weight   reliability of the *mechanism*
+      manual / exact / alias 1.0, fuzzy 0.9, llm 0.8
+      (derived in dbt from match_method, not stored in the seed)
+  confidence   -> specificity    reliability of the *tag meaning*
+      written here as 1.0 for every automatic layer; only the curated
+      overrides lower it, for generic tags that do not determine a genre
+      by themselves ("dance", "indie", "oldies"...) so that an artist's
+      real genre tags always outrank them
+
+  row_weight = method_weight x confidence x ln(1 + tag_count)
+
 Outputs:
-  seeds/tag_genre_map.csv    raw_tag, is_genre_tag, discogs_genre, discogs_style, match_method, match_score
+  seeds/tag_genre_map.csv    raw_tag, is_genre_tag, discogs_genre, discogs_style, match_method, match_score, confidence
   data/tag_llm_cache.json    L4 response cache (resumable, re-runs are free)
   logs/classifier/           run logs + review file
 
@@ -46,6 +60,7 @@ LOGS = ROOT / "logs" / "classifier"
 DATA = ROOT / "data"
 TAXONOMY_PATH = SEEDS / "discogs_genres_styles.json"
 ALIASES_PATH = SEEDS / "tag_aliases.csv"
+OVERRIDES_PATH = SEEDS / "tag_overrides.csv"
 DB_PATH = DATA / "spotify.duckdb"
 DEFAULT_CACHE = DATA / "tag_llm_cache.json"
 
@@ -149,6 +164,76 @@ def alias_lookup(tag_norm: str, aliases: dict, exact_index: dict):
     if kind == "pair":
         return val
     return exact_index.get(val)
+
+
+def load_overrides(path: Path, genres: dict) -> dict:
+    """Human-curated overrides, applied before every automatic layer.
+
+    Unlike tag_aliases.csv (which rewrites the tag and re-enters L1), an
+    override fixes the final answer and its confidence. It is the only place
+    where a tag that is *not* a genre can be stripped of a genre label that
+    the automatic layers would otherwise invent for it.
+    """
+    overrides: dict[str, dict] = {}
+    errors: list[str] = []
+    if not path.exists():
+        return overrides
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        for lineno, row in enumerate(csv.DictReader(f), start=2):
+            raw = (row.get("raw_tag") or "").strip()
+            if not raw or raw.startswith("#"):
+                continue
+            key = normalize(raw)
+            if not key:
+                errors.append(f"line {lineno}: raw_tag normalizes to empty: {raw!r}")
+                continue
+            if key in overrides:
+                errors.append(f"line {lineno}: duplicate raw_tag: {raw!r}")
+                continue
+            flag = (row.get("is_genre_tag") or "").strip().lower()
+            if flag not in {"true", "false"}:
+                errors.append(f"line {lineno}: is_genre_tag must be true or false, got {flag!r}")
+                continue
+            is_genre = flag == "true"
+            genre = (row.get("discogs_genre") or "").strip() or None
+            style = (row.get("discogs_style") or "").strip() or None
+            conf_raw = (row.get("confidence") or "").strip()
+            try:
+                confidence = float(conf_raw) if conf_raw else None
+            except ValueError:
+                errors.append(f"line {lineno}: confidence is not a number: {conf_raw!r}")
+                continue
+            if not is_genre:
+                if genre or style:
+                    errors.append(f"line {lineno}: non-genre override must leave genre/style empty: {raw!r}")
+                    continue
+            else:
+                if genre not in genres:
+                    errors.append(f"line {lineno}: unknown genre {genre!r}: {raw!r}")
+                    continue
+                if style is not None and style not in genres[genre]:
+                    errors.append(f"line {lineno}: style {style!r} is not under genre {genre!r}: {raw!r}")
+                    continue
+                if confidence is None or not 0 < confidence <= 1:
+                    errors.append(f"line {lineno}: genre override needs confidence in (0, 1]: {raw!r}")
+                    continue
+            overrides[key] = {
+                "is_genre_tag": is_genre,
+                "genre": genre,
+                "style": style,
+                "confidence": confidence,
+                "justification": (row.get("justification") or "").strip(),
+                "raw_tag": raw,
+            }
+    if errors:
+        raise BuildError("tag_overrides.csv is invalid:\n" + "\n".join(errors))
+    return overrides
+
+
+# Tag-specificity weight written for every automatic layer. Method
+# reliability is derived from match_method in dbt (int_artists_tag_scores),
+# so it must NOT be duplicated here: only curated overrides lower it.
+DEFAULT_SPECIFICITY = 1.0
 
 
 CONTAINMENT_SINGLE_TOKEN_ALLOWLIST = {
@@ -475,6 +560,7 @@ def parse_args(argv=None):
     p.add_argument("--batch-size", type=int, default=100)
     p.add_argument("--workers", type=int, default=5)
     p.add_argument("--cache", type=Path, default=DEFAULT_CACHE)
+    p.add_argument("--overrides", type=Path, default=OVERRIDES_PATH, help="human-curated overrides (applied first)")
     p.add_argument("--force", action="store_true", help="ignore the LLM cache and re-classify everything")
     p.add_argument("--no-db", action="store_true", help="do not union the DuckDB staging vocabulary")
     return p.parse_args(argv)
@@ -486,6 +572,7 @@ def main(argv=None) -> int:
     try:
         genres, exact_index, ambiguous = load_taxonomy()
         aliases = load_aliases(ALIASES_PATH, genres, exact_index, ambiguous)
+        overrides = load_overrides(args.overrides, genres)
         vocab = load_extract_vocab()
         if not args.no_db:
             vocab |= load_db_vocab()
@@ -497,24 +584,38 @@ def main(argv=None) -> int:
     containment_entries = build_containment_index(exact_index, genres)
     n_collisions = len(ambiguous)
     log(f"taxonomy: {len(genres)} genres, {len(exact_index)} unambiguous keys, {n_collisions} ambiguous keys -> L4")
+    log(f"overrides: {len(overrides)} curated entries from {args.overrides.name}")
     log(f"vocabulary: {len(vocab)} unique tags")
 
     results: dict[str, dict] = {}
     review: list[tuple[str, str]] = []
     pending: list[str] = []
-    method_counts = {"exact": 0, "alias": 0, "fuzzy": 0, "llm": 0, "noise": 0}
+    method_counts = {"manual": 0, "exact": 0, "alias": 0, "fuzzy": 0, "llm": 0, "noise": 0}
     interrupted = False
 
     for tag in sorted(vocab):
         try:
             q = normalize(tag)
+            override = overrides.get(q)
+            if override is not None:
+                results[tag] = {
+                    "is_genre_tag": override["is_genre_tag"],
+                    "genre": override["genre"],
+                    "style": override["style"],
+                    "method": "manual",
+                    "score": None,
+                    "confidence": override["confidence"],
+                }
+                method_counts["manual"] += 1
+                continue
             if not q:
                 # non-Latin tag (CJK, Arabic, emoji...): normalize() cannot
                 # reduce it, L4 judges it directly from the raw value
                 pending.append(tag)
                 continue
             if is_noise(q):
-                results[tag] = {"is_genre_tag": False, "genre": None, "style": None, "method": "noise", "score": None}
+                results[tag] = {"is_genre_tag": False, "genre": None, "style": None,
+                                "method": "noise", "score": None, "confidence": None}
                 method_counts["noise"] += 1
                 continue
             hit = static_classify(q, exact_index, aliases, containment_entries)
@@ -528,12 +629,14 @@ def main(argv=None) -> int:
                 "style": pair[1],
                 "method": method,
                 "score": score,
+                "confidence": DEFAULT_SPECIFICITY,
             }
             method_counts[method] += 1
         except Exception as exc:
             review.append((tag, f"static_error: {type(exc).__name__}: {exc}"))
 
-    log(f"L1 exact: {method_counts['exact']}  L2 alias: {method_counts['alias']}  L3 containment: {method_counts['fuzzy']}  noise: {method_counts['noise']}")
+    log(f"L0 overrides: {method_counts['manual']}  L1 exact: {method_counts['exact']}  "
+        f"L2 alias: {method_counts['alias']}  L3 containment: {method_counts['fuzzy']}  noise: {method_counts['noise']}")
     log(f"pending for L4: {len(pending)}  review so far: {len(review)}")
 
     if args.dry_run:
@@ -579,7 +682,10 @@ def main(argv=None) -> int:
                         batch_review = [(t, f"batch_error: {type(exc).__name__}: {exc}") for t in batch]
                         accepted, invalid = {}, []
                     with cache_lock:
-                        results.update({t: {**v, "method": "llm", "score": None} for t, v in accepted.items()})
+                        results.update({
+                            t: {**v, "method": "llm", "score": None, "confidence": DEFAULT_SPECIFICITY}
+                            for t, v in accepted.items()
+                        })
                         review.extend(batch_review)
                         cache.update(accepted)
                         save_cache(args.cache, cache)
@@ -597,6 +703,7 @@ def main(argv=None) -> int:
                 "style": cached["style"],
                 "method": "llm",
                 "score": None,
+                "confidence": DEFAULT_SPECIFICITY,
             }
     method_counts["llm"] = sum(1 for v in results.values() if v["method"] == "llm")
     if method_counts["llm"] or cache:
@@ -639,6 +746,7 @@ def write_outputs(results: dict, review: list) -> None:
     rows = []
     for tag in sorted(results):
         r = results[tag]
+        confidence = r.get("confidence")
         rows.append([
             tag,
             "true" if r["is_genre_tag"] else "false",
@@ -646,8 +754,13 @@ def write_outputs(results: dict, review: list) -> None:
             r["style"] or "",
             r["method"],
             r["score"] if r["score"] is not None else "",
+            f"{confidence:.4f}".rstrip("0").rstrip(".") if confidence is not None else "",
         ])
-    atomic_write_csv(SEEDS / "tag_genre_map.csv", ["raw_tag", "is_genre_tag", "discogs_genre", "discogs_style", "match_method", "match_score"], rows)
+    atomic_write_csv(
+        SEEDS / "tag_genre_map.csv",
+        ["raw_tag", "is_genre_tag", "discogs_genre", "discogs_style", "match_method", "match_score", "confidence"],
+        rows,
+    )
     atomic_write_csv(LOGS / "review_pending.csv", ["raw_tag", "reason"], sorted(review))
     print(f"wrote {SEEDS / 'tag_genre_map.csv'} ({len(rows)} rows)")
 

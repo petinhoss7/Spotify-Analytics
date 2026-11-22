@@ -16,6 +16,12 @@
         - 'unmapped'  : tag missing from the map - must always be
                         0 rows, guarded by test_source_tag_classification_no_unmapped
 
+    match_method additionally carries 'manual' for tags fixed by
+    seeds/tag_overrides.csv (human-curated, applied before every
+    automatic layer). confidence is the tag-specificity weight from the
+    seed: 1.0 by default, lower for curated generic tags such as
+    "dance" or "lo-fi".
+
 */
 
 with lastfm as (
@@ -82,6 +88,7 @@ classified as (
         m.discogs_style,
         m.match_method,
         m.match_score,
+        m.confidence,
         case
             when trim(t.tag_name) = '' then 'empty_tag'
             when m.raw_tag is null then 'unmapped'

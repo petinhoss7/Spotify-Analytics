@@ -1,3 +1,4 @@
+import csv
 import json
 import sys
 import tempfile
@@ -261,6 +262,101 @@ class TestLLMClient(unittest.TestCase):
         self.assertEqual(out, '{"classifications": []}')
         self.assertFalse(client.json_mode)
         self.assertNotIn("response_format", bodies[-1])
+
+
+class TestOverrides(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.overrides = ct.load_overrides(ct.OVERRIDES_PATH, GENRES)
+
+    def test_real_file_loads(self):
+        self.assertGreater(len(self.overrides), 20)
+
+    def test_keys_are_normalized(self):
+        # the key is the normalized tag, so variants collapse onto one entry
+        self.assertIn(ct.normalize("lo-fi"), self.overrides)
+        self.assertIn(ct.normalize("singer-songwriter"), self.overrides)
+
+    def test_genre_override(self):
+        dance = self.overrides[ct.normalize("dance")]
+        self.assertTrue(dance["is_genre_tag"])
+        self.assertEqual(dance["genre"], "Electronic")
+        self.assertLess(dance["confidence"], 1.0)
+
+    def test_non_genre_override(self):
+        indie = self.overrides[ct.normalize("indie")]
+        self.assertFalse(indie["is_genre_tag"])
+        self.assertIsNone(indie["genre"])
+        self.assertIsNone(indie["style"])
+
+    def test_justification_is_recorded(self):
+        self.assertTrue(self.overrides[ct.normalize("dance")]["justification"])
+
+    def _load(self, body: str):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "overrides.csv"
+            p.write_text("raw_tag,is_genre_tag,discogs_genre,discogs_style,confidence,justification\n" + body,
+                         encoding="utf-8")
+            return ct.load_overrides(p, GENRES)
+
+    def test_invalid_unknown_genre_fails_fast(self):
+        with self.assertRaises(ct.BuildError):
+            self._load("foo,true,Made Up,,0.5,test\n")
+
+    def test_invalid_style_under_other_genre_fails_fast(self):
+        with self.assertRaises(ct.BuildError):
+            self._load("foo,true,Pop,Techno,0.5,test\n")
+
+    def test_non_genre_with_genre_fails_fast(self):
+        with self.assertRaises(ct.BuildError):
+            self._load("foo,false,Pop,,,test\n")
+
+    def test_genre_without_confidence_fails_fast(self):
+        with self.assertRaises(ct.BuildError):
+            self._load("foo,true,Pop,,,test\n")
+
+    def test_duplicate_fails_fast(self):
+        with self.assertRaises(ct.BuildError):
+            self._load("foo,true,Pop,,0.5,a\nfoo,true,Rock,,0.5,b\n")
+
+    def test_valid_pair_is_accepted(self):
+        overrides = self._load("foo,true,Pop,Chanson,0.4,because\n")
+        self.assertEqual(overrides["foo"]["style"], "Chanson")
+
+
+class TestSeedMatchesOverrides(unittest.TestCase):
+    """End-to-end guard: the committed seed must reflect the overrides."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.overrides = ct.load_overrides(ct.OVERRIDES_PATH, GENRES)
+        seed_path = ct.SEEDS / "tag_genre_map.csv"
+        cls.seed = {}
+        if seed_path.exists():
+            with open(seed_path, encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f):
+                    cls.seed[row["raw_tag"]] = row
+
+    def test_seed_exists(self):
+        self.assertTrue(self.seed)
+
+    def test_every_override_is_applied(self):
+        for key, override in self.overrides.items():
+            self.assertIn(key, self.seed, f"{key} missing from the seed")
+            row = self.seed[key]
+            self.assertEqual(row["is_genre_tag"], "true" if override["is_genre_tag"] else "false", key)
+            self.assertEqual(row["match_method"], "manual", key)
+            if override["is_genre_tag"]:
+                self.assertEqual(row["discogs_genre"], override["genre"], key)
+                self.assertEqual(row["discogs_style"], override["style"] or "", key)
+                self.assertAlmostEqual(float(row["confidence"]), override["confidence"], places=4, msg=key)
+
+    def test_automatic_rows_carry_full_specificity(self):
+        # confidence only encodes *tag specificity*; method reliability is
+        # derived in dbt from match_method, so it must not be duplicated here
+        for tag, row in self.seed.items():
+            if row["match_method"] in {"exact", "alias", "fuzzy", "llm"}:
+                self.assertEqual(row["confidence"], "1", tag)
 
 
 class TestNoise(unittest.TestCase):
